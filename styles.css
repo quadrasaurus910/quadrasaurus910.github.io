@@ -2,6 +2,10 @@ body {
    background-image: url('IMG_0777.jpeg');
 }
 
+img {
+   max-width: 100vw;
+}
+
 #bar {
     background-color: #667A7F;
     width: 100%;
@@ -56,7 +60,12 @@ body {
    border-radius: 50%;
    max-width: 200px;
    clip-path: circle();
+   margin: 20px;
 }
+
+#div2a {
+   margin: 5px,0px,5px,20px;
+   border: 10px solid black;
 
 #div2 {
    background-color: black;

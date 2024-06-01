@@ -51,3 +51,9 @@ body {
 .show {
     display: block;
 }
+
+.rounded {
+   border-radius: 50%;
+}
+
+

@@ -11,6 +11,15 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body class="container-fluid" id="p2body">
+        <div class="container-fluid d-block" id="bar">
+    <div class="dropdown">
+      <button onclick="myFunction()" class="dropbtn">Menu</button>
+      <div id="myDropdown" class="dropdown-content">
+        <a href="/index.html">home</a>
+        <a href="/Page3.html">page3</a>
+      </div>
+    </div>
+    </div>
         <h1>my site 2</h1>
         <div>
             <img src="/Dripdrop1.jpeg" alt="quadrip logo">
@@ -33,5 +42,23 @@
     $(document).ready(function() {
         $("#quadrip3").fadein(5000);
     });
+</script>
+<script>
+    function myFunction() {
+                    document.getElementById("myDropdown").classList.toggle("show");
+                }
+
+                window.onclick = function(event) {
+                    if (!event.target.matches('.dropbtn')) {
+                        var dropdowns = document.getElementsByClassName("dropdown-content");
+                        var i;
+                        for (i = 0; i < dropdowns.length; i++) {
+                            var openDropdown = dropdowns[i];
+                            if (openDropdown.classList.contains('show')) {
+                                openDropdown.classList.remove('show');
+                            }
+                        }
+                    }
+                }
 </script>
 </html>

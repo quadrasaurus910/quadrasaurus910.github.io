@@ -74,3 +74,19 @@ img {
 #p2body {
    background-color: black;
 }
+
+@keyframes grow {
+                from {
+                    width: 0px;
+                }
+                to {
+                    font-size: 300px;
+                }
+            }
+#b1 {
+   animation-name: grow;
+   animation-duration: 2s;
+   animation-fill-mode: forwards;
+   background-color: #9B7D63;
+   height: 40px;
+{

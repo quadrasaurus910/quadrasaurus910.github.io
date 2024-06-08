@@ -76,17 +76,18 @@ img {
 }
 
 @keyframes grow {
-                from {
-                    width: 0px;
-                }
-                to {
-                    font-size: 300px;
-                }
-            }
+  from {
+     width: 0px;
+  }
+  to {
+     width: 300px;
+  }
+}
 #b1 {
    animation-name: grow;
    animation-duration: 2s;
    animation-fill-mode: forwards;
-   background-color: #9B7D63;
+   background-color: /*#9B7D63*/blue;
+   color: white;
    height: 40px;
 {

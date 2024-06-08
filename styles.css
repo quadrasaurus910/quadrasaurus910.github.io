@@ -75,7 +75,7 @@ img {
    background-color: black;
 }
 
-@keyframes grow {
+/*@keyframes grow {
   from {
      width: 0px;
   }
@@ -87,7 +87,7 @@ img {
    animation-name: grow;
    animation-duration: 2s;
    animation-fill-mode: forwards;
-   background-color: /*#9B7D63*/blue;
+   background-color: /*#9B7D63g/blue;
    color: white;
    height: 40px;
-{
+{*/

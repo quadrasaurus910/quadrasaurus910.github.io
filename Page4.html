@@ -10,9 +10,15 @@
     .blue {
       color: #7BAFD4;
     }
-    .card {
+    .c1 {
       background-color: #7BAFD4;
       color: white;
+    }
+    .c2 {
+      background-color: white;
+      color: #8D9092;
+      border: 1px solid #8D9092;
+    .card {
       width: 280px;
       height: 290px;
       text-align: left;
@@ -27,8 +33,8 @@
       font-size: 18pt;
     }
     p {
-      margin-bottom: 1px;
-      margin-left: -3px;
+      margin-bottom: 2px;
+      margin-left: 3px;
     }
   </style>
   </head>
@@ -39,7 +45,7 @@
     <div class="blue" id="rowid">PRIMARY PALETTE</div>
     <br>
     <div class="justify-content-start row row-cols-auto" id="row">
-      <div class="col m-1 text-left card">
+      <div class="col m-1 text-left card c1">
         <div class="card-body">
         <p class="cardTitle">Carolina Blue</p>
         <p class="lh-1">Pantone 542C</p>
@@ -53,6 +59,18 @@
         <br>
         <p>MADEIRA RAYON: 1175</p>
         <p>ROBISON-ANTON: NO MATCH</p>
+        </div>
+      </div>
+      <div class="col m-1 text-left card c2">
+        <div class="card-body">
+        <p class="cardTitle">White</p>
+        <p class="lh-1">No Ink (Or use Opaque White)</p>
+        <p class="lh-1">CMYK: 0/0/0/0</p>
+        <p class="lh-1">RGB 255/255/255</p>
+        <p>HTML: #FFFFFF</p>
+        <br>
+        <p>MADEIRA RAYON: 1002</p>
+        <p>ROBISON-ANTON: 2297</p>
         </div>
       </div>
     </div>

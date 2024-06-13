@@ -25,17 +25,30 @@
      width: 0px;
   }
 }
+  @keyframes appear {
+      0% {
+        opacity: 0;
+      }
+    50% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+  }
 #b1 {
    animation-name: grow;
    animation-duration: 2s;
    animation-fill-mode: forwards;
-   background-color: /*#9B7D63*/blue;
-   color: blue;
+   background-color: #BAE0E3;
+   color: #BAE0E3;
    height: 40px;
    width: 0px;
    font-size: 20pt;
-{
-
+}
+#b2 {
+  animation: appear 2s;
+}
 #quadrip {
    max-width: 300px;
    float: right;
@@ -53,9 +66,11 @@
         <a href="/Page4.html">Palettes</a>
       </div>
     </div>
-    <br>
     </div>
-    <div id="b1">Welcome</div>
+    <br>
+    <div id="b1">
+      <div id="b2">Welcome</div>
+    </div>
     <br>
     <div>
       <img id="quadrip" src="/QUAdrip.jpeg" alt="quadrip" width="300px">

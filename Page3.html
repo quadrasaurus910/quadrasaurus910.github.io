@@ -26,9 +26,10 @@
     </head>
 
     <body class="bg">
-        <button class="btn btn-lg btn-outline-light" data-page="page1">Page 1</button>
-        <button class="btn btn-lg btn-outline-light" data-page="page2">Page 2</button>
-        <button class="btn btn-lg btn-outline-light" data-page="page3">Page 3</button>
+        <br>
+        <button class="btn btn-lg btn-outline-light m-1" data-page="page1" onclick="click1()">Page 1</button>
+        <button class="btn btn-lg btn-outline-light m-1" data-page="page2">Page 2</button>
+        <button class="btn btn-lg btn-outline-light m-1" data-page="page3">Page 3</button>
         <div id="page1">
             <h1>This is page 1</h1>
         </div>
@@ -52,6 +53,10 @@
             document.querySelector(`#${page}`).style.display = 'block';
             document.querySelector(`#${page}`).classList.remove("bg");
             document.querySelector(`#${page}`).classList.add("bg1");
+        }
+        // Change background image on button click
+        function click1() {
+            document.body.style.backgroundImage = "url(https://eol.jsc.nasa.gov/SearchPhotos/photo.pl?mission=ISS068&roll=E&frame=39246)";
         }
 
         // Wait for page to loaded:

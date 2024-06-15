@@ -15,6 +15,13 @@
 
         <!-- https://api.jquery.com/ -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+            $('.b1').on({
+                click: function(){
+                    $('body').addClass('bg1').removeClass('bg') // changes background on click
+                }
+            })
+        </script>
         <style>
             .bg {
                 background-color: #000;
@@ -27,7 +34,7 @@
 
     <body class="bg">
         <br>
-        <button class="btn btn-lg btn-outline-light m-1" data-page="page1" onclick="click1()">Page 1</button>
+        <button class="btn btn-lg btn-outline-light b1 m-1" data-page="page1" onclick="click1()">Page 1</button>
         <button class="btn btn-lg btn-outline-light m-1" data-page="page2">Page 2</button>
         <button class="btn btn-lg btn-outline-light m-1" data-page="page3">Page 3</button>
         <div id="page1">

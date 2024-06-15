@@ -65,7 +65,12 @@ img {
 
 #div2a {
    /*margin: 5px,0px,5px,20px;*/
-   border: 10px solid black;
+   border: 10px solid #60D938;
+   width: 30%;
+   height: 40px;
+   font-size: 16pt;
+   color: #FFF;
+}
 
 #div2 {
    background-color: black;

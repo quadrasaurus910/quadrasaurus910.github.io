@@ -27,6 +27,9 @@
             .bg1 {
                 background-image: url(https://eol.jsc.nasa.gov/SearchPhotos/photo.pl?mission=ISS068&roll=E&frame=39246);
             }
+            .bg2 {
+                background-image: url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg);
+            }
         </style>
     </head>
 
@@ -38,7 +41,7 @@
         <div class="bg1" id="page1">
             <h1>This is page 1</h1>
         </div>
-        <div id="page2">
+        <div class="bg2" id="page2">
             <h1>This is page 2</h1>
         </div>
         <div id="page3">
@@ -73,7 +76,7 @@
                 // When a button is clicked, switch to that page
                 button.onclick = function() {
                     showPage(this.dataset.page);
-                    document.querySelector('body').style.background = 'green';
+                    document.querySelector('body').style.background-image = 'url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg)';
                 }
             })
         });

@@ -30,6 +30,9 @@
             .bg2 {
                 background-image: url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg);
             }
+            .bg3 {
+                background-color: green;
+            }
         </style>
     </head>
 
@@ -44,7 +47,7 @@
         <div class="bg2" id="page2">
             <h1>This is page 2</h1>
         </div>
-        <div id="page3">
+        <div class="bg3" id="page3">
             <h1>This is page 3</h1>
         </div>
     </body>
@@ -76,7 +79,6 @@
                 // When a button is clicked, switch to that page
                 button.onclick = function() {
                     showPage(this.dataset.page);
-                    document.querySelector('body').style.background-image = 'url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg)';
                 }
             })
         });

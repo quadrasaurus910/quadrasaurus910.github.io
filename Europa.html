@@ -12,11 +12,15 @@
         background-repeat: no-repeat;
         background-color: #000;
       }
+      button {
+        left: 0px;
+        background-color: #000;
+      }
     </style>
   </head>
   <body class="jupiter">
     <br>
-    <div>
+    <div class="button-container">
       <button class="btn btn-lg btn-outline-light m-1" id="b1" onclick="c1()">Jupiter</button>
       <button class="btn btn-lg btn-outline-light m-1" id="b2" onclick="c2()">Europa</button>
       <button class="btn btn-lg btn-outline-light m-1" id="b3" onclick="c3()">Saturn</button>
@@ -26,6 +30,24 @@
     </div>
   </body>
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function animateButtons() {
+  const buttons = document.querySelectorAll('.btn');
+  const container = document.querySelector('.button-container');
+  const width = container.offsetWidth / 3;
+  
+  buttons.forEach((button, index) => {
+    button.style.transition = 'all 0.5s ease-in-out';
+    button.style.width = `${width}px`;
+    button.style.margin = '0 10px';
+    button.style.float = 'left';
+    
+    button.style.transform = `translateX(${index * width}px)`;
+    button.style.transitionDelay = `${index * 0.1}s`;
+  });
+}
+    })
+    
     function c1() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)";
     }

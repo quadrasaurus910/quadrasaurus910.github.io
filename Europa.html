@@ -12,7 +12,8 @@
         background-repeat: no-repeat;
         background-color: #000;
       }
-      button {
+      .button {
+        position: relative;
         left: 0px;
         background-color: #000;
       }
@@ -21,18 +22,18 @@
   <body class="jupiter">
     <br>
     <div class="button-container">
-      <button class="btn btn-lg btn-outline-light m-1" id="b1" onclick="c1()">Jupiter</button>
-      <button class="btn btn-lg btn-outline-light m-1" id="b2" onclick="c2()">Europa</button>
-      <button class="btn btn-lg btn-outline-light m-1" id="b3" onclick="c3()">Saturn</button>
-      <button class="btn btn-lg btn-outline-light m-1" id="b4" onclick="c4()">Enceladus</button>
-      <button class="btn btn-lg btn-outline-light m-1" id="b5" onclick="c5()">Uranus</button>
-      <button class="btn btn-lg btn-outline-light m-1" id="b6" onclick="c6()">Neptune</button>
+      <button class="button btn btn-lg btn-outline-light m-1" id="b1" onclick="c1()">Jupiter</button>
+      <button class="button btn btn-lg btn-outline-light m-1" id="b2" onclick="c2()">Europa</button>
+      <button class="button btn btn-lg btn-outline-light m-1" id="b3" onclick="c3()">Saturn</button>
+      <button class="button btn btn-lg btn-outline-light m-1" id="b4" onclick="c4()">Enceladus</button>
+      <button class="button btn btn-lg btn-outline-light m-1" id="b5" onclick="c5()">Uranus</button>
+      <button class="button btn btn-lg btn-outline-light m-1" id="b6" onclick="c6()">Neptune</button>
     </div>
   </body>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       function animateButtons() {
-  const buttons = document.querySelectorAll('.btn');
+  const buttons = document.querySelectorAll('.button');
   const container = document.querySelector('.button-container');
   const width = container.offsetWidth / 3;
   

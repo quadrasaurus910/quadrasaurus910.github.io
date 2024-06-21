@@ -40,7 +40,7 @@
     </div>
   </body>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    /*document.addEventListener('DOMContentLoaded', function() {
       function animateButtons() {
   const buttons = document.querySelectorAll('.button');
   const container = document.querySelector('.button-container');
@@ -56,7 +56,7 @@
     button.style.transitionDelay = `${index * 0.1}s`;
   });
 }
-    })
+    })*/
 
     function show(page) {
       document.querySelectorAll('.planet').forEach(planet => {
@@ -84,12 +84,14 @@
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg)";
     }
 
+    document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('button').forEach(button => {
 
                 // When a button is clicked, switch to that page
                 button.onclick = function() {
-                    showPage(this.dataset.page);
+                    show(this.dataset.page);
                 }
             })
+    });
   </script>
 </html>

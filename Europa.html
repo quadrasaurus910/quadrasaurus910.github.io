@@ -16,17 +16,27 @@
         position: relative;
         left: 0px;
       }
+      #jupiter {
+        display: none;
+      }
     </style>
   </head>
   <body class="container">
+    <div>Planetary Pastels</div>
     <br>
     <div class="button-container">
-      <button class="button btn btn-lg btn-outline-light m-1" id="b1" onclick="c1()">Jupiter</button>
-      <button class="button btn btn-lg btn-outline-light m-1" id="b2" onclick="c2()">Europa</button>
+      <button class="button btn btn-lg btn-outline-light m-1" data-page="jupiter" id="b1" onclick="c1()">Jupiter</button>
+      <button class="button btn btn-lg btn-outline-light m-1" data-page="europa" id="b2" onclick="c2()">Europa</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b3" onclick="c3()">Saturn</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b4" onclick="c4()">Enceladus</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b5" onclick="c5()">Uranus</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b6" onclick="c6()">Neptune</button>
+    </div>
+    <div class="planet" id="jupiter">
+      <div class="planetT">Jupiter</div>
+    </div>
+    <div class="planet" id="europa">
+      <div class="planetT">Europa</div>
     </div>
   </body>
   <script>
@@ -47,6 +57,13 @@
   });
 }
     })
+
+    function show(page) {
+      document.querySelectorAll('.planet').forEach(planet => {
+        planet.style.display = 'none';
+      });
+      document.querySelector(`#${page}`).style.display = 'block';
+    }
     
     function c1() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)";
@@ -66,5 +83,13 @@
     function c6() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg)";
     }
+
+    document.querySelectorAll('button').forEach(button => {
+
+                // When a button is clicked, switch to that page
+                button.onclick = function() {
+                    showPage(this.dataset.page);
+                }
+            })
   </script>
 </html>

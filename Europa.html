@@ -26,8 +26,8 @@
     <div>Planetary Pastels</div>
     <br>
     <div class="button-container">
-      <button class="button btn btn-lg btn-outline-light m-1" data-page="jupiter" id="b1" onclick="c1()">Jupiter</button>
-      <button class="button btn btn-lg btn-outline-light m-1" data-page="europa" id="b2" onclick="c2()">Europa</button>
+      <button class="button btn btn-lg btn-outline-light m-1" data-page="jupiter" data-bg="url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)" id="b1" onclick="c1()">Jupiter</button>
+      <button class="button btn btn-lg btn-outline-light m-1" data-page="europa" data-bg="url(https://photojournal.jpl.nasa.gov/jpeg/PIA19048.jpg)"id="b2" onclick="c2()">Europa</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b3" onclick="c3()">Saturn</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b4" onclick="c4()">Enceladus</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b5" onclick="c5()">Uranus</button>
@@ -65,6 +65,9 @@
       });
       document.querySelector(`#${page}`).style.display = 'block';
     }
+    function background(bg) {
+      document.body.style.backgroundImage = '${bg}';
+    }
     
     function c1() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)";
@@ -91,7 +94,7 @@
                 // When a button is clicked, switch to that page
                 button.onclick = function() {
                     show(this.dataset.page);
-                    c1();
+                    background(this.dataset.bg);
                 }
             })
     });

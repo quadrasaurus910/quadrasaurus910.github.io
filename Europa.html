@@ -39,6 +39,9 @@
     <div class="planet" id="europa">
       <div class="planetT">Europa</div>
     </div>
+    <div class="planet" id="saturn">
+      <div class="planetT">Saturn</div>
+    </div>
   </body>
   <script>
     /*document.addEventListener('DOMContentLoaded', function() {
@@ -66,7 +69,7 @@
       document.querySelector(`#${page}`).style.display = 'block';
     }
     function background(bg) {
-      document.body.style.backgroundImage = '${bg}';
+      document.body.style.backgroundImage = ${bg};
     }
     
     function c1() {
@@ -94,7 +97,11 @@
                 // When a button is clicked, switch to that page
                 button.onclick = function() {
                     show(this.dataset.page);
-                    background(this.dataset.bg);
+                    /*background(this.dataset.bg);*/
+                    if this.id = 'b1':
+                      c1();
+                    if this.id = 'b2':
+                      c2();
                 }
             })
     });

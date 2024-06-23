@@ -74,6 +74,7 @@
     
     function c1() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)";
+      show(this.dataset.page);
     }
     function c2() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA19048.jpg)";
@@ -91,17 +92,17 @@
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg)";
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    /*document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('button').forEach(button => {
 
                 // When a button is clicked, switch to that page
                 button.onclick = function() {
                     show(this.dataset.page);
-                    /*background(this.dataset.bg);*/
+                    background(this.dataset.bg);
                     if (this.id = 'b1') {
                       c1();
                 }
             })
-    });
+    });*/
   </script>
 </html>

@@ -74,6 +74,9 @@
     
     function c1() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)";
+      document.querySelectorAll('.planet').forEach(planet => {
+        planet.style.display = 'none';
+      });
       document.getElementById("jupiter").style.display = "block";
     }
     function c2() {

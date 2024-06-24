@@ -46,6 +46,15 @@
     <div class="planet" id="saturn">
       <div class="planetT">Saturn</div>
     </div>
+    <div class="planet" id="enceladus">
+      <div class="planetT">Enceladus</div>
+    </div>
+    <div class="planet" id="uranus">
+      <div class="planetT">Uranus</div>
+    </div>
+    <div class="planet" id="neptune">
+      <div class="planetT">Neptune</div>
+    </div>
   </body>
   <script>
     /*document.addEventListener('DOMContentLoaded', function() {
@@ -99,12 +108,24 @@
     }
     function c4() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA06254.jpg)";
+      document.querySelectorAll('.planet').forEach(planet => {
+        planet.style.display = 'none';
+      });
+      document.getElementById("enceladus").style.display = "block";
     }
     function c5() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA18182.jpg)";
+      document.querySelectorAll('.planet').forEach(planet => {
+        planet.style.display = 'none';
+      });
+      document.getElementById("uranus").style.display = "block";
     }
     function c6() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA01142.jpg)";
+      document.querySelectorAll('.planet').forEach(planet => {
+        planet.style.display = 'none';
+      });
+      document.getElementById("neptune").style.display = "block";
     }
 
     /*document.addEventListener('DOMContentLoaded', function() {

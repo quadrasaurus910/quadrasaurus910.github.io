@@ -16,10 +16,12 @@ img {
     background-color: #A3BDBE;
     color: white;
     padding: 16px;
-    float: left;
+    /*float: left;*/
     font-size: 16px;
     border: none;
     cursor: pointer;
+    position: relative;
+    left: 0px;
 }
 
 .dropbtn:hover,
@@ -31,7 +33,6 @@ img {
     background-color: #667A7F;
     position: relative;
     display: inline-block;
-    left: 0px;
 }
 
 .dropdown-content {

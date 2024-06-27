@@ -38,6 +38,9 @@
       #minus {
         display: none;
       }
+      #expand_more {
+        font-size: 48px;
+      }
     </style>
   </head>
   <body class="container">
@@ -63,7 +66,7 @@
       <button class="button btn btn-lg btn-outline-light m-1" id="b6" onclick="c6()">Neptune</button>
     </div>
     <div class="planet" id="jupiter">
-      <i class="material-icons" id="expand-more" >expand_more</i>
+      <i class="material-icons" id="expand-more" onclick="toggle(event)">expand_more</i>
       <div id="plus">
       </div>
       <div id="minus">
@@ -173,6 +176,13 @@
       });
       document.getElementById("neptune").style.display = "block";
     }
+    function toggle(event) {
+      var icon = event.target;
+      if (icon.innerHTML === "expand_more") {
+        icon.innerHTML = "expand_less";
+      } else {
+        icon.innerHTML = "expand_more";
+      }
 
     /*document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('button').forEach(button => {

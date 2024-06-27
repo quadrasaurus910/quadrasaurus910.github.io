@@ -174,13 +174,10 @@
     }
     function toggle(event) {
       var icon = event.target;
-      var next = icon.nextElementSibling;
       if (icon.innerHTML === "expand_more") {
         icon.innerHTML = "expand_less";
-        next.style.display = "none";
       } else {
         icon.innerHTML = "expand_more";
-        next.style.display = "block";
       }
     }
 

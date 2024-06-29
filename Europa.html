@@ -188,6 +188,7 @@
       if (icon.innerHTML === "expand_more") {
         icon.innerHTML = "expand_less";
         next.style.display = "block";
+        next.style.transition = "max-height 0.2s ease-out";
       } else {
         icon.innerHTML = "expand_more";
         next.style.display = "none";

@@ -42,7 +42,7 @@
         font-size: 48px;
       }
       .planetC {
-        border: 1px solid #fff;
+        border: 1px solid fff;
         margin: 5px;
       }
       #jupiterExpand {
@@ -184,10 +184,12 @@
     function toggle(event) {
       var icon = event.target;
       var next = icon.nextElementSibling;
+      var list = next.classList;
       if (icon.innerHTML === "expand_more") {
         icon.innerHTML = "expand_less";
         next.style.display = "block";
         next.style.transition = "max-height 0.2s ease-out";
+        list.add("planetC");
       } else {
         icon.innerHTML = "expand_more";
         next.style.display = "none";

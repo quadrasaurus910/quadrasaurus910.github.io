@@ -80,6 +80,7 @@
         padding: 0 4px;
         vertical-align: middle;
       }
+      @media screen and (min-width: 576px) {
       .swatch {
         padding: 5px;
         width: 100%;
@@ -87,6 +88,20 @@
         border-style: solid;
         border-color: #fff;
         border-width: 0.5px;
+      }
+      }
+      @media screen and (max-width:576px) {
+        .swatchS {
+        padding: 5px;
+        width: 95vw;
+        height: 120px;
+        border-style: solid;
+        border-color: #fff;
+        border-width: 0.5px;
+      }
+      }
+      .paletteT {
+        font-size: 24pt;
       }
     </style>
   </head>
@@ -129,22 +144,30 @@
             </p>
             <button onclick="myFunction(event)" id="myBtn">Read more</button>
       </div>
+        <div class="palette">
+          <div class="paletteT">Palette</div>
         <div class="row">
           <div class="col">
-            <div class="swatch" style="background-color: #D7F7FE;"></div>
+            <div class="swatch swatchS" style="background-color: #D7F7FE;"></div>
+            <div class="label">#D7F5FE</div>
           </div>
           <div class="col">
-            <div class="swatch" style="background-color: #BAE4F7;"></div>
+            <div class="swatch swatchS" style="background-color: #BAE4F7;"></div>
+            <div class="label">#BAE4F7</div>
           </div>
           <div class="col">
-            <div class="swatch" style="background-color: #ACD7EE;"></div>
+            <div class="swatch swatchS" style="background-color: #ACD7EE;"></div>
+            <div class="label">#ACD7EE</div>
           </div>
           <div class="col">
-            <div class="swatch" style="background-color: #92BAD8;"></div>
+            <div class="swatch swatchS" style="background-color: #92BAD8;"></div>
+            <div class="label">#92BAD8</div>
           </div>
           <div class="col">
-            <div class="swatch" style="background-color: #81BDB2;"></div>
+            <div class="swatch swatchS" style="background-color: #81BDB2;"></div>
+            <div class="label">#81BDB2</div>
           </div>
+        </div>
         </div>
     </div>
     <div class="planet" id="europa">

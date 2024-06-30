@@ -42,11 +42,25 @@
         font-size: 48px;
       }
       .planetC {
-        border: 1px solid fff;
+        border-style: solid;
+        border-width: 1px;
+        border-color: white;
         margin: 5px;
       }
       #jupiterExpand {
         display: none;
+      }
+      .paragraph {
+        text-indent: 50px;
+        color: #fff;
+        font-size: 24px;
+        font: 'Lucida Console';
+        margin: 160px 20px 20px 20px;
+      }
+      #myBtn {
+        margin-left: 50%;
+        background-color: rgba(0, 0, 0, 0);
+        color: #fff;
       }
     </style>
   </head>
@@ -76,6 +90,18 @@
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div class="planetC" id="jupiterExpand" style="display:none;">
         <div class="planetT">Jupiter</div>
+        <div class="paragraph">
+            <p>The fifth planet from our sun is the gas giant
+                Jupiter. This photo was captured by NASA spacecraft
+                Juno, <span id="dots">...</span><span id="more">in
+                    October of 2018 during its 16th flyby of the planet. This snapshot is one of many that were turned into a
+                    motion picture of the fly by. Sky blue cloud layers storm against the famous red features Jupiter is known for. A formation 
+                    resembling a dolphin can be seen in the cloud tops. Mineral like blues, a sage green, and a dusty beige complete this palette.
+                    <a href="https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg" style="color: #D7F7FE;">Link to photo</a> and
+                    <a href="https://photojournal.jpl.nasa.gov/catalog/PIA22694" style="color: #81BDB2">Link to more information</a>
+                </span>
+            </p>
+            <button onclick="myFunction()" id="myBtn">Read more</button>
       </div>
     </div>
     <div class="planet" id="europa">
@@ -195,7 +221,21 @@
         next.style.display = "none";
       }
     }
+                function myFunction() {
+                    var dots = document.getElementById("dots");
+                    var moreText = document.getElementById("more");
+                    var btnText = document.getElementById("myBtn");
 
+                    if (dots.style.display === "none") {
+                        dots.style.display = "inline";
+                        btnText.innerHTML = "Read more";
+                        moreText.style.display = "none";
+                    } else {
+                        dots.style.display = "none";
+                        btnText.innerHTML = "Read less";
+                        moreText.style.display = "inline";
+                    }
+                }
     /*document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('button').forEach(button => {
 

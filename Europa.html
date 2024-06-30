@@ -113,7 +113,7 @@
                     <a href="https://photojournal.jpl.nasa.gov/catalog/PIA22694" style="color: #81BDB2">Link to more information</a>
                 </span>
             </p>
-            <button onclick="myFunction()" id="myBtn">Read more</button>
+            <button onclick="myFunction(event)" id="myBtn">Read more</button>
       </div>
     </div>
     <div class="planet" id="europa">
@@ -233,10 +233,14 @@
         next.style.display = "none";
       }
     }
-                function myFunction() {
-                    var dots = document.getElementById("dots");
+                function myFunction(event) {
+                    /*var dots = document.getElementById("dots");
                     var moreText = document.getElementById("more");
-                    var btnText = document.getElementById("myBtn");
+                    var btnText = document.getElementById("myBtn");*/
+                    var btnText = event.target;
+                    var preSib = btnText.previousElementSibling;
+                    var dots = preSib.children[0];
+                    var moreText = preSib.children[1];
 
                     if (dots.style.display === "none") {
                         dots.style.display = "inline";

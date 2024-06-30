@@ -74,14 +74,20 @@
         border-width: 0px 0px 0px 6px;
         padding: 5px 30px;
       }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0 4px;
+        vertical-align: middle;
+      }
       .swatch {
         padding: 5px;
-        width: 20%;
+        width: 16%;
         height: 120px;
         border-style: solid;
         border-color: #fff;
         border-width: 0.5px;
-    }
+      }
     </style>
   </head>
   <body class="container">
@@ -108,7 +114,7 @@
     </div>
     <div class="planet" id="jupiter">
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
-      <div class="planetC" id="jupiterExpand" style="display:none;">
+      <div id="jupiterExpand" style="display:none;">
         <div class="jh">Jupiter</div>
         <div class="paragraph">
             <p>The fifth planet from our sun is the gas giant
@@ -126,6 +132,18 @@
         <div class="row">
           <div class="col-xs">
             <div class="swatch" style="background-color: #D7F7FE;"></div>
+          </div>
+          <div class="col-xs">
+            <div class="swatch" style="background-color: #BAE4F7;"></div>
+          </div>
+          <div class="col-xs">
+            <div class="swatch" style="background-color: #ACD7EE;"></div>
+          </div>
+          <div class="col-xs">
+            <div class="swatch" style="background-color: #92BAD8;"></div>
+          </div>
+          <div class="col-xs">
+            <div class="swatch" style="background-color: #81BDB2;"></div>
           </div>
         </div>
     </div>

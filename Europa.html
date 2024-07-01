@@ -16,6 +16,14 @@
           transform: scale(1)
         }
       }
+      @keyframes grow {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 100%;
+        }
+      }
       body {
         background-size: 100%;
         background-attachment: fixed;
@@ -124,6 +132,49 @@
         animation-name: zoomIn;
         animation-duration: 0.6s;
       }
+      .header {
+        color: #fff;
+        background-color: #000;
+        text-align: center;
+        font-size: 12vw;
+        font-family: 'Montserrat', sans-serif;
+     }
+      .c1 {
+        background-color: #D7F5FE;
+        color: #D7F5FE;
+     }
+
+     .c2 {
+        background-color: #D3FFFC;
+     }
+
+     .c3 {
+        background-color: #BAE0E3;
+    }
+
+     .c4 {
+        background-color: #96B6E7;
+    }
+      .row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+    vertical-align: middle;
+    animation-name: grow;
+   animation-duration: 2s;
+   animation-fill-mode: forwards;
+    }
+    .b1 {
+    height: 5vw;
+    width: 70vw;
+    background-image: linear-gradient(to right, rgba(215, 245, 254, 1), rgba(90, 90, 90, 0));
+    clip-path: polygon(0% 0%, 82% 0%, 100% 100%, 0% 100%);
+    margin-left: 5px;
+    padding-left: 1%;
+    font: Arial;
+    font-size: 3vw;
+    font-weight: bold;
+    }
     </style>
   </head>
   <body class="container">
@@ -137,6 +188,14 @@
         <a href="/Page4.html">Palettes</a>
       </div>
     </div>
+      <div class="header">Planetary Pastels</div>
+        <!--Bootstrap grid-->
+        <div class="container text-center">
+            <div class="row">
+                <div class="col c1">Jupiter</div>
+                <div class="col c2"></div>
+                <div class="col c3"></div>
+                <div class="col c4"></div>
     </div>
     <div>Planetary Pastels</div>
     <br>
@@ -167,6 +226,7 @@
       </div>
         <div class="palette">
           <div class="paletteT">Palette</div>
+          <p class="b1">Click a swatch to enlarge.</p>
         <div class="row">
           <div class="col">
             <div class="swatch swatchS" style="background-color: #D7F7FE;"></div>

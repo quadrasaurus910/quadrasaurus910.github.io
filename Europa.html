@@ -351,11 +351,12 @@
     const modal = document.querySelector('#modal');
     
     document.addEventListener('DOMContentLoaded', function() {
-      document.getElementsByClassName('swatch').onclick = (event) => {
+      (swatch.forEach(s => {
+        s.addEventListener('click', (event) => {
         let bgc = event.target.style.backgroundColor;
         modal.style.display = 'block';
         modal.style.backgroundColor = bgc;
-      }
+      });
         document.getElementById('modal').onclick = () => {
         modal.style.display = 'none';
       }

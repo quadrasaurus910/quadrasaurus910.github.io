@@ -351,7 +351,7 @@
     const modal = document.querySelector('#modal');
     
     document.addEventListener('DOMContentLoaded', function() {
-      (swatch.forEach(s => {
+      swatch.forEach(s => {
         s.addEventListener('click', (event) => {
         let bgc = event.target.style.backgroundColor;
         modal.style.display = 'block';

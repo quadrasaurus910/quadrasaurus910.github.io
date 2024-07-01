@@ -20,8 +20,11 @@
         0% {
           width: 0%;
         }
+        50% {
+          width: 80%;
+        }
         100% {
-          width: 100%;
+          width: 0%;
         }
       }
       body {
@@ -134,10 +137,12 @@
       }
       .header {
         color: #fff;
-        background-color: #000;
         text-align: center;
-        font-size: 12vw;
+        font-size: 4vw;
         font-family: 'Montserrat', sans-serif;
+        animation-name: grow;
+       animation-duration: 5s;
+       animation-fill-mode: forwards;
      }
       .c1 {
         background-color: #D7F5FE;
@@ -188,7 +193,7 @@
         <a href="/Page4.html">Palettes</a>
       </div>
     </div>
-      <div class="header1">Planetary Pastels</div>
+      <div class="header">Planetary Pastels</div>
         <!--Bootstrap grid-->
         <div class="container text-center">
             <div class="row">
@@ -197,7 +202,7 @@
                 <div class="col c3"></div>
                 <div class="col c4"></div>
     </div>
-    <div>Planetary Pastels</div>
+    <div></div>
     <br>
     <div class="button-container">
       <button class="button btn btn-lg btn-outline-light m-1" data-page="jupiter" data-bg="url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)" id="b1" onclick="c1()">Jupiter</button>

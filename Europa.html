@@ -347,16 +347,23 @@
                     }
                 }
 
-    var swatch = document.querySelectorAll('.swatch');
+    var cbox = document.querySelectorAll('.swatch');
     const modal = document.querySelector('#modal');
     
     document.addEventListener('DOMContentLoaded', function() {
-      swatch.forEach(s => {
+      /*swatch.forEach(s => {
         s.addEventListener('click', (event) => {
         let bgc = event.target.style.backgroundColor;
         modal.style.display = 'block';
         modal.style.backgroundColor = bgc;
-      });
+      });*/
+      for (let i = 0; i < cbox.length; i++) {
+        cbox[i].addEventListener("click", function(event) {
+          let bgc = event.target.style.backgroundColor;
+          modal.style.display = 'block';
+          modal.style.backgroundColor = bgc;
+        });
+      }
         document.getElementById('modal').onclick = () => {
         modal.style.display = 'none';
       }

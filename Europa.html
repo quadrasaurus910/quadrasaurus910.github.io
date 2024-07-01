@@ -8,6 +8,14 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/styles.css" rel="stylesheet">
     <style>
+      @keyframes zoomIn {
+        from {
+          transform: scale(0)
+        }
+        to {
+          transform: scale(1)
+        }
+      }
       body {
         background-size: 100%;
         background-attachment: fixed;
@@ -103,6 +111,18 @@
       .paletteT {
         font-size: 24pt;
         margin: 5px 0px 5px 15px;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        animation-name: zoomIn;
+        animation-duration: 0.6s;
       }
     </style>
   </head>
@@ -208,6 +228,8 @@
     <div class="planet" id="neptune">
       <div class="planetT">Neptune</div>
     </div>
+    /*modal div*/
+    <div id="modal" class="modal"></div>
   </body>
   <script>
     /*document.addEventListener('DOMContentLoaded', function() {
@@ -310,9 +332,6 @@
       }
     }
                 function myFunction(event) {
-                    /*var dots = document.getElementById("dots");
-                    var moreText = document.getElementById("more");
-                    var btnText = document.getElementById("myBtn");*/
                     var btnText = event.target;
                     var preSib = btnText.previousElementSibling;
                     var dots = preSib.children[0];
@@ -328,17 +347,19 @@
                         moreText.style.display = "inline";
                     }
                 }
-    /*document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('button').forEach(button => {
 
-                // When a button is clicked, switch to that page
-                button.onclick = function() {
-                    show(this.dataset.page);
-                    background(this.dataset.bg);
-                    if (this.id = 'b1') {
-                      c1();
-                }
-            })
-    });*/
+    var swatch = document.getElementsByClassName('swatch');
+    const modal = document.querySelector('#modal');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementsByClassName('swatch').onclick = (event) => {
+        let bgc = event.target.style.backgroundColor;
+        modal.style.display = 'block';
+        modal.style.backgroundColor = bgc;
+      }
+        document.getElementById('modal').onclick = () => {
+        modal.style.display = 'none';
+      }
+    })
   </script>
 </html>

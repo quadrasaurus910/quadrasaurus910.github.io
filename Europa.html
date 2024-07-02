@@ -92,10 +92,10 @@
         color: #fff;
       }
       .jh {
-        height: 15vw;
+        height: 8vw;
         color: #fff;
         font-family: 'Montserrat', sans-serif;
-        font-size: 10vw;
+        font-size: 6vw;
         margin-top: 5%;
         margin-left: 5%;
         border-style: solid;
@@ -151,7 +151,7 @@
         animation-name: grow;
        animation-duration: 5s;
        animation-fill-mode: forwards;
-     }*/
+     }
       .c1 {
         background-color: #D7F5FE;
         color: #D7F5FE;
@@ -201,7 +201,9 @@
         <a href="/Page4.html">Palettes</a>
       </div>
     </div>
-      <div class="header1">Planetary Pastels</div>
+      <span>
+        <div class="header1">Planetary Pastels</div>
+      </span>
         <div class="container">
             <div class="row row1">
                 <div class="col c1"></div>
@@ -219,6 +221,7 @@
       <button class="button btn btn-lg btn-outline-light m-1" id="b5" onclick="c5()">Uranus</button>
       <button class="button btn btn-lg btn-outline-light m-1" id="b6" onclick="c6()">Neptune</button>
     </div>
+  <!-- Jupiter -->
     <div class="planet" id="jupiter">
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div id="jupiterExpand" style="display:none;">
@@ -285,21 +288,27 @@
             </div>
         </div>
     </div>
+  <!-- Europa -->
     <div class="planet" id="europa">
       <div class="planetT">Europa</div>
     </div>
+  <!-- Saturn -->
     <div class="planet" id="saturn">
       <div class="planetT">Saturn</div>
     </div>
+  <!-- Enceladus -->
     <div class="planet" id="enceladus">
       <div class="planetT">Enceladus</div>
     </div>
+  <!-- Uranus -->
     <div class="planet" id="uranus">
       <div class="planetT">Uranus</div>
     </div>
+  <!-- Neptune -->
     <div class="planet" id="neptune">
       <div class="planetT">Neptune</div>
     </div>
+  <!-- modal for swatch zoom in effect -->
     <div id="modal" class="modal"></div>
   </body>
   <script>

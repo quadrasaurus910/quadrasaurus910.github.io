@@ -637,7 +637,7 @@
     function show(page) {
       document.querySelectorAll('.planet').forEach(planet => {
         planet.style.display = 'none';
-        hd1.style.animatiom = 'minus 1s 1';
+        hd1.style.animation = 'minus 1s 1';
       });
       document.querySelector(`#${page}`).style.display = 'block';
     }
@@ -737,7 +737,7 @@
         document.getElementById('modal').onclick = () => {
         modal.style.display = 'none';
       }
-      hd1.innerHTML = 'Select a astronomical object below';
+      hd1.innerHTML = 'Select an astronomical object below';
     })
   </script>
 </html>

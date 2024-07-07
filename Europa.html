@@ -199,6 +199,10 @@
     #headDiv {
       height: 30px;
     }
+    #barId {
+      font-weight: bold;
+      font-size: 16pt;
+      padding-left: 5px;
     </style>
   </head>
   <body class="container">
@@ -212,8 +216,8 @@
             <a href="/Page4.html">Palettes</a>
           </div>
       </div>
-      <span>
-        <div class="header1">Planetary Pastels</div>
+      <span id="barId">Planetary Pastels
+        <!--<div class="header1">Planetary Pastels</div>-->
       </span>
         <div class="container">
             <div class="row row1">
@@ -611,6 +615,8 @@
   });
 }
     })*/
+    const hd1 = document.querySelector('#headDiv1');
+    
     function myFunction() {
                     document.getElementById("myDropdown").classList.toggle("show");
                 }
@@ -631,6 +637,7 @@
     function show(page) {
       document.querySelectorAll('.planet').forEach(planet => {
         planet.style.display = 'none';
+        hd1.style.animatiom = 'minus 1s 1';
       });
       document.querySelector(`#${page}`).style.display = 'block';
     }
@@ -730,6 +737,7 @@
         document.getElementById('modal').onclick = () => {
         modal.style.display = 'none';
       }
+      hd1.innerHTML = 'Select a astronomical object below';
     })
   </script>
 </html>

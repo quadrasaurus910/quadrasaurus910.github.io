@@ -687,11 +687,11 @@
 }
     })*/
     const hd1 = document.querySelector('#headDiv1');
-    hd1.addEventListener("animationend", end);
+    /*hd1.addEventListener("animationend", end);
 
     function end() {
       div3.style.display = 'none';
-    }
+    }*/
     
     function myFunction() {
                     document.getElementById("myDropdown").classList.toggle("show");
@@ -821,6 +821,10 @@
       }
       hd1.innerHTML = 'Select an astronomical object below';
       hd1.style.animation = 'minus 4s 1';
+      hd1.addEventListener("animationend", end);
+      function end() {
+        div3.style.display = 'none';
+      }
     })
   </script>
 </html>

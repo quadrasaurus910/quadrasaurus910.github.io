@@ -732,6 +732,10 @@
     for (let i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
         hd1.style.animation = 'minus 2s 1';
+        hd1.addEventListener("animationend", end);
+        function end() {
+          hd1.style.display = 'none';
+        }
       })
     }
     
@@ -831,11 +835,11 @@
         modal.style.display = 'none';
       }
       hd1.innerHTML = 'Select an astronomical object below';
-      /*hd1.style.animation = 'minus 4s 1';*/
+      /*hd1.style.animation = 'minus 4s 1';
       hd1.addEventListener("animationend", end);
       function end() {
         hd1.style.display = 'none';
-      }
+      }*/
     })
   </script>
 </html>

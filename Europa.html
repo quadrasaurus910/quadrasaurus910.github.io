@@ -45,10 +45,10 @@
       }
       @keyframes minus {
         from {
-          font-size: 18pt;
+          height: 30px;
         }
         to {
-          height: 0pt;
+          height: 0px;
         }
       }
       body {
@@ -205,9 +205,6 @@
     font-size: 3vw;
     font-weight: bold;
     }
-    #headDiv {
-      height: 30px;
-    }
     #headDiv1 {
       font-size: 18pt;
       color: white;
@@ -218,6 +215,7 @@
       overflow: hidden;
       white-space: nowrap;
       width: 0px;
+      height: 30px;
     }
     #barId {
       font-weight: bold;
@@ -731,11 +729,11 @@
     var btns = document.querySelectorAll('button');
     for (let i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
-        /*hd1.style.animation = 'minus 2s 1';
         hd1.addEventListener("animationend", end);
         function end() {
           hd1.style.display = 'none';
-        }*/
+        }
+        hd1.style.animation = 'minus 2s 1';
       })
     }
     

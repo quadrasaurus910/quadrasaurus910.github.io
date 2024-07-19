@@ -4,18 +4,20 @@
     <title>Countdown</title>
     <style>
       body {
-        background-image: url('IMG_0351.jpeg');
-        height: 100%;
+        /*background-image: url('IMG_0351.jpeg');*/
     </style>
   </head>
   <body>
     <p id="p1"></p>
     <p id="p2"></p>
+    <div id="div1"></div>
   </body>
   <script>
-    p1 = document.querySelector('#p1');
-    p2 = document.wuerySelector("#p2");
+    p1 = document.querySelector("#p1");
+    p2 = document.querySelector("#p2");
     p1.innerHTML = "Browser width: " + window.innerWidth + "px";
     p2.innerHTML = "Browser inner height: " + window.innerHeight + "px";
+    body = document.querySelector("body");
+    body.backgroundImage = 'url(IMG_0351.jpeg)';
   </script>
 </html>

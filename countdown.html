@@ -7,9 +7,18 @@
     <title>Countdown</title>
     <style>
         /*background-image: url('IMG_0351.jpeg');*/
+      body {
+        background-size: 100%;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-color: #000;
+      }
+      p {
+        color: white;
+      }
     </style>
   </head>
-  <body>
+  <body class="container">
     <p id="p1"></p>
     <p id="p2"></p>
     <div class="container" id="div1">test</div>
@@ -20,6 +29,6 @@
     p1.innerHTML = "Browser width: " + window.innerWidth + "px";
     p2.innerHTML = "Browser inner height: " + window.innerHeight + "px";
     div1 = document.querySelector("#div1");
-    div1.style.backgroundImage = 'url(IMG_0351.jpeg)';
+    document.body.style.backgroundImage = 'url(IMG_0351.jpeg)';
   </script>
 </html>

@@ -34,6 +34,11 @@
       opacity:1;
     }
   }
+body {
+  background-size: 100vh;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
 #b1 {
    animation-name: grow;
    animation-duration: 2s;
@@ -102,7 +107,6 @@
     <!--<img src="/IMG_0777.jpeg" alt="lattice">-->
   </body>
   <script>
-    body = document.body;
                 function myFunction() {
                     document.getElementById("myDropdown").classList.toggle("show");
                 }
@@ -120,7 +124,7 @@
                     }
                 }
     document.addEventListener('DOMContentLoaded', function() {
-      body.style.backgroundImage ='url(IMG_0777.jpeg)';
+    document.body.style.backgroundImage ='url(IMG_0777.jpeg)';
     };
 </script>
 </html>

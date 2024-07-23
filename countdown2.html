@@ -1,1 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
 
+    <head>
+        <!--<link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap" rel="stylesheet">-->
+        <title>Single Page</title>
+        <style>
+            @keyframes slide {
+                from {
+                    width: 0px;
+                }
+
+                to {
+                    width: 400px;
+                }
+            }
+            @keyframes trans1 {
+                0% {
+                    background-color: black;
+                }
+                50% {
+                    background-color: pink;
+                }
+                100% {
+                    background-color: white;
+                }
+            }
+            @keyframes trans2 {
+                0% {
+                    background-color: white;
+                }
+                50% {
+                    background-color: black;
+                }
+                100% {
+                    background-image: url('https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg');
+                }
+            }
+            @keyframes trans1b {
+                0% {
+                    opacity: 0%;
+                }
+                100% {
+                    opacity: 0%;
+                }
+            }
+            @keyframes trans2b {
+                0% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+                50% {
+                    color: white;
+                }
+                100% {
+                    transform: scale(50);
+                    opacity: 0;
+                }
+            }
+            @keyframes trans3 {
+                from {
+                    width: 80%;
+                }
+                to {
+                    width: 0%;
+                }
+            }
+
+            div, #testP, #testP2 {
+                display: none;
+            }
+
+            #dateDiv {
+                text-align: center;
+                margin: 100px 0% 0% 0%;
+
+            }
+
+            #dateText {
+                font-size: 24pt;
+            }
+
+            .text1 {
+                font-size: 24pt;
+                color: pink;
+                position: relative;
+                /*animation-name: slide;
+                animation-duration: 2s;
+                animation-fill-mode: forwards;*/
+                width: 0px;
+                text-align: left;
+                overflow: hidden;
+                white-space: nowrap;
+                height: 40px;
+            }
+
+            #countdownDiv {
+                text-align: center;
+                border: 2px solid white;
+                border-radius: 6px;
+                margin: 30% auto auto auto;
+                /*padding: 5px 5px 5px 5px;*/
+                width: 80%;
+                max-width: 500px;
+                overflow: hidden;
+            }
+
+            .cdc1 {
+                text-align: center;
+                margin: 0% 0% 0% 0%;
+                color: white;
+                height: 50px;
+                /*padding: 5px 5px 5px 5px;
+                font-family: 'Brush Script MT', cursive;
+                border: 1px solid green;*/
+                font-family: Garamond, serif;
+                white-space: nowrap;
+            }
+            .countDivClass {
+                font-size: 22pt;
+                color: white;
+                border-top: 0.5px solid white;
+                margin: 0pt 0pt 0pt 0pt;
+                padding: 0px 0px 24px 0px;
+                height: 60px;
+            }
+
+            #textT {
+                display: none;
+            }
+            #countdown {
+                padding: 5px 0px 0px 0px;
+                font-size: 24pt;
+                /*font-weight: bold;
+                position: absolute;
+                top: 50%;*/
+            }
+            #dateBtn {
+                width: 220px;
+                height: 100px;
+                background-color: rgba(0,0,0,0);
+                color: pink;
+                border: 3px solid pink;
+                border-radius: 10px;
+                font-size: 26pt;
+            }
+            body {
+                background-size: 100vh;
+                overflow: hidden;
+            }
+            #ad {
+                display: none;
+            }
+            /*.readex-pro-<uniquifier> {
+  font-family: "Readex Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "HEXP" 0;
+}*/
+        </style>
+    </head>
+
+    <body>
+        <p class="text1" id="text1">Hello, Brittany!</p>
+        <div id="dateDiv" data-page="page0">
+            <p id="dateText">Please enter our anniversary date.</p>
+            <input type="date" id="date" name="date" autofocus>
+            <br>
+            <input id="textT" name="textT" type="text">
+            <br>
+            <button id="dateBtn" name="dateBtn" data-page="countdownDiv">Submit</button>
+            <p id="testP"></p>
+            <p id="testP2"></p>
+        </div>
+        <div id="countdownDiv">
+            <div class="cdc1">
+                <p id="countdown"></p>
+            </div>
+            <div class="countDivClass">
+                <p>until</p>
+            </div>
+            <div class="countDivClass">
+                <p>Anniversary</p>
+            </div>
+        </div>
+        <div id="ad">
+            <p>testP</p>
+            <div id="ad1">test</div>
+        </div>
+        <!--<button data-page="page1">Page 1</button>
+        <button data-page="page2">Page 2</button>
+        <button data-page="page3">Page 3</button>
+        <div id="page1">
+            <h1>This is page 1</h1>
+        </div>
+        <div id="page2">
+            <h1>This is page 2</h1>
+        </div>
+        <div id="page3">
+            <h1>This is page 3</h1>
+        </div>-->
+    </body>
+
+    <script>
+        // Shows one page and hides the other two
+        const text1 = document.querySelector('#text1');
+        const dateDiv = document.querySelector('#dateDiv');
+        const date = document.querySelector('#textT').value;
+        const countdownDiv = document.querySelector('#countdownDiv');
+        const dateBtn = document.querySelector('#dateBtn');
+        /*const countdown = document.queerySelector('#countdown');*/
+        const body = document.body;
+        const countDivClass = document.querySelectorAll('.countDivClass');
+        const cdc1 = document.querySelector('.cdc1');
+        const ad = document.querySelector('#ad');
+        const ad1 = document.querySelector('#ad1');
+
+        function ad0() {
+            window.location.href = "https://www.nasa.gov";
+            countdownDiv.style.display = 'none';
+            /*body.style.backgroundImage = 'url(https://photojournal.jpl.nasa.gov/jpeg/PIA06606.jpg)';
+            body.style.backgroundColor = 'white';
+            ad.style.display = 'block';
+            ad.style.backgroundColor = 'white';
+            ad.innerHTML = 'EXPIRED';
+            document.querySelector('#ad1').style.display = 'block';
+            ad1.style.display = 'block';
+            ad1.innerHTML = 'TIME EXPIRED';*/
+        };
+
+        // Set the date we're counting down to
+        /*var countDownDate = new Date("August 10, 2024 00:00:00").getTime();​
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+            ​
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            document.getElementById("#countdown").innerHTML = days + "d " + hours + "h " +
+            minutes + "m " + seconds + "s ";
+
+            // If the count down is over, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("#countdown").innerHTML = "EXPIRED";
+            }
+        }, 1000);
+
+        function showPage(page) {
+
+            // Hide all of the divs:
+            document.querySelectorAll('div').forEach(div => {
+                div.style.display = 'none';
+            });
+
+            // Show the div provided in the argument
+            document.querySelector(`#${page}`).style.display = 'block';
+        }*/
+
+        // Wait for page to loaded:
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Select all buttons
+            /*document.querySelectorAll('button').forEach(button => {
+
+                // When a button is clicked, switch to that page
+                button.onclick = function() {
+                    showPage(this.dataset.page);
+                }
+            })
+
+            aE = function() {
+                text1.style.display = 'none';
+                dateDiv.style.display = 'block';
+            }*/
+
+            body.style.backgroundColor = 'black';
+
+            text1.addEventListener('animationend', () => {
+                text1.style.display = 'none';
+                dateDiv.style.display = 'block';
+                body.addEventListener('animationend', () => {
+                    body.style.backgroundColor = 'white';
+                })
+                body.style.animation = 'trans1 2s 1';
+                dateDiv.style.animation = 'trans1b 1s 1';
+            });
+            text1.style.animation = 'slide 4s 1';
+
+            countdownDiv.addEventListener('animationend', ad0);
+
+            dateBtn.addEventListener('click', function() {
+                dateT = document.querySelector('#date').value;
+                testP = document.querySelector('#testP');
+                testP2 = document.querySelector('#testP2');
+                newDate = new Date("August 9, 2024 20:00:00 GMT-0400");
+                oldDate = new Date("August 9, 2005 20:00:00 GMT-0400");
+                /*copy = new Date();
+                setTime(newDate.getTime());*/
+                testP.innerHTML = newDate;
+                jsDate = new Date(dateT);
+                testP2.innerHTML = jsDate;
+                console.log("test");
+                if (jsDate.getTime() == newDate.getTime() || (jsDate.getTime() == oldDate.getTime())) {
+                    dateDiv.style.display = 'none';
+                    countdownDiv.style.display = 'block';
+                    cdc1.style.display = 'block';
+                    countDivClass.forEach(cdc => {
+                        cdc.style.display = 'block';
+                    })
+                    body.addEventListener('animationend', () => {
+                        body.style.backgroundImage = 'url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)';
+                    })
+                    body.style.animation = 'trans2 2s 1';
+
+                    var countDownDate = new Date("July 21, 2024 10:52:00"/*"July 17, 2024 8:19:00"*/).getTime();
+
+                    // Update the count down every 1 second
+                    var x = setInterval(function() {
+
+                        // Get today's date and time
+                        var now = new Date().getTime();
+
+                        // Find the distance between now and the count down date
+                        var distance = countDownDate - now;
+
+                        // Time calculations for days, hours, minutes and seconds
+                        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                        // Display the result in the element with id="demo"
+                        document.getElementById("countdown").innerHTML = days + "d " + hours + "h " +
+                        minutes + "m " + seconds + "s ";
+
+                        // If the count down is finished, write some text
+                        if (distance < 0) {
+                            clearInterval(x);
+                            document.getElementById("countdown").innerHTML = '0d 0h 0m 0s';
+                            /*countdownDiv.style.display = 'none';*/
+                            countdownDiv.style.color = 'rgba(0, 0, 0, 0)';
+                            countdownDiv.style.animation = 'trans3 3s 1';
+                            /*ad.style.display = 'block';
+                            ad1.innerHTML = 'This shows after timer expires';
+                            body.style.backgroundImage = 'url(https://photojournal.jpl.nasa.gov/jpeg/PIA06606.jpg)';*/
+                        }
+                    }, 1000)
+                    /*body.style.backgroundImage = 'url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)';*/
+                }
+                else {
+                    alert("Hey, that's not our anniversary!");
+                }
+            })
+        });
+
+        // Set the date we're counting down to
+        /*var countDownDate = new Date("August 10, 2024 00:00:00").getTime();​
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+            ​
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            document.getElementById("#countdown").innerHTML = days + "d " + hours + "h " +
+            minutes + "m " + seconds + "s ";
+
+            // If the count down is over, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("#countdown").innerHTML = "EXPIRED";
+            }
+        }, 1000);*/
+    </script>
+
+</html>

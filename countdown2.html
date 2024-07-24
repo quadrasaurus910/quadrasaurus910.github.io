@@ -314,7 +314,7 @@
             });
             text1.style.animation = 'slide 4s 1';
 
-            countdownDiv.addEventListener('animationend', ad0);
+            /*countdownDiv.addEventListener('animationend', ad0);*/
 
             dateBtn.addEventListener('click', function() {
                 dateT = document.querySelector('#date').value;
@@ -341,10 +341,10 @@
                     })
                     body.style.animation = 'trans2 2s 1';
 
-                    /*countdownDiv.addEventListener('animationend', () => {
+                    countdownDiv.addEventListener('animationend', () => {
                         countdownDiv.style.width = '80%';
                     }
-                    countdownDiv.style.animation = 'trans3b 3s 1';*/
+                    countdownDiv.style.animation = 'trans3b 3s 1';
 
                     var countDownDate = new Date("Aug 10, 2024 00:00:00"/*"July 17, 2024 8:19:00"*/).getTime();
 
@@ -373,6 +373,7 @@
                             document.getElementById("countdown").innerHTML = '0d 0h 0m 0s';
                             /*countdownDiv.style.display = 'none';*/
                             countdownDiv.style.color = 'rgba(0, 0, 0, 0)';
+                            countdownDiv.addEventListener('animationend', ad0);
                             countdownDiv.style.animation = 'trans3 3s 1';
                             /*ad.style.display = 'block';
                             ad1.innerHTML = 'This shows after timer expires';

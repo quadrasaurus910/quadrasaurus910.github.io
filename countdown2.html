@@ -68,6 +68,14 @@
                     width: 0%;
                 }
             }
+            @keyframes trans3b {
+                from {
+                    width: 0%;
+                }
+                to {
+                    width: 80%;
+                }
+            }
 
             div, #testP, #testP2 {
                 display: none;
@@ -103,7 +111,7 @@
                 border-radius: 6px;
                 margin: 30% auto auto auto;
                 /*padding: 5px 5px 5px 5px;*/
-                width: 80%;
+                width: 0%;
                 max-width: 500px;
                 overflow: hidden;
             }
@@ -332,6 +340,11 @@
                         body.style.backgroundImage = 'url(IMG_0351.jpeg)';
                     })
                     body.style.animation = 'trans2 2s 1';
+
+                    countdownDiv.addEventListener('animationend', () => {
+                        countdownDiv.style.width = '80%';
+                    )
+                    countdownDiv.style.animation = 'trans3b 3s 1';
 
                     var countDownDate = new Date("Aug 10, 2024 00:00:00"/*"July 17, 2024 8:19:00"*/).getTime();
 

@@ -760,6 +760,16 @@
         hd1.style.animation = 'minus 2s 1';
       })
     }
+
+    for (let j = 0; j < expandMore.length; j++) {
+      expandMore[j].addEventListener("click", function() {
+        clickSpan.addEventListener("animationend", end);
+        function end() {
+          clickSpan[j].style.display = 'none';
+        }
+        clickSpan[j].style.animation = 'minus 2s 1';
+      })
+    }
     
     function c1() {
       document.body.style.backgroundImage = "url(https://photojournal.jpl.nasa.gov/jpeg/PIA22694.jpg)";

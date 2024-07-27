@@ -53,13 +53,13 @@
       }
       @keyframes pulse {
         0% {
-          scale: 1;
+          transform: scale(1)
         }
         50% {
-          scale: 1.65;
+          transform: scale(1.65)
         }
         100% {
-          scale: 1;
+          transform: scale(1)
         }
       }
       body {
@@ -758,10 +758,11 @@
           hd1.style.display = 'none';
         }
         hd1.style.animation = 'minus 2s 1';
-      })
+      
       for (k = 0; k < expandMore.length; k++) {
         expandMore[k].style.animation = 'pulse 2s indefinite';
       }
+      })
     }
 
     ef2 = function endFunction2() {

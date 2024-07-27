@@ -761,6 +761,19 @@
       })
     }
 
+    ef2 = function endFunction2() {
+      for (let j = 0; j < clickSpan.length; j++) {
+        clickSpan[j].style.display = 'none';
+      }
+    }
+
+    expandMore.forEach(span => {
+      span.addEventListener("click", () => {
+        ef2();
+        ef3();
+      });
+    },{once:true});
+
     for (let j = 0; j < expandMore.length; j++) {
       expandMore[j].addEventListener("click", function() {
         clickSpan.addEventListener("animationend", end);

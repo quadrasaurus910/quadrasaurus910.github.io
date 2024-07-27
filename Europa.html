@@ -218,6 +218,7 @@
     font-size: 3vw;
     font-weight: bold;
     }
+    .clickSpan,
     #headDiv1 {
       font-size: 18pt;
       color: white;
@@ -264,6 +265,7 @@
     </div>
   <!-- Jupiter -->
     <div class="planet" id="jupiter">
+      <div class="clickSpan">Click me</div>
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div id="jupiterExpand" style="display:none;">
         <div class="jh">Jupiter</div>
@@ -333,6 +335,7 @@
     </div>
   <!-- Europa -->
     <div class="planet" id="europa">
+      <div class="clickSpan">Click me</div>
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div id="europaExpand" style="display:none;">
         <div class="jh">Europa</div>
@@ -405,6 +408,7 @@
     </div>
   <!-- Saturn -->
     <div class="planet" id="saturn">
+      <div class="clickSpan">Click me</div>
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div id="saturnExpand" style="display:none;">
         <div class="jh">Saturn</div>
@@ -474,6 +478,7 @@
     </div>
   <!-- Enceladus -->
     <div class="planet" id="enceladus">
+      <div class="clickSpan">Click me</div>
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div id="europaExpand" style="display:none;">
         <div class="jh">Enceladus</div>
@@ -545,6 +550,7 @@
     </div>
   <!-- Uranus -->
     <div class="planet" id="uranus">
+      <div class="clickSpan">Click me</div>
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div id="uranusExpand" style="display:none;">
         <div class="jh">Uranus</div>
@@ -615,6 +621,7 @@
     </div>
   <!-- Neptune -->
     <div class="planet" id="neptune">
+      <div class="clickSpan">Click me</div>
       <i class="material-icons" id="expand-more" onclick="toggle(event)" style="font-size:48px;">expand_more</i>
       <div id="neptuneExpand" style="display:none;">
         <div class="jh">Neptune</div>
@@ -740,7 +747,10 @@
       document.body.style.backgroundImage = '${bg}';
     }
 
-    var btns = document.querySelectorAll('button');
+    clickSpan = document.querySelectorAll('.clickSpan');
+    expandMore = document.querySelectorAll('.expand-more');
+
+    var btns = document.querySelectorAll('.button');
     for (let i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
         hd1.addEventListener("animationend", end);

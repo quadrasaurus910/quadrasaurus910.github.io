@@ -759,11 +759,13 @@
         }
         hd1.style.animation = 'minus 2s 1';
       })
+      expandMore[i].style.animation = 'pulse 2s indefinite';
     }
 
     ef2 = function endFunction2() {
       for (let j = 0; j < clickSpan.length; j++) {
         clickSpan[j].style.display = 'none';
+        expandMore[j].style.animation = 'none';
       }
     }
 

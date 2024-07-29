@@ -23,6 +23,7 @@
         background-image: url('BP1a.png');
       }
       100% {
+        background-image: none;
         background-color: white;
       }
     }
@@ -58,6 +59,7 @@
         modal.style.display = 'none';
         body.addEventListener('animationend', () => {
           body.style.backgroundColor = 'white';
+          body.style.backgroundImage = 'none';
         })
         body.style.animation = 'bg1 15s 1';
       })

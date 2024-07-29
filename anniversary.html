@@ -52,10 +52,11 @@
     document.addEventListener('DOMContentLoaded', function() {
       modal.addEventListener('animationend', () => {
         modal.style.display = 'none';
+        body.style.animation = 'bg1 10s 1';
       })
       body.style.backgroundImage = 'url(BP1.png)';
-      body.style.animationDelay = '5s';
-      body.style.animation = 'bg1 10s 1';
+      /*body.style.animationDelay = '5s';
+      body.style.animation = 'bg1 10s 1';*/
     })
   </script>
 </html>

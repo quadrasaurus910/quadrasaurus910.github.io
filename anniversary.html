@@ -40,10 +40,12 @@
   </body>
   <script>
     const modal = document.querySelector('#modal');
+    var bodyBg = document.body.style.backgroundImage;
     document.addEventListener('DOMContentLoaded', function() {
       modal.addEventListener('animationend', () => {
         modal.style.display = 'none';
       })
+      bodyBg = 'url(BP1.png)';
     })
   </script>
 </html>

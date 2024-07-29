@@ -15,6 +15,14 @@
         background-color: rgba(0,0,0,0);
       }
     }
+    @keyframes bg1 {
+      0% {
+        background-image: url('BP1.png');
+      }
+      100% {
+        background-image: url('BP1a.png');
+      }
+    }
     .modal {
       background-color: rgba(0,0,0,1);
       display: block;
@@ -46,6 +54,8 @@
         modal.style.display = 'none';
       })
       body.style.backgroundImage = 'url(BP1.png)';
+      body.style.animationDelay = '5s';
+      body.style.animation = 'bg1 10s 1';
     })
   </script>
 </html>

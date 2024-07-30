@@ -57,9 +57,11 @@
       /*body.style.backgroundImage = 'url(BP1.png)';*/
       modal.addEventListener('animationend', () => {
         modal.style.display = 'none';
-        body.addEventListener('animationend', () => {
+        body.addEventListener('animationend', (e) => {
+          if (e.animationName === 'bg1') {
           body.style.backgroundColor = 'white';
           body.style.backgroundImage = 'none';
+          }
         })
         body.style.animation = 'bg1 15s 1';
       })

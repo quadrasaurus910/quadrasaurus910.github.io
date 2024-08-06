@@ -48,10 +48,14 @@
       font-size: 20pt;
       color: #06C0E7;
     }
+    #div1b {
+      display: none;
+    }
   </style>
   <body>
     <div id="div1">
       <div id="div1a">test</div>
+      <div id="div1b">test</div>
     </div>
     <!--intro div-->
     <div id="modal" class="modal"></div>
@@ -59,6 +63,9 @@
   <script>
     const modal = document.querySelector('#modal');
     var body = document.body;
+    var div1a = document.querySelector('#div1a');
+    var div1b = document.querySelector('#div1b');
+
     document.addEventListener('DOMContentLoaded', function() {
       body.style.backgroundImage = 'url(BP1.png)';
       modal.addEventListener('animationend', () => {
@@ -66,7 +73,9 @@
         body.addEventListener('animationend', () => {
           /*if (e.animationName === 'bg1') {
           body.style.backgroundColor = 'white';*/
+          div1a.display = 'none';
           body.style.backgroundImage = 'url(Bronze.png)';
+          div1b.display = 'block';
         })
         body.style.animation = 'bg1 15s 1';
       })

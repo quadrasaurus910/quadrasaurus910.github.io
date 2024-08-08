@@ -27,6 +27,14 @@
         background-color: white;
       }
     }
+    @keyframes slideDown {
+      from {
+        height: 0px;
+      }
+      to {
+        height: 100px;
+      }
+    }
     .modal {
       background-color: rgba(0,0,0,1);
       display: block;
@@ -50,6 +58,7 @@
     }
     #div1b {
       display: none;
+      height: 0px;
     }
   </style>
   <body>
@@ -74,6 +83,7 @@
           /*if (e.animationName === 'bg1') {
           body.style.backgroundColor = 'white';*/
           div1a.style.display = 'none';
+          div1b.style.animation = 'slideDown 4s 1';
           body.style.backgroundImage = 'url(Bronze.png)';
           /*div1b.style.display = 'block';*/
         })

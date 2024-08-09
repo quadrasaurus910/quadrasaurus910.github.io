@@ -35,6 +35,16 @@
         height: 100px;
       }
     }
+    @keyframes fall {
+      0% {
+        top: 0px;
+        opacity: 0;
+      }
+      100% {
+        top: 50px;
+        opacity: 1;
+      }
+    }
     .modal {
       background-color: rgba(0,0,0,1);
       display: block;
@@ -50,6 +60,9 @@
       animation-delay: 2s;
       animation-timing-function: ease-in;
     }
+    #div1 {
+      height:200px;
+    }
     #div1a {
       text-align: center;
       margin: 20px 0px 0px 0px;
@@ -58,7 +71,9 @@
     }
     #div1b {
       display: none;
-      height: 0px;
+      height: 200px;
+      opacity: 0;
+      position: relative;
     }
   </style>
   <body>

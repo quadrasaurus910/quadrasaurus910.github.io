@@ -95,7 +95,9 @@
       position: relative;
       animation-delay: 15s;
     }
-    #div1c {
+    #div1c 
+      position: relative;
+      top: 0px;
       opacity: 0;
       text-align: center;
       font-size: 24pt;
@@ -146,6 +148,9 @@
         body.style.animation = 'bg1 15s 1';*/
       })
       /*body.style.animationDelay = '5s';*/
+      body.addEventListener('animantionend', () =>  {
+        body.style.backgroundImage = 'url(Bronze.png)';
+      })
       body.style.animation = 'bg1 10s 1 5s';
     })
   </script>

@@ -70,19 +70,20 @@
       color: #06C0E7;
     }
     #div1b {
+      font-size: 24pt;
       display: none;
       height: 200px;
       opacity: 0;
       position: relative;
-      animation-delay: '15s';
+      animation-delay: 15s;
     }
   </style>
   <body>
     <div id="div1">
       <div id="div1a">test</div>
       <div id="div1b">
-        <p>Happy</p><br>
-        <p>Anniversary</p>
+        <p>Pictures</p><br>
+        <p>Fade</p>
       </div>
     </div>
     <!--intro div-->
@@ -109,7 +110,7 @@
         })
         body.addEventListener('animationend', () => {
           div1b.style.animationDelay = '15s';
-          div1b.style.animation = 'fall 3s 1';
+          div1b.style.animation = 'fall 10s 1';
         })
         body.style.animation = 'bg1 15s 1';
       })

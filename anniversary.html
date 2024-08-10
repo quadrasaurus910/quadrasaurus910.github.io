@@ -45,6 +45,24 @@
         opacity: 1;
       }
     }
+    @keyframes fall2 {
+      0% {
+        opacity: 0;
+        top: 0px;
+      }
+      10% {
+        opacity: 1;
+        top: 15px;
+      }
+      90% {
+        opacity: 1;
+        top: 15px;
+      }
+      100% {
+        opacity: 0;
+        top: 30px;
+      }
+    }
     .modal {
       background-color: rgba(0,0,0,1);
       display: block;
@@ -77,6 +95,14 @@
       position: relative;
       animation-delay: 15s;
     }
+    #div1c {
+      opacity: 0;
+      text-align: center;
+      font-size: 24pt;
+      font-weight: bold;
+      animation-delay: 18s;
+      animation: fall2 10s 1;
+    }
   </style>
   <body>
     <div id="div1">
@@ -84,6 +110,11 @@
       <div id="div1b">
         <p>Pictures</p><br>
         <p>Fade</p>
+      </div>
+      <div id="div1c">
+        <p>Happy</p><br>
+        <p>Anniversary</p><br>
+        <p>Brittany</p>
       </div>
     </div>
     <!--intro div-->

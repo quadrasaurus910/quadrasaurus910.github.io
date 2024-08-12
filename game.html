@@ -4,8 +4,17 @@
     <meta charset="utf-8" />
     <title>Game</title>
   </head>
+  <style>
+    canvas {
+      background: #eee;
+    }
+    button {
+      display: block;
+    }
+  </style>
   <body>
     <canvas id="myCanvas" width="480" height="320"></canvas>
+    <button id="runButton">Start game</button>
   </body>
   <script>
 
@@ -32,5 +41,14 @@
     }
 
     setInterval(draw, 10);
+
+    function startGame() {
+      setInterval(draw, 10);
+    }
+
+    document.getElementById("runButton").addEventListener("click", function () {
+      startGame();
+      this.disabled = true;
+    });
   </script>
 </html>

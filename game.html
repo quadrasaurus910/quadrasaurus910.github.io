@@ -52,6 +52,9 @@
       a = e.clientX
       body.ontouchmove = (e) => {
         b = e.clientX
+        if (a < b) {
+          leftPressed = true;
+        }
       }
     })
 

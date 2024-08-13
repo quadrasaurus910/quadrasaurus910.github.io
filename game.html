@@ -40,18 +40,18 @@
     document.addEventListener("click", keyDownHandler, false);
     document.addEventListener("click", keyUpHandler, false);
 
-    function keyDownHandler(e) {
-      if (e == left) {
+    function keyDownHandler(event) {
+      if (event.target == left) {
         leftPressed = true;
-      } else if (e == right) {
+      } else if (event.target == right) {
         rightPressed = true;
       }
     }
 
-    function keyUpHandler(e) {
-      if (e === left) {
+    function keyUpHandler(event) {
+      if (event.target === left) {
         leftPressed = false;
-      } else if (e === right) {
+      } else if (event.target === right) {
         rightPressed = false;
       }
     }

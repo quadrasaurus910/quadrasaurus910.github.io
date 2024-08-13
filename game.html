@@ -48,6 +48,13 @@
       document.getElementById("demo").innerHTML = x + ", " + y;
     })
 
+    body.addEventListener("touchstart", (e) => {
+      a = e.clientX
+      body.ontouchmove = (e) => {
+        b = e.clientX
+      }
+    })
+
     function keyDownHandler(event) {
       if (event.target == left) {
         leftPressed = true;

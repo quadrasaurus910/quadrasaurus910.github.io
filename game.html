@@ -42,7 +42,7 @@
     let demo = document.querySelector('#demo');
 
     document.addEventListener("click", keyDownHandler, false);
-    document.addEventListener("click", keyUpHandler, false);
+    document.addEventListener("blur", keyUpHandler, false);
     body.addEventListener("touchmove", (event) => {
       var x = event.touches[0].clientX;
       var y = event.touches[0].clientY;
@@ -65,15 +65,15 @@
       if (event.target.innerHTML === "left") {
         demo.innerHTML = 'left';
         leftPressed = true;
-      } else if (event.target == right) {
+      } else if (event.target.setInterval === "right") {
         rightPressed = true;
       }
     }
 
     function keyUpHandler(event) {
-      if (event.target === 'left') {
+      if (event.target.innerHTML === 'left') {
         leftPressed = false;
-      } else if (event.target === right) {
+      } else if (event.target.innerHTML === "right") {
         rightPressed = false;
       }
     }

@@ -63,9 +63,8 @@
 
     function keyDownHandler(event) {
       if (event.target.innerHTML === "left") {
-        demo.innerHTML = 'left';
         leftPressed = true;
-      } else if (event.target.setInterval === "right") {
+      } else if (event.target.innerHTML === "right") {
         rightPressed = true;
       }
     }

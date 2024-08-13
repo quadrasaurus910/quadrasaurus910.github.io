@@ -70,13 +70,13 @@
       }
     }
 
-    function keyUpHandler(event) {
-      if (event.target.innerHTML === 'left') {
+    /*function keyUpHandler(event) {
+      if (event.target === 'left') {
         leftPressed = false;
       } else if (event.target === right) {
         rightPressed = false;
       }
-    }
+    }*/
 
     if (rightPressed) {
       paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);

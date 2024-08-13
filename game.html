@@ -50,10 +50,11 @@
 
     body.addEventListener("touchstart", (e) => {
       a = e.clientX
-      body.ontouchmove = (e) => {
-        b = e.clientX
+      body.ontouchmove = (e2) => {
+        b = e2.clientX
         if (a < b) {
           leftPressed = true;
+          demo.style.color = 'green';
         }
       }
     })

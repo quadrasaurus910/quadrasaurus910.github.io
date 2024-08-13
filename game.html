@@ -39,6 +39,7 @@
     let right = document.getElementById("right");
     let body = document.body;
     let touchX = 0;
+    let demo = document.querySelector('#demo');
 
     document.addEventListener("click", keyDownHandler, false);
     document.addEventListener("click", keyUpHandler, false);
@@ -48,8 +49,9 @@
       document.getElementById("demo").innerHTML = x + ", " + y;
     })
 
-    body.addEventListener("touchstart", (e) => {
+    body.ontouchstart = (e) => {
       a = e.clientX
+      demo.style.color = 'blue';
       body.ontouchmove = (e2) => {
         b = e2.clientX
         if (a < b) {
@@ -57,7 +59,7 @@
           demo.style.color = 'green';
         }
       }
-    })
+    }
 
     function keyDownHandler(event) {
       if (event.target == left) {

@@ -45,6 +45,21 @@
     let body = document.body;
     let touchX = 0;
     let demo = document.querySelector('#demo');
+    var brickRowCount = 5;
+    var brickColumnCount = 3;
+    var brickWidth = 75;
+    var brickHeight = 20;
+    var brickPadding = 10;
+    var brickOffsetTop = 30;
+    var brickOffsetLeft = 30;
+
+    var bricks = [];
+    for(var c=0; c<brickColumnCount; c++) {
+        bricks[c] = [];
+        for(var r=0; r<brickRowCount; r++) {
+            bricks[c][r] = { x: 0, y: 0 };
+        }
+    }
 
     document.addEventListener("pointerdown", keyDownHandler, false);
     document.addEventListener("lostpointercapture", keyUpHandler, false);
@@ -104,8 +119,25 @@
       ctx.closePath();
     }
 
+    function drawBricks() {
+        for(var c=0; c<brickColumnCount; c++) {
+            for(var r=0; r<brickRowCount; r++) {
+                var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBricks();
       drawBall();
       drawPaddle();
 

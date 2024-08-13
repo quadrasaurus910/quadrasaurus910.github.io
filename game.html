@@ -16,8 +16,8 @@
     <canvas id="myCanvas" width="480" height="320"></canvas>
     <button id="runButton">Start game</button>
     <div>
-      <span><button id="left">left</button></span>
-      <span><button id="right">right</button></span>
+      <span><button id="left" name="left">left</button></span>
+      <span><button id="right" name="right">right</button></span>
     </div>
     <p id="demo"></p>
   </body>
@@ -106,6 +106,13 @@
       }
       if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
         dy = -dy;
+      }
+
+      if(rightPressed && paddleX < canvas.width-paddleWidth) {
+          paddleX += 7;
+      }
+      else if(leftPressed && paddleX > 0) {
+          paddleX -= 7;
       }
 
       x += dx;

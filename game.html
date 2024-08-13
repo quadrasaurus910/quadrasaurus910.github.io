@@ -62,7 +62,7 @@
     }
 
     function keyDownHandler(event) {
-      if (event.target == left) {
+      if (event.target.innerHTML === "left") {
         leftPressed = true;
       } else if (event.target == right) {
         rightPressed = true;
@@ -70,7 +70,7 @@
     }
 
     function keyUpHandler(event) {
-      if (event.target === left) {
+      if (event.target.innerHTML === 'left') {
         leftPressed = false;
       } else if (event.target === right) {
         rightPressed = false;

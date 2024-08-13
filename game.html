@@ -19,6 +19,7 @@
       <span><button id="left">left</button></span>
       <span><button id="right">right</button></span>
     </div>
+    <p id="demo"></p>
   </body>
   <script>
 
@@ -36,9 +37,15 @@
     let paddleX = (canvas.width - paddleWidth) / 2;
     let left = document.getElementById("left");
     let right = document.getElementById("right");
+    let body = document.body;
 
     document.addEventListener("click", keyDownHandler, false);
     document.addEventListener("click", keyUpHandler, false);
+    body.addEventListener("touchmove", (event) => {
+      var x = event.touches[0].clientX;
+      var y = event.touches[0].clientY;
+      document.getElementById("demo").innerHTML = x + ", " + y;
+    })
 
     function keyDownHandler(event) {
       if (event.target == left) {

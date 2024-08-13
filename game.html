@@ -5,11 +5,19 @@
     <title>Game</title>
   </head>
   <style>
+    #canvasContainer {
+      text-align: center;
+    }
+
     canvas {
       background: #eee;
       text-align: center;
       margin: 0px 0px 0px 50px;
     }
+    #buttonContainer {
+      text-align: center;
+    }
+    
     #runButton {
       display: block;
       height: 50px;
@@ -24,9 +32,11 @@
     }
   </style>
   <body>
-    <canvas id="myCanvas" width="480" height="420"></canvas>
+    <div id="canvasContainer">
+      <canvas id="myCanvas" width="480" height="420"></canvas>
+    </div>
     <button id="runButton">Start game</button>
-    <div>
+    <div id="buttonContainer">
       <span><button id="left" name="left">left</button></span>
       <span><button id="right" name="right">right</button></span>
     </div>

@@ -41,8 +41,8 @@
     let touchX = 0;
     let demo = document.querySelector('#demo');
 
-    document.addEventListener("click", keyDownHandler, false);
-    document.addEventListener("blur", keyUpHandler, false);
+    document.addEventListener("pointerdown", keyDownHandler, false);
+    document.addEventListener("lostpointercapture", keyUpHandler, false);
     body.addEventListener("touchmove", (event) => {
       var x = event.touches[0].clientX;
       var y = event.touches[0].clientY;

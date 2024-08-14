@@ -74,6 +74,8 @@
     var brickOffsetLeft = 30;
     var score = 0;
     const brickColors = ["#B2E0E7", "#AFD5EA", "#B2C7CD"]
+    var counter = 0;
+    var brickCount = brickRowCount * brickColumnCount;
 
     var bricks = [];
     for(var c=0; c<brickColumnCount; c++) {
@@ -175,6 +177,7 @@
               bricks[c][r].y = brickY;
               ctx.beginPath();
               ctx.rect(brickX, brickY, brickWidth, brickHeight);
+              counter = counter++;
               ctx.fillStyle = brickColors[r];
               ctx.fill();
               ctx.closePath();

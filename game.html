@@ -45,6 +45,7 @@
       <button id="right" name="right">right</button>
     </div>
     <p id="demo"></p>
+    <p id="demo2"></p>
   </body>
   <script>
 
@@ -65,6 +66,7 @@
     let body = document.body;
     let touchX = 0;
     let demo = document.querySelector('#demo');
+    let demo2 = document.querySelector('#demo2');
     var brickRowCount = 5;
     var brickColumnCount = 3;
     var brickWidth = 75;
@@ -190,6 +192,7 @@
               ctx.fill();
               ctx.closePath();
               console.log(counter);
+              demo2.innerHTML = counter;
             }
           }
         }

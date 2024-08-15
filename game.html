@@ -272,7 +272,8 @@
     }
 
     function startGame() {
-      interval = setInterval(draw, 10);
+      /*interval = setInterval(draw, 10);*/
+      draw();
     }
 
     document.getElementById("runButton").addEventListener("click", function () {
@@ -280,8 +281,8 @@
       this.disabled = true;
     });
 
-    /*setInterval(draw, 10);*/
-    draw();
+    /*setInterval(draw, 10);
+    draw();*/
 
   </script>
 </html>

@@ -89,6 +89,8 @@
 
     document.addEventListener("pointerdown", keyDownHandler, false);
     document.addEventListener("lostpointercapture", keyUpHandler, false);
+    document.addEventListener("mousemove", mouseMoveHandler, false);
+
     body.addEventListener("touchmove", (event) => {
       var x = event.touches[0].clientX;
       var y = event.touches[0].clientY;
@@ -99,7 +101,7 @@
         }
     })
 
-    body.ontouchstart = (e) => {
+    /*body.ontouchstart = (e) => {
       a = e.clientX
       demo.style.color = 'blue';
       body.ontouchmove = (e2) => {
@@ -110,7 +112,7 @@
           a = b;
         }
       }
-    }
+    }*/
 
     function keyDownHandler(event) {
       if (event.target.innerHTML === "left") {
@@ -126,6 +128,13 @@
       } else if (event.target.innerHTML === "right") {
         rightPressed = false;
       }
+    }
+
+    function mouseMoveHandler(e) {
+        var relativeX = e.clientX - canvas.offsetLeft;
+        if(relativeX > 0 && relativeX < canvas.width) {
+            paddleX = relativeX - paddleWidth/2;
+        }
     }
 
     function collisionDetection() {

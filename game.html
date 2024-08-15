@@ -75,6 +75,7 @@
     var brickOffsetTop = 30;
     var brickOffsetLeft = 30;
     var score = 0;
+    var lives = 3;
     const brickColors = ["#B2E0E7", "#AFD5EA", "#B2C7CD"]
     var counter = 0;
     var brickCount = brickRowCount * brickColumnCount;
@@ -267,7 +268,7 @@
 
       x += dx;
       y += dy;
-      /*requestAnimationFrame(draw);*/
+      requestAnimationFrame(draw);
     }
 
     function startGame() {
@@ -279,7 +280,8 @@
       this.disabled = true;
     });
 
-    setInterval(draw, 10);
+    /*setInterval(draw, 10);*/
+    draw();
 
   </script>
 </html>

@@ -12,7 +12,7 @@
     canvas {
       background: #eee;
       text-align: center;
-      margin: 0px 0px 0px 50px;
+      margin: 0px 0px 0px 0px;
     }
     #buttonContainer {
       text-align: center;
@@ -214,12 +214,19 @@
         ctx.fillText("Score: "+score, 8, 20);
     }
 
+    function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBricks();
       drawBall();
       drawPaddle();
       drawScore();
+      drawLives();
       collisionDetection();
 
       if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -233,9 +240,21 @@
           dy = -dy;
         } 
         else {
-          alert("GAME OVER");
+          /*alert("GAME OVER");
           document.location.reload();
-          clearInterval(interval);
+          clearInterval(interval);*/
+          lives--;
+                if(!lives) {
+                    alert("GAME OVER");
+                    document.location.reload();
+                }
+                else {
+                    x = canvas.width/2;
+                    y = canvas.height-30;
+                    dx = 2;
+                    dy = -2;
+                    paddleX = (canvas.width-paddleWidth)/2;
+                }
         }
       }
 
@@ -248,15 +267,20 @@
 
       x += dx;
       y += dy;
+      requestAnimationFrame(draw);
     }
 
     function startGame() {
-      interval = setInterval(draw, 10);
+      /*interval = setInterval(draw, 10);*/
+      draw();
     }
 
     document.getElementById("runButton").addEventListener("click", function () {
       startGame();
       this.disabled = true;
     });
+
+    draw();
+
   </script>
 </html>

@@ -171,6 +171,7 @@
 
     function drawBricks() {
         for(var c=0; c<brickColumnCount; c++) {
+          ctx.fillStyle = brickColors[c];
           for(var r=0; r<brickRowCount; r++) {
             if(bricks[c][r].status == 1) {
               var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
@@ -179,7 +180,7 @@
               bricks[c][r].y = brickY;
               ctx.beginPath();
               ctx.rect(brickX, brickY, brickWidth, brickHeight);
-              counter = counter++;
+              /*counter = counter++;
               if (bricks[r] < 5) {
                 ctx.fillStyle = brickColors[0];
               }
@@ -188,7 +189,7 @@
               }
               if ((bricks[r] > 9) && (counter < 15)) {
                 ctx.fillStyle = brickColors[2];
-              }
+              }*/
               ctx.fill();
               ctx.closePath();
               console.log(counter);

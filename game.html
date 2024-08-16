@@ -100,8 +100,8 @@
       var x = event.touches[0].clientX;
       var y = event.touches[0].clientY;
       document.getElementById("demo").innerHTML = x + ", " + y;
-      const relativeX = x - canvas.offsetLeft;
-      if (relativeX > 0 && relativeX < canvas.width) {
+      const relativeX = x - (canvas.offsetLeft + paddleWidth/2);
+      if (relativeX > 0 && relativeX < (canvas.width - paddleWidth/2)) {
             paddleX = relativeX - paddleWidth/2;
         }
     })
@@ -151,11 +151,13 @@
                         dy = -dy;
                         b.status = 0;
                         score++;
+                        level = 1;
                         var bricksHit = level * brickCount;
                         if(score == bricksHit) {
                             /*alert("YOU WIN, CONGRATS!");
                             document.location.reload();*/
                             level++;
+                            drawBricks();
                             draw();
                         }
                     }

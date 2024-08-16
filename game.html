@@ -151,10 +151,12 @@
                         dy = -dy;
                         b.status = 0;
                         score++;
-                        if(score == brickRowCount*brickColumnCount) {
+                        var bricksHit = level * brickCount;
+                        if(score == bricksHit) {
                             /*alert("YOU WIN, CONGRATS!");
                             document.location.reload();*/
-                            drawBricks();
+                            level++;
+                            draw();
                         }
                     }
                 }

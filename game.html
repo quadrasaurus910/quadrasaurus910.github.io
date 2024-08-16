@@ -19,11 +19,12 @@
     }
     
     #runButton {
-      display: block;
+      display: inline-block;
       height: 50px;
       width: 200px;
       background-color: lightskyblue;
       border: 1px solid black;
+      border-radius: 10px;
     }
     #left, #right {
       display:inline-block;
@@ -41,6 +42,8 @@
     </div>
     <div id="buttonContainer">
       <button id="runButton">Start game</button>
+    </div>
+    <div id="buttonContainer">
       <button id="left" name="left">left</button>
       <button id="right" name="right">right</button>
     </div>
@@ -79,6 +82,7 @@
     const brickColors = ["#B2E0E7", "#AFD5EA", "#B2C7CD"]
     var counter = 0;
     var brickCount = brickRowCount * brickColumnCount;
+    var level = 1;
 
     var bricks = [];
     for(var c=0; c<brickColumnCount; c++) {
@@ -148,8 +152,9 @@
                         b.status = 0;
                         score++;
                         if(score == brickRowCount*brickColumnCount) {
-                            alert("YOU WIN, CONGRATS!");
-                            document.location.reload();
+                            /*alert("YOU WIN, CONGRATS!");
+                            document.location.reload();*/
+                            drawBricks();
                         }
                     }
                 }

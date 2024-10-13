@@ -14,7 +14,9 @@
   }
 }
 
-#header {
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  #header {
   box-shadow: 0px 0px 10px 0px;
     box-shadow-color: black;
     height: 50px;
@@ -26,3 +28,4 @@
     max-height: 45px;
     width: 58px;
   }
+}

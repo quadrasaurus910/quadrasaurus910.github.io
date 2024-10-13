@@ -7,5 +7,7 @@
     background-color: white;
     text-align: center;
   }
-  
+  #quadrip {
+    aspect-ratio: 1.29/1;
+    max-height: 90%;
 }

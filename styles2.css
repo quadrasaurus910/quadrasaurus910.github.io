@@ -6,6 +6,7 @@
     height: 50px;
     background-color: white;
     text-align: center;
+    padding-top: 2.5px;
   }
   #quadrip {
     aspect-ratio: 1.29/1;
@@ -29,3 +30,7 @@
     width: 58px;
   }
 }
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {...}
+

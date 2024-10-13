@@ -9,5 +9,6 @@
   }
   #quadrip {
     height: 90%;
+    aspect-ratio: 1/1;
   }
 }

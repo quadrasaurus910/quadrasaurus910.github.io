@@ -15,7 +15,7 @@
         <div id="menu_bar" name="menu_bar">
             <div id="dropdown" name="dropdown">
               <button id="dropdown_btn" name="dropdown_btn">Menu</button>
-              <div id="dropdown-content" name="dropdown-content">
+              <div id="dropdown_content" name="dropdown-content">
                 <a href="/page2.html">page2</a>
                 <a href="/Page3.html">page3</a>
                 <a href="/Page4.html">Palettes</a>
@@ -25,4 +25,18 @@
             </div>
         </div>
     </body>
+    <script>
+        window.onclick = function(event) {
+            if (!event.target.matches('#dropdown_btn')) {
+                var dropdowns = document.getElementsById("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </html>

@@ -32,6 +32,11 @@
     max-height: 45px;
     width: 58px;
   }
+  #menu_bar {
+    height: 30px;
+    border: 0px 0px 1px 0px;
+    border-color: gray;
+  }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */

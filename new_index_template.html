@@ -39,7 +39,7 @@
             }
         }
         window.onclick = function(event) {
-            if (event.target.matches('#dropdown_btn')) {
+            if (!event.target.matches('#dropdown_btn')) {
                 var dropdown = document.getElementsById('#dropdown_content');
                 if (dropdown.classList.contains('show')) {
                     dropdown.classList.remove('show');

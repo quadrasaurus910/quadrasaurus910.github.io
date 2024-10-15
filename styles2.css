@@ -33,6 +33,10 @@
     border: 0px 0px 1px 0px;
     border-color: gray;
   }
+  #dropdown {
+    position: relative;
+    display: inline-block;
+  }
   #dropdown_btn {
     background-color: #A3BDBE;
     color: white;
@@ -45,6 +49,7 @@
     left: 0px;
   }
   #dropdown_content {
+    display: none;
     position: absolute;
     background-color: #F1F1F1;
     min-width: 160px;

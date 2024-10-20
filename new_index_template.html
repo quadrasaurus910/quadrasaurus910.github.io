@@ -47,7 +47,8 @@
             }
         }*/
         window.onclick = function drpdwn(event) {
-            if (!event.target.matches('#dropdown_btn')) {
+            var db = document.getElementById('dropdown_btn');
+            if (!event.target.matches(db)) {
                 document.getElementById('dropdown_btn').style.backgroundColor = "blue";
                 var dropdown = document.getElementsById('dropdown_content');
                 if (dropdown.classList.contains('show')) {

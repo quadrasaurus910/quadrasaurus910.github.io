@@ -68,11 +68,10 @@
         var cl = ddc.classList;
         var ddp = document.getElementById('ddp');
         ddp.innerHTML = cl;
-        document.addEventListener("resize", modal_reize);
-        function modal_resize() {
+        document.addEventListener("resize", function modal_resize() {
             if (screen.width < 600) {
                 document.body.style.backgroundColor = "red";
             }
-        }
+        });
     </script>
 </html>

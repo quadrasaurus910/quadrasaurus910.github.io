@@ -28,6 +28,10 @@
             <h3>Parameters</h3>
             dropdown class: <p id="ddp"></p>
         </div>
+        <!--Modal for dropdown on phone screenwidth.-->
+        <div id="modal" class="modal">
+            <div id="modal_btn"></div>
+        </div>
     </body>
     <script>
         function myFunction() {
@@ -64,5 +68,9 @@
         var cl = ddc.classList;
         var ddp = document.getElementById('ddp');
         ddp.innerHTML = cl;
+
+        if (screen.width < 600) {
+            document.body.style.backgroundColor = "red";
+        }
     </script>
 </html>

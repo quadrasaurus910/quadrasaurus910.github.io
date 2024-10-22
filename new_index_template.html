@@ -30,7 +30,7 @@
         </div>
         <!--Modal for dropdown on phone screenwidth.-->
         <div id="modal" class="modal">
-            <div id="modal_btn"></div>
+            <div id="modal_btn"><span class="material-symbols-outlined">close</span></div>
         </div>
     </body>
     <script>
@@ -74,5 +74,9 @@
                 document.body.style.backgroundColor = "red";
             }
         });
+
+        document.getElementById('modal_btn').onclick = () => {
+            document.getElementById('modal').style.display = 'none';
+        }
     </script>
 </html>

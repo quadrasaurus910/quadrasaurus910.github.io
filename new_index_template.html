@@ -70,11 +70,11 @@
         var ddp = document.getElementById('ddp');
         var sp = document.getElementById('sp');
         ddp.innerHTML = cl;
-        sp.innerHTML = window.screen.width;
+        sp.innerHTML = window.innerWidth;
         ddb = document.getElementById('dropdown_btn');
         modal = document.getElementById('modal');
         ddb.addEventListener('click', function modal_resize() {
-            if (window.screen.width < 600) {
+            if (window.innerWidth < 600) {
                 document.body.style.backgroundColor = "red";
             }
         });

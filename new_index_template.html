@@ -27,6 +27,7 @@
         <div>
             <h3>Parameters</h3>
             dropdown class: <p id="ddp"></p>
+            screen width: <p id="sp"></p>
         </div>
         <!--Modal for dropdown on phone screenwidth.-->
         <div id="modal" class="modal">
@@ -67,12 +68,14 @@
         var ddc = document.getElementById('dropdown_content');
         var cl = ddc.classList;
         var ddp = document.getElementById('ddp');
+        var sp = document.getElementById('sp');
         ddp.innerHTML = cl;
         ddb = document.getElementById('dropdown_btn');
         modal = document.getElementById('modal');
         ddb.addEventListener('click', function modal_resize() {
-            if (window.width < 600) {
+            if (Screen.width < 600) {
                 document.body.style.backgroundColor = "red";
+                sp.innerHTML = Screen.width;
             }
         });
 

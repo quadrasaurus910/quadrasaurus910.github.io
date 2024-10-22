@@ -70,13 +70,12 @@
         var ddp = document.getElementById('ddp');
         var sp = document.getElementById('sp');
         ddp.innerHTML = cl;
-        sp.innerHTML = Screen.width;
+        sp.innerHTML = window.screen.width;
         ddb = document.getElementById('dropdown_btn');
         modal = document.getElementById('modal');
         ddb.addEventListener('click', function modal_resize() {
-            if (Screen.width < 600) {
+            if (window.screen.width < 600) {
                 document.body.style.backgroundColor = "red";
-                sp.innerHTML = Screen.width;
             }
         });
 

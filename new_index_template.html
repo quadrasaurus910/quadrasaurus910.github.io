@@ -69,7 +69,8 @@
         var ddp = document.getElementById('ddp');
         ddp.innerHTML = cl;
         ddb = document.getElementById('dropdown_btn');
-        document.addEventListener('click', function modal_resize() {
+        modal = document.getElementById('modal');
+        ddb.addEventListener('click', function modal_resize() {
             if (screen.width > 600) {
                 document.body.style.backgroundColor = "red";
             }

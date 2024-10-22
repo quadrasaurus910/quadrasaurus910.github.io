@@ -71,7 +71,7 @@
         ddb = document.getElementById('dropdown_btn');
         modal = document.getElementById('modal');
         ddb.addEventListener('click', function modal_resize() {
-            if (screen.width > 600) {
+            if (window.width < 600) {
                 document.body.style.backgroundColor = "red";
             }
         });

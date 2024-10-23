@@ -109,6 +109,9 @@
   .modal_icon {
     font-size: 200px;
   }
+  #modal_title {
+    font-size: 24pt;
+  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */

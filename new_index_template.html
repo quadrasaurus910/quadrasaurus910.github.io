@@ -89,6 +89,7 @@
         modal = document.getElementById('modal');
         ddb.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {
+                modal.style.animation = 'slide_right 0.6s 1';
                 modal.style.display = "block";
             }
         });

@@ -101,6 +101,8 @@
   }
   #modal_btn {
     float: right;
+    right: 95%;
+    top: 5%;
   }
 }
 
@@ -149,6 +151,9 @@
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
   #menu_bar {
+    display: none;
+  }
+  .modal {
     display: none;
   }
 }

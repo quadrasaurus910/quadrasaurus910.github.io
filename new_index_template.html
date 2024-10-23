@@ -96,7 +96,9 @@
         document.getElementById('modal_btn').onclick = () => {
             document.getElementById('modal').style.animation = 'slide_left 0.5s 1';
             modal.addEventListener("animationend", () => {
-                document.getElementById('modal').style.display = 'none';
+                if (modal.style.animationName === 'slide_left') {
+                    document.getElementById('modal').style.display = 'none';
+                }
             });
         }
     </script>

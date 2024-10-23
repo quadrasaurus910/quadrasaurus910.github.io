@@ -86,7 +86,7 @@
   }
   .modal {
     background-color: azure;
-    border: 3px 0px 0px 0px grey;
+    border: 3px 0px 0px 0px solid grey;
     display: none;
     text-align:  center;
     position: fixed;

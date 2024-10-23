@@ -31,7 +31,8 @@
         </div>
         <!--Modal for dropdown on phone screenwidth.-->
         <div id="modal" class="modal">
-            <div id="modal_btn"><span class="material-symbols-outlined">close</span></div>
+            <div id="modal_title">Menu</div>
+            <div id="modal_btn"><i class="bi bi-x-lg"></i></div>
         </div>
     </body>
     <script>
@@ -80,6 +81,7 @@
         });
 
         document.getElementById('modal_btn').onclick = () => {
+            modal.style.animation = 'slide_left 0.5s 1';
             document.getElementById('modal').style.display = 'none';
         }
     </script>

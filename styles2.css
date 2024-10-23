@@ -86,7 +86,9 @@
   }
   .modal {
     background-color: azure;
-    border: 3px 0px 0px 0px solid grey;
+    border-width: 10px 0px 0px 0px;
+    border-style: solid;
+    border-color: grey;
     display: none;
     text-align:  center;
     position: fixed;
@@ -101,8 +103,11 @@
   }
   #modal_btn {
     float: right;
-    right: 95%;
+    margin-right: 15px;
     top: 5%;
+  }
+  .modal_icon {
+    font-size: 200px;
   }
 }
 

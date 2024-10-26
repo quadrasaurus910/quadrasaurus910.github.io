@@ -47,6 +47,7 @@
     float: left;
     color: darkgray;
     margin: 10px 0px 0px 10px;
+    position: absolute;
   }
   #quadrip {
     aspect-ratio: 1.29/1;
@@ -107,6 +108,7 @@
     animation-duration: 0.6s;
   }
   #modal_btn {
+    position: absolute;
     float: right;
     margin: 15px 15px 0px 0px;
   }
@@ -118,7 +120,9 @@
   }
 }
 #header_btn:active,
-#modal_btn:active {
+#modal_btn:active,
+#header_btn,
+#modal_btn:focus {
   box-shadow: 0px 5px 5px 0px;
   background-color: blue;
 }

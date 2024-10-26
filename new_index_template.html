@@ -100,11 +100,13 @@
         sp.innerHTML = window.innerWidth;
         ddb = document.getElementById('dropdown_btn');
         modal = document.getElementById('modal');
+        modal_links = document.getElementsByClassName('modal_link');
         header_btn.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {
                 header_btn.style.display ='none';
                 modal.style.animation = 'slide_right 0.6s 1';
                 modal.style.display = "block";
+                modal_links.style.display = 'block';
             }
         });
 
@@ -114,6 +116,7 @@
                 if (modal.style.animationName === 'slide_left') {
                     header_btn.style.display = 'none';
                     document.getElementById('modal').style.display = 'inline';
+                    modal_links.style.display = 'none';
                 }
             });
         }

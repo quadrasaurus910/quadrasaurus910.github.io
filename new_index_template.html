@@ -53,6 +53,11 @@
                     </svg>
                 </span>
             </div>
+            <div class="modal_link"><a href="/page2.html">page2</a></div>
+            <div class="modal_link"><a href="/Page3.html">page3</a></div>
+            <div class="modal_link"><a href="/Page4.html">Palettes</a></div>
+            <div class="modal_link"><a href="/Europa.html">Europa</a></div>
+            <div class="modal_link"><a href="/game.html">Game</a></div>
         </div>
     </body>
     <script>
@@ -95,7 +100,7 @@
         sp.innerHTML = window.innerWidth;
         ddb = document.getElementById('dropdown_btn');
         modal = document.getElementById('modal');
-        ddb.addEventListener('click', function modal_show() {
+        header_btn.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {
                 header_btn.style.display ='none';
                 modal.style.animation = 'slide_right 0.6s 1';
@@ -108,7 +113,7 @@
             modal.addEventListener("animationend", () => {
                 if (modal.style.animationName === 'slide_left') {
                     header_btn.style.display = 'none';
-                    document.getElementById('modal').style.display = 'none';
+                    document.getElementById('modal').style.display = 'inline';
                 }
             });
         }

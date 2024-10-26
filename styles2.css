@@ -44,8 +44,9 @@
     padding-top: 2.5px;
   }
   #header_btn {
-    float: right;
-    color: grey
+    float: left;
+    color: darkgray;
+    margin: 10px 0px 0px 10px;
   }
   #quadrip {
     aspect-ratio: 1.29/1;
@@ -107,8 +108,7 @@
   }
   #modal_btn {
     float: right;
-    margin-right: 15px;
-    top: 50%;
+    margin: 15px 15px 0px 0px;
   }
   .modal_icon {
     font-size: 200px;

@@ -110,7 +110,7 @@
   }
   #modal_btn {
     position: absolute;
-    float: right;
+    right: 15px;
     margin: 15px 15px 0px 0px;
   }
   .modal_icon {

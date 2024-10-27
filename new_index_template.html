@@ -114,11 +114,15 @@
             document.getElementById('modal').style.animation = 'slide_left 0.5s 1';
             modal.addEventListener("animationend", () => {
                 if (modal.style.animationName === 'slide_left') {
-                    header_btn.style.display = 'none';
-                    document.getElementById('modal').style.display = 'inline';
+                    header_btn.style.display = 'inline';
+                    document.getElementById('modal').style.display = 'none';
                     modal_links.style.display = 'none';
                 }
             });
         }
+
+        modal_links.addEventListener('click', function modal_hide() {
+            modal.style.display = 'none';
+        });
     </script>
 </html>

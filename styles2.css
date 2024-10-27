@@ -120,10 +120,8 @@
     font-size: 24pt;
   }
 }
-#header_btn:active,
-#modal_btn:active,
-#header_btn:focus,
-#modal_btn:focus {
+#header_btn:hover,
+#modal_btn:hover {
   box-shadow: 0px 5px 5px 0px;
   background-color: blue;
 }

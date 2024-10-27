@@ -53,7 +53,7 @@
                     </svg>
                 </span>
             </div>
-            <div class="modal_link"><a href="/page2.html">page2</a></div>
+            <div class="modal_link"><a href="/page2.html" style="background-color: blue;">page2</a></div>
             <div class="modal_link"><a href="/Page3.html">page3</a></div>
             <div class="modal_link"><a href="/Page4.html">Palettes</a></div>
             <div class="modal_link"><a href="/Europa.html">Europa</a></div>
@@ -122,8 +122,8 @@
         }
 
         modal_links.addEventListener('click', function modal_hide() {
-            modal_links.onclick = () => {
-                modal.style.display = 'none';
+            document.getElementsByClassName('modal_link').onclick = () => {
+                document.getElementsById('modal').style.display = 'none';
                 this.style.backgroundColor = 'blue';
             }
         });

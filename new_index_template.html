@@ -104,14 +104,14 @@
         header_btn.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {
                 header_btn.style.display ='none';
-                modal.style.animation = 'slide_right 0.6s 1';
+                modal.style.animation = 'slide_right 0.3s 1';
                 modal.style.display = "block";
                 modal_links.style.display = 'block';
             }
         });
 
         document.getElementById('modal_btn').onclick = () => {
-            document.getElementById('modal').style.animation = 'slide_left 0.5s 1';
+            document.getElementById('modal').style.animation = 'slide_left 0.3s 1';
             modal.addEventListener("animationend", () => {
                 if (modal.style.animationName === 'slide_left') {
                     header_btn.style.display = 'inline';
@@ -123,6 +123,7 @@
 
         document.addEventListener('visabilitychange', function modal_hide() {
             document.getElementById('modal').style.display = 'none';
+            document.querySelector('header_btn').style.display = 'inline';
         });
     </script>
 </html>

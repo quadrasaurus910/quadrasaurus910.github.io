@@ -121,9 +121,11 @@
             });
         }
 
-        modal_links.onclick = () => {
-            modal.style.display = 'none';
-            this.style.backgroundColor = 'blue';
-        }
+        modal_links.addEventListener('click', function modal_hide() {
+            modal_links.onclick = () => {
+                modal.style.display = 'none';
+                this.style.backgroundColor = 'blue';
+            }
+        });
     </script>
 </html>

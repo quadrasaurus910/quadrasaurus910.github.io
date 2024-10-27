@@ -108,6 +108,10 @@
     animation-name: slide_right;
     animation-duration: 0.6s;
   }
+  .modal a {
+    color: black;
+    text-decoration: none;
+  }
   #modal_btn {
     position: absolute;
     right: 15px;

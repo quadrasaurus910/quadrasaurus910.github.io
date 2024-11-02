@@ -112,8 +112,10 @@
         modal_links = document.getElementsByClassName('modal_link');
         header_btn.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {
-                hamburger.style.display ='none';
-                close_icon.style.display = 'inline';
+                hamburger.classList.remove('showInline');
+                hamburger.classList.add('hide');
+                close_icon.classList.remove('hide');
+                close_icon.classList.add('showInline');
                 modal.style.animation = 'slide_right 0.3s 1';
                 modal.style.display = "block";
                 modal_links.style.display = 'block';

@@ -44,10 +44,10 @@
     padding-top: 2.5px;
   }
   #header_btn {
-    left: 0px;
+    right: 0px;
     top: 0px;
     color: darkgray;
-    margin: 10px 0px 0px 10px;
+    margin: 10px 10px 0px 10px;
     position: absolute;
   }
   #quadrip {
@@ -83,13 +83,14 @@
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
   }
-  .show {
+  .showBlock {
     display: block;
-    animation: show 1s 1;
+  }
+  .showInline {
+    display: inline;
   }
   .hide {
     display: none;
-    animation: hide 1s 1;
   }
   .modal {
     background-color: azure;

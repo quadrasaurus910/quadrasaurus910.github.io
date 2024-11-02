@@ -111,6 +111,7 @@
             }
         }
         header_btn = document.getElementById('header_btn');
+        header_btn_icon = document.getElementById('header_btn_icon');
         var hamburger = document.getElementById('hamburger');
         var close_icon = document.getElementById('close_icon');
         var hamId = document.getElementById('hamId');
@@ -131,6 +132,7 @@
                 hamburger.classList.add('hide');
                 close_icon.classList.remove('hide');
                 close_icon.classList.add('showInline');*/
+                header_btn_icon.innerHTML = 'close';
                 modal.style.animation = 'slide_right 0.3s 1';
                 modal.style.display = "block";
                 modal_links.style.display = 'block';

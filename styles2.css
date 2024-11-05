@@ -77,6 +77,12 @@
     color: darkgray;
     position: absolute;
   }
+  #hamburger {
+    display: inline;
+  }
+  #close_icon {
+    display: none;
+  }
   /*#header_btn_icon {
     size: 36px;
     margin: 10px 10px 0px 0px;

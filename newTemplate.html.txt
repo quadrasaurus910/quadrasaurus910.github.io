@@ -1,0 +1,456 @@
+<html>
+
+    <head>
+        <title>QUAdrip</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <!--google icon link-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu" />-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=close" />
+        <!--css file link-->
+        <style>
+            @media only screen and (max-width: 600px) {
+                @keyframes show {
+                    0% {
+                        height: 0%;
+                    }
+
+                    100% {
+                        height: 100%;
+                    }
+                }
+
+                @keyframes hide {
+                    0% {
+                        height: 100%;
+                    }
+
+                    100% {
+                        height: 0%;
+                    }
+                }
+
+                @keyframes slide_right {
+                    0% {
+                        width: 0%;
+                        right: 0%;
+                    }
+
+                    100% {
+                        width: 100%;
+                        right: 100%;
+                    }
+                }
+
+                @keyframes slide_left {
+                    0% {
+                        width: 100%;
+                        right: 100%;
+                    }
+
+                    100% {
+                        width: 0%;
+                        right: 0%;
+                    }
+                }
+
+                @keyframes modal_show {
+                    0% {
+                        height: 0px;
+                        width: 0px;
+                        right: 0px;
+                        left: 100%;
+                        top: 50px;
+                    }
+                    100% {
+                        height: 100%;
+                        width: 100%;
+                        left: 0;
+                    }
+                }
+                @keyframes modal_hide {
+                    0% {
+                        height: 100%;
+                        width:100%;
+                        left: 0%;
+                    }
+                    100% {
+                        height: 0%;
+                        width: 0%;
+                        left: 100%;
+                    }
+                }
+
+                #header {
+                    box-shadow: 0px 0px 10px 0px grey;
+                    height: 50px;
+                    background-color: white;
+                    text-align: center;
+                    padding-top: 2.5px;
+                }
+
+                #headTest {
+                    position: absolute;
+                    margin: 10px 0px 0px 10px;
+                    left: 0px;
+                    top: 0px;
+                }
+
+                #header_btn {
+                    right: 0px;
+                    top: 0px;
+                    height: 50px;
+                    width: 50px;
+                    color: darkgray;
+                    position: absolute;
+                }
+
+                #hamburger {
+                    display: inline;
+                }
+
+                #close_icon {
+                    display: none;
+                }
+
+                #quadrip {
+                    aspect-ratio: 1.29/1;
+                    max-height: 45px;
+                    width: 58px;
+                }
+
+                #menu_bar {
+                    position: relative;
+                    height: 30px;
+                    border: 0px 0px 1px 0px;
+                    border-color: gray;
+                }
+
+                #dropdown {
+                    position: relative;
+                    display: inline-block;
+                }
+
+                #dropdown_btn {
+                    background-color: #A3BDBE;
+                    color: white;
+                    padding: 16px;
+                    /*float: left;*/
+                    font-size: 16px;
+                    border: none;
+                    cursor: pointer;
+                    position: relative;
+                    left: 0px;
+                }
+
+                #dropdown_content {
+                    display: none;
+                    position: absolute;
+                    background-color: #F1F1F1;
+                    min-width: 160px;
+                    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                    z-index: 1;
+                }
+
+                .show {
+                    display: block;
+                    animation: show 1s 1;
+                }
+
+                .hide {
+                    display: none;
+                    animation: hide 1s 1;
+                }
+
+                .modal {
+                    background-color: #B0E5EB;
+                    border-width: 5px 0px 0px 0px;
+                    border-style: solid;
+                    border-color: grey;
+                    display: none;
+                    text-align: center;
+                    position: absolute;
+                    z-index: 1;
+                    right: 0;
+                    top: 50px;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    animation-name: modal_show;
+                    animation-duration: 0.6s;
+                    float: right;
+                }
+
+                .modal a {
+                    color: black;
+                    text-decoration: none;
+                }
+
+                #modal_btn {
+                    position: absolute;
+                    right: 15px;
+                    margin: 15px 15px 0px 0px;
+                }
+
+                .modal_icon {
+                    font-size: 200px;
+                }
+
+                #modal_title {
+                    font-size: 24pt;
+                }
+
+
+                #header_btn:hover,
+                #modal_btn:hover {
+                    background-color: #B0E5EB;
+                }
+
+                .modal_link {
+                    padding: 10px 0px 10px 0px;
+                }
+
+                #modal_a {
+                    color: black;
+                    font-size: 20pt;
+                    text-decoration: none;
+                }
+            }
+
+            /* Small devices (portrait tablets and large phones, 600px and up) */
+            @media only screen and (min-width: 600px) {
+                #header {
+                    box-shadow: 0px 0px 10px 0px grey;
+                    height: 50px;
+                    background-color: white;
+                    text-align: center;
+                }
+
+                #quadrip {
+                    aspect-ratio: 1.29/1;
+                    max-height: 45px;
+                    width: 58px;
+                }
+
+                #menu_bar {
+                    height: 30px;
+                    border: 0px 0px 1px 0px;
+                    border-color: gray;
+                }
+
+                #dropdown_btn {
+                    background-color: #A3BDBE;
+                    color: white;
+                    padding: 16px;
+                    /*float: left;*/
+                    font-size: 16px;
+                    border: none;
+                    cursor: pointer;
+                    position: relative;
+                    left: 0px;
+                }
+
+                #dropdown_content {
+                    display: none;
+                    position: absolute;
+                    background-color: #F1F1F1;
+                    min-width: 160px;
+                    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                    z-index: 1;
+                }
+
+                .show {
+                    display: block;
+                }
+            }
+
+            /* Medium devices (landscape tablets, 768px and up) */
+            @media only screen and (min-width: 768px) {
+                #menu_bar {
+                    display: none;
+                }
+
+                .modal {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="header" name="header">
+            <span id="headTest"></span>
+            <span id="header_btn">
+                <span id="hamburger">
+                    <svg id="hamburgerSvg" xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                    </svg>
+                </span>
+                <span id="close_icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
+                </span>
+            </span>
+            <img id="quadrip" src="/Dripdrop1.jpeg" alt="quadrip" width="300px">
+        </div>
+        <div id="menu_bar" name="menu_bar">
+            <div id="dropdown" name="dropdown">
+                <button id="dropdown_btn" name="dropdown_btn" onclick="myFunction()">Menu</button>
+                <div class="dropdown_content show" id="dropdown_content" name="dropdown_content">
+                    <a href="/page2.html">page2</a>
+                    <a href="/Page3.html">page3</a>
+                    <a href="/Page4.html">Palettes</a>
+                    <a href="/Europa.html">Europa</a>
+                    <a href="/game.html">Game</a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h3>Parameters</h3>
+            dropdown class: <p id="ddp"></p>
+            screen width: <p id="sp"></p>
+            header btn: <span id="headerId"></span>
+            <br>
+            hamburger: <span id="hamId"></span>
+            <br>
+            modal: <span id="modalId"></span>
+            <br>
+            google menu symbol: <span class="material-symbols-outlined">menu</span>
+            <br>
+            google close symbol: <span class="material-symbols-outlined">close</span>
+            <br>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+            </svg>
+        </div>
+        <!--Modal for dropdown on phone screenwidth.-->
+        <div id="modal" class="modal">
+            <div id="modal_header">
+                <span id="modal_title">Menu</span>
+                <!--<span id="modal_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-x-square modal_icon" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                    </svg>
+                </span>-->
+            </div>
+            <div class="modal_link"><a id="modal_a" href="/page2.html">page2</a></div>
+            <div class="modal_link"><a href="/Page3.html">page3</a></div>
+            <div class="modal_link"><a href="/Page4.html">Palettes</a></div>
+            <div class="modal_link"><a href="/Europa.html">Europa</a></div>
+            <div class="modal_link"><a href="/game.html">Game</a></div>
+        </div>
+    </body>
+    <script>
+        function myFunction() {
+            document.getElementById("dropdown_content").classList.toggle("show");
+        }
+
+        /*window.onclick = function(event) {
+            if (!event.target.matches('#dropdown_btn')) {
+                var dropdowns = document.getElementsById("dropdown_content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }*/
+        window.onclick = function drpdwn(event) {
+            var db = document.getElementById('dropdown_btn');
+            if (!event.target.matches(db)) {
+                document.getElementById('dropdown_btn').style.backgroundColor = "blue";
+                var dropdown = document.getElementsById('dropdown_content');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                    dropdown.classList.add('hide');
+                } else {
+                    dropdown.classList.remove('hide');
+                    dropdown.classList.add('show');
+                }
+            }
+        }
+        var headTest = document.querySelector('#headTest');
+        var header_btn = document.getElementById('header_btn');
+        var ddc = document.getElementById('dropdown_content');
+        var cl = ddc.classList;
+        var ddp = document.getElementById('ddp');
+        var sp = document.getElementById('sp');
+        var headerBtn = document.querySelector('#header_btn');
+        var hamburger = document.querySelector('#hamburger');
+        var hamburgerSvg = document.querySelector('#hamburgerSvg');
+        var closeIcon = document.querySelector('#close_icon');
+        var headerId = document.querySelector('#headerId');
+        var hamId = document.querySelector('#hamId');
+        var modalId = document.querySelector('#modalId');
+        const compStyles = window.getComputedStyle(headerBtn);
+        const hamStyles = window.getComputedStyle(hamburger);
+        headerId.innerHTML = compStyles.getPropertyValue('display');
+        hamId.innerHTML = hamStyles.getPropertyValue('display');
+        ddp.innerHTML = cl;
+        sp.innerHTML = window.innerWidth;
+        ddb = document.getElementById('dropdown_btn');
+        var modal = document.getElementById('modal');
+        var modalStyles = window.getComputedStyle(modal);
+        modalId.innerHTML = modalStyles.getPropertyValue('display');
+        /*var modal_links = document.getElementsByClassName('modal_link');*/
+
+        header_btn.addEventListener('click', function modal_show() {
+            if (window.innerWidth < 600) {
+                /*header_btn.style.display = 'none';*/
+                if (modalStyles.getPropertyValue('display') === 'none') {
+                    modal.style.animation = 'modal_show 0.3s 1';
+                    modal.style.display = "block";
+                    /*modal_links.style.display = 'block';*/
+                    hamburger.style.display = 'none';
+                    closeIcon.style.display = 'inline';
+                }
+                else if (modalStyles.getPropertyValue('display') === 'block') {
+                    document.getElementById('modal').style.animation = 'modal_hide 0.3s 1';
+                    modal.addEventListener("animationend", () => {
+                        if (modal.style.animationName === 'modal_hide') {
+                            header_btn.style.display = 'inline';
+                           document.getElementById('modal').style.display = 'none';
+                           /*modal_links.style.display = 'none';*/
+                        }
+                    });
+                    closeIcon.style.display = 'none';
+                    hamburger.style.display = 'inline';
+                }
+                /*modal.style.animation = 'slide_right 0.3s 1';
+                modal.style.display = "block";
+                modal_links.style.display = 'block';
+                headTest.innerHTML = 'TEST';
+                modalStyles = window.getComputedStyle(modal);
+                headTest.innerHTML = 'test';modalStyles.getPropertyValue('display');*/
+            }
+        });
+
+        /*document.getElementById('modal_btn').onclick = () => {
+            document.getElementById('modal').style.animation = 'slide_left 0.3s 1';
+            modal.addEventListener("animationend", () => {
+                if (modal.style.animationName === 'slide_left') {
+                    header_btn.style.display = 'inline';
+                    document.getElementById('modal').style.display = 'none';
+                    modal_links.style.display = 'none';
+                }
+            });
+        }*/
+
+        document.addEventListener('visibilitychange', function() {
+            document.querySelector('#modal').style.display = 'none';
+            document.querySelector('#header_btn').style.display = 'inline';
+            closeIcon.style.display = 'none';
+            hamburger.style.display = 'inline';
+        })
+    </script>
+
+</html>

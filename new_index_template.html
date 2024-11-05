@@ -128,7 +128,7 @@
         modal_id.innerHTML = modalStyles.getPropertyValue('display');
         /*modal_links = document.getElementsByClassName('modal_link');*/
 
-        header_btn.addEventListener('click', function modal_show() {
+        header_btn.addEventListener('click', function modalShow() {
             if (window.innerWidth < 600) {
                 if (modalStyles.getPropertyValue('display') === 'none') {
                     modal.style.animation = 'modal_show 0.3s 1';

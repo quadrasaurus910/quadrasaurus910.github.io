@@ -128,12 +128,12 @@
         modal_id.innerHTML = modalStyles.getPropertyValue('display');
         /*modal_links = document.getElementsByClassName('modal_link');*/
 
-        header_btn.addEventListener('click', function modalShow() {
+        /*header_btn.addEventListener('click', function modalShow() {
             if (window.innerWidth < 600) {
                 if (modalStyles.getPropertyValue('display') === 'none') {
                     modal.style.animation = 'modal_show 0.3s 1';
                     modal.style.display = "block";
-                    /*modal_links.style.display = 'block';*/
+                    modal_links.style.display = 'block';
                     hamburger.style.display = 'none';
                     closeIcon.style.display = 'inline';
                 }
@@ -143,22 +143,22 @@
                         if (modal.style.animationName === 'modal_hide') {
                             header_btn.style.display = 'inline';
                            document.getElementById('modal').style.display = 'none';
-                           /*modal_links.style.display = 'none';*/
+                           modal_links.style.display = 'none';
                         }
                     });
                     closeIcon.style.display = 'none';
                     hamburger.style.display = 'inline';
                 }
-                /*hamburger.classList.remove('showInline');
+                hamburger.classList.remove('showInline');
                 hamburger.classList.add('hide');
                 close_icon.classList.remove('hide');
                 close_icon.classList.add('showInline');
                 header_btn_icon.innerHTML = 'close';
                 modal.style.animation = 'slide_right 0.3s 1';
                 modal.style.display = "block";
-                modal_links.style.display = 'block';*/
+                modal_links.style.display = 'block';
             }
-        });
+        });*/
 
         /*document.getElementById('modal_btn').onclick = () => {
             document.getElementById('modal').style.animation = 'slide_left 0.3s 1';

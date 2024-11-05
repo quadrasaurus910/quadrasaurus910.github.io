@@ -15,20 +15,20 @@
     </head>
     <body>
         <div id="header" name="header">
+            <img id="quadrip" src="/Dripdrop1.jpeg" alt="quadrip" width="300px">
             <span id="header_btn">
-                <i class="material-icons" id="heard_btn_icon">menu</i>
-                <!--<span class="showInline" id="hambuger" name="hamburger">
+                <!--<i class="material-icons" id="heard_btn_icon">menu</i>-->
+                <span id="hambuger" name="hamburger">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                     </svg>
                 </span>
-                <span class="hide" id="close_icon">
+                <span id="close_icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
                         <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                     </svg>
-                </span>-->
+                </span>
             </span>
-            <img id="quadrip" src="/Dripdrop1.jpeg" alt="quadrip" width="300px">
         </div>
         <div id="menu_bar" name="menu_bar">
             <div id="dropdown" name="dropdown">
@@ -80,11 +80,11 @@
         </div>
     </body>
     <script>
-        function myFunction() {
+        /*function myFunction() {
             document.getElementById("dropdown_content").classList.toggle("show");
         }
 
-        /*window.onclick = function(event) {
+        window.onclick = function(event) {
             if (!event.target.matches('#dropdown_btn')) {
                 var dropdowns = document.getElementsById("dropdown_content");
                 var i;
@@ -95,7 +95,7 @@
                     }
                 }
             }
-        }*/
+        }
         window.onclick = function drpdwn(event) {
             var db = document.getElementById('dropdown_btn');
             if (!event.target.matches(db)) {
@@ -109,10 +109,11 @@
                     dropdown.classList.add('show');
                 }
             }
-        }
-        header_btn = document.getElementById('header_btn');
+        }*/
+        var header_btn = document.getElementById('header_btn');
         header_btn_icon = document.getElementById('header_btn_icon');
         var hamburger = document.getElementById('hamburger');
+        const hamStyles = window.getComputedStyle(hamburger);
         var close_icon = document.getElementById('close_icon');
         var hamId = document.getElementById('hamId');
         /*let hamClasses = hamburger.classList;*/
@@ -124,22 +125,43 @@
         sp.innerHTML = window.innerWidth;
         /*hamId.innerHTML = hamClasses;*/
         ddb = document.getElementById('dropdown_btn');
-        modal = document.getElementById('modal');
-        modal_links = document.getElementsByClassName('modal_link');
+        var modal = document.getElementById('modal');
+        var modalStyles = window.getComputedStyle(modal);
+        /*modal_links = document.getElementsByClassName('modal_link');*/
+
         header_btn.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {
+                if (modalStyles.getPropertyValue('display') === 'none') {
+                    modal.style.animation = 'modal_show 0.3s 1';
+                    modal.style.display = "block";
+                    /*modal_links.style.display = 'block';*/
+                    hamburger.style.display = 'none';
+                    closeIcon.style.display = 'inline';
+                }
+                else if (modalStyles.getPropertyValue('display') === 'block') {
+                    document.getElementById('modal').style.animation = 'modal_hide 0.3s 1';
+                    modal.addEventListener("animationend", () => {
+                        if (modal.style.animationName === 'modal_hide') {
+                            header_btn.style.display = 'inline';
+                           document.getElementById('modal').style.display = 'none';
+                           /*modal_links.style.display = 'none';*/
+                        }
+                    });
+                    closeIcon.style.display = 'none';
+                    hamburger.style.display = 'inline';
+                }
                 /*hamburger.classList.remove('showInline');
                 hamburger.classList.add('hide');
                 close_icon.classList.remove('hide');
-                close_icon.classList.add('showInline');*/
+                close_icon.classList.add('showInline');
                 header_btn_icon.innerHTML = 'close';
                 modal.style.animation = 'slide_right 0.3s 1';
                 modal.style.display = "block";
-                modal_links.style.display = 'block';
+                modal_links.style.display = 'block';*/
             }
         });
 
-        document.getElementById('modal_btn').onclick = () => {
+        /*document.getElementById('modal_btn').onclick = () => {
             document.getElementById('modal').style.animation = 'slide_left 0.3s 1';
             modal.addEventListener("animationend", () => {
                 if (modal.style.animationName === 'slide_left') {
@@ -148,11 +170,13 @@
                     modal_links.style.display = 'none';
                 }
             });
-        }
+        }*/
 
         document.addEventListener('visibilitychange', function() {
             document.querySelector('#modal').style.display = 'none';
             document.querySelector('#header_btn').style.display = 'inline';
+            closeIcon.style.display = 'none';
+            hamburger.style.display = 'inline';
         })
     </script>
 </html>

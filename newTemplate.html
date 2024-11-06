@@ -406,7 +406,7 @@
         function widthEvent() {
             sp.innerHTML = window.innerWidth;
         }
-        window.resize = widthEvent;
+        window.onresize = widthEvent;
 
         header_btn.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {

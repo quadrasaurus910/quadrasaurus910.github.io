@@ -410,7 +410,7 @@
         window.onresize = widthEvent;
 
         header_btn.addEventListener('click', function modal_show() {
-            if (window.innerWidth < 600) {
+            if (window.innerWidth < 768) {
                 /*header_btn.style.display = 'none';*/
                 if (modalStyles.getPropertyValue('display') === 'none') {
                     modal.style.animation = 'modal_show 0.3s 1';
@@ -438,6 +438,9 @@
                 modalStyles = window.getComputedStyle(modal);
                 headTest.innerHTML = 'test';modalStyles.getPropertyValue('display');*/
             }
+            /*else if (window.innerWidth > 600 && window.innerWidth < 768) {
+                
+            }*/
         });
 
         /*document.getElementById('modal_btn').onclick = () => {

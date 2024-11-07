@@ -209,11 +209,48 @@
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
+
+    @keyframes modal_show {
+        0% {
+            right: 0px;
+            left: 100%;
+            top: 50px;
+        }
+        100% {
+            left: 66%;
+        }
+    }
+    @keyframes modal_hide {
+        0% {
+            left: 66%;
+        }
+        100% {
+            left: 100%;
+        }
+    }
+
     #header {
         box-shadow: 0px 0px 10px 0px grey;
         height: 50px;
         background-color: white;
         text-align: center;
+    }
+
+    #header_btn {
+        right: 0px;
+        top: 0px;
+        height: 50px;
+        width: 50px;
+        color: darkgray;
+        position: absolute;
+    }
+
+    #hamburger {
+        display: inline;
+    }
+
+    #close_icon {
+        display: none;
     }
 
     #quadrip {
@@ -256,6 +293,11 @@
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
+
+    #header_btn {
+        display: none;
+    }
+
     #menu_bar {
         display: none;
     }

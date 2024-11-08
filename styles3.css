@@ -46,7 +46,7 @@
 
     @keyframes modal_show {
         0% {
-            height: 100px;
+            height: 100%;
             width: 0px;
             right: 0px;
             left: 100%;
@@ -212,20 +212,22 @@
 
     @keyframes modal_show2 {
         0% {
-            right: 0px;
             left: 100%;
-            top: 50px;
+            width: 0%;
         }
         100% {
-            left: 66%;
+            left: 70%;
+            width: 30%;
         }
     }
     @keyframes modal_hide2 {
         0% {
-            left: 66%;
+            left: 70%;
+            width: 30%;
         }
         100% {
             left: 100%;
+            width: 0%;
         }
     }
 

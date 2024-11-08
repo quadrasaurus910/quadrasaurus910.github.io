@@ -438,7 +438,7 @@
                 modalStyles = window.getComputedStyle(modal);
                 headTest.innerHTML = 'test';modalStyles.getPropertyValue('display');*/
             }
-            else if (window.innerWidth > 600 && window.innerWidth < 768) {
+            else if (window.innerWidth > 600 /*&& window.innerWidth < 768*/) {
                 if (modalStyles.getPropertyValue('display') === 'none') {
                     modal.style.animation = 'modal_show2 0.3s 1';
                     modal.style.display = "block";

@@ -163,11 +163,12 @@
         z-index: 1;
         right: 0;
         top: 50px;
-        width: 100%;
+        width: 0%;
         height: 100%;
         overflow: auto;
-        animation-name: modal_show;
-        animation-duration: 0.6s;
+        animation-timing-function: ease-out;
+        /*animation-name: modal_show;
+        animation-duration: 0.6s;*/
         float: right;
     }
 

@@ -404,10 +404,16 @@
         modalId.innerHTML = modalStyles.getPropertyValue('display');
         /*var modal_links = document.getElementsByClassName('modal_link');*/
 
-        function widthEvent() {
+        /*function widthEvent() {
             sp.innerHTML = window.innerWidth;
         }
-        window.onresize = widthEvent;
+        window.onresize = widthEvent;*/
+
+        winWidth = window.addEventListener("resize", () => {
+            return window.innerWidth;
+        })
+
+        sp.innerHTML = winWidth;
 
         header_btn.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {

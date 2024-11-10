@@ -215,6 +215,7 @@
         0% {
             left: 100%;
             width: 0%;
+            right: 0px;
         }
         100% {
             left: 70%;

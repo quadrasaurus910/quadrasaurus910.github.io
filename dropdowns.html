@@ -138,6 +138,7 @@
 
     <body>
         <div id="header" name="header">
+            <span id="headerTest"></span>
             <span id="header_btn">
                 <span id="hamburger">
                     <svg id="hamburgerSvg" xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
@@ -163,6 +164,7 @@
         var modal = document.getElementById('modal');
         var modalStyles = window.getComputedStyle(modal);
         var modalShow = false;
+        var headerTest = document.querySelector(.'#headerTest');
 
         hamburger.addEventListener('click', function modal_show() {
             if (window.innerWidth < 600) {
@@ -214,6 +216,7 @@
 
         window.addEventListener('click', (event) => {
             const test = event.target.id;
+            headerTest.innerHTML = modal.style.display;
             if (modal.style.display == 'block') {
                 if (test !== modal.id && test !== 'hamburgerSvg' && test !== 'hamburger' && test !== 'header_btn') {
                     modal.style.animation = 'modal_hide2 0.3s 1';

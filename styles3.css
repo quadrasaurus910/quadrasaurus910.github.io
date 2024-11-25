@@ -1,4 +1,16 @@
 
+#modal {
+    background-color: #B0E5EB;
+    top: 50px;
+    right: 0px;
+    bottom: 0px;
+    display: none;
+    position: absolute;
+    z-index: 2;
+    float: right;
+    animation-timing-function: ease-out;
+}
+
 @media only screen and (max-width: 600px) {
     @keyframes show {
         0% {
@@ -152,7 +164,7 @@
         animation: hide 1s 1;
     }
 
-    .modal {
+    /*.modal {
         background-color: #B0E5EB;
         border-width: 5px 0px 0px 0px;
         border-style: solid;
@@ -163,19 +175,24 @@
         z-index: 1;
         right: 0;
         top: 50px;
-        /*width: 0%;*/
+        /*width: 0%;
         height: 100%;
         overflow: auto;
         animation-timing-function: ease-out;
         /*animation-name: modal_show;
-        animation-duration: 0.6s;*/
+        animation-duration: 0.6s;
         float: right;
+    }*/
+
+    #modal {
+        width: 100%;
     }
 
-    .modal a {
+    /*.modal a {
         color: black;
         text-decoration: none;
-    }
+    }*/
+    
 
     #modal_btn {
         position: absolute;
@@ -293,7 +310,7 @@
         display: block;
     }
 
-    .modal {
+    /*.modal {
         background-color: #B0E5EB;
         border-width: 5px 0px 0px 0px;
         border-style: solid;
@@ -308,10 +325,16 @@
         bottom: 0px;
         overflow: auto;
         animation-timing-function: ease-out;
-        /*animation-name: modal_show;
-        animation-duration: 0.6s;*/
+        animation-name: modal_show;
+        animation-duration: 0.6s;
         float: right;
+    }*/
+
+    #modal {
+        width: 30%;
+        display: none;
     }
+    
 }
 
 /* Medium devices (landscape tablets, 768px and up) */

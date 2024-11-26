@@ -221,7 +221,7 @@
 
         window.addEventListener('click', (event) => {
             const test = event.target.id;
-            headerTest.innerHTML = modal.style.display;
+            headerTest.innerHTML = test;
             if (modal.style.display == 'block') {
                 if (test !== modal.id && test !== headerBtn.id/*&& test !== 'hamburgerSvg' && test !== 'hamburger' && test !== 'header_btn'*/) {
                     modal.style.animation = 'modal_hide2 0.3s 1';

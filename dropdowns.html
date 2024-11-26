@@ -223,7 +223,7 @@
             const test = event.target.id;
             headerTest.innerHTML = modal.style.display;
             if (modal.style.display == 'block') {
-                if (test !== modal.id /*&& test !== 'hamburgerSvg' && test !== 'hamburger' && test !== 'header_btn'*/) {
+                if (test !== modal.id && test !== headerBtn.id/*&& test !== 'hamburgerSvg' && test !== 'hamburger' && test !== 'header_btn'*/) {
                     modal.style.animation = 'modal_hide2 0.3s 1';
                     setTimeout(() => {modal.style.display = 'none';
                     closeIcon.style.display = 'none';

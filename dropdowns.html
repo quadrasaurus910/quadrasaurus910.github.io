@@ -90,11 +90,14 @@
         }
 
         #hamburger,
-        #close_icon {
+        #close_icon,
+        #hamburgerSvg,
+        #closeIconSvg {
             position: absolute;
             z-index: 1;
             right: 0px;
             top: 0px;
+            pointer-events: none;
         }
 
         @media only screen and (max-width: 600px) {
@@ -166,7 +169,7 @@
                     </svg>
                 </span>
                 <span id="close_icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                    <svg id="closeIconSvg" xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
                         <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                     </svg>
                 </span>

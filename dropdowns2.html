@@ -1,0 +1,229 @@
+<!DOCTYPE html lang="en">
+<html>
+    <head>
+        <title>dropdowns</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <!--google icon link-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu" />-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=close" />
+    </head>
+    <body>
+        <div id="header" name="header">
+            <div id="testX">testX</div>
+            <span id="header_btn">
+                <span id="hamburger">
+                    <svg id="hamburgerSvg" xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                    </svg>
+                </span>
+                <span id="close_icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
+                </span>
+            </span>
+        </div>
+        <!--
+        <div class="dropdownItem test">Test</div>
+        <ul id="listTest">
+            <li class="dropdownItem test">item1</li>
+            <li class="dropdownItem test">item2</li>
+            <li class="dropdownItem test">item3</li>
+        </ul>
+    -->
+        <div id="modal">
+            <div id="dropdownContent">
+                <!--<div id="dropdownHeader" class="dropdownItem">Menu</div>-->
+                <ul id="dropdownList">
+                    <div id="dropdownHeader" class="dropdownItem">Menu</div>
+                    <li class="dropdownItem">item1</li>
+                    <li class="dropdownItem">item2</li>
+                    <li class="dropdownItem">item3</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="backgroundI" style="background-image: url('https://science.nasa.gov/wp-content/uploads/2024/07/pia17832-neowise-asteroid-tracks-among-the-stars.jpg');"></div>
+
+        <div id="container">
+            <div id="sidebar"></div>
+            <div id="content">
+                <div id="block1">
+                    <div id="block1a">This is only a test</div>
+                </div>
+                <div id="block2"></div>
+                <div id="block3"></div>
+            </div>
+        </div>
+
+    </body>
+    <script>
+
+        /*document.querySelector('#backgroundI').style.backgroundImage = "url(https://science.nasa.gov/wp-content/uploads/2024/07/pia17832-neowise-asteroid-tracks-among-the-stars.jpg)";*/
+
+        var headerBtn = document.querySelector('#header_btn');
+        var hamburger = document.querySelector('#hamburger');
+        var closeIcon = document.querySelector('#close_icon');
+        const compStyles = window.getComputedStyle(headerBtn);
+        const hamStyles = window.getComputedStyle(hamburger);
+        var modal = document.getElementById('modal');
+        var modalStyles = window.getComputedStyle(modal);
+        tests = document.querySelectorAll('.test');
+        dropdownItems = document.querySelectorAll('.dropdownItem');
+        testX = document.querySelector('#testX');
+        sideBar = document.querySelector('#sidebar');
+
+        function widthEvent() {
+            testX.innerHTML = window.innerWidth;
+            if (window.innerWidth > 768) {
+                headerBtn.style.display = 'none';
+                modal.style.display = 'none';
+            }
+            else {
+                headerBtn.style.display = 'inline';
+            }
+        }
+        window.onresize = widthEvent;
+
+        headerBtn.addEventListener('click', function modal_show() {
+            if (window.innerWidth < 600) {
+                if (modalStyles.getPropertyValue('display') === 'none') {
+                    modal.style.animation = 'modal_show 0.3s 1';
+                    modal.style.display = "block";
+                    hamburger.style.display = 'none';
+                    closeIcon.style.display = 'inline';
+                    /*dropdownItems.style.color = 'blue';
+                    dropdownItems.style.animation = 'dropContent 1s 1';
+                    for (i = 0; i < dropdownItems.length; i++) {
+                        dropdownItems[i].style.display = 'block';
+                    }*/
+                    dropdownItems.forEach((element, index) => {
+                        setTimeout(() => {
+                        /*element.style.setProperty('--animation-delay', `${index}s`);*/
+                        element.style.animation = 'dropContent 0.3s 1 forwards';
+                        element.style.display = 'block';
+                        /*element.style.backgroundColor = `rgba(0, 0, 255, ${1 - index * 0.1})`;*/
+                        element.classList.add('dropdownItem');
+                        element.innerHTML = `index#${index}`;}, index * 50);
+                    });
+                }
+                else if (modalStyles.getPropertyValue('display') === 'block') {
+                    document.getElementById('modal').style.animation = 'modal_hide 0.3s 1';
+                    dropdownItems.forEach((element, index) => {
+                        setTimeout(() => {
+                        /*element.style.setProperty('--animation-delay', `${index}s`);*/
+                        element.style.animation = 'slideLeft 0.3s 1 forwards';
+                        element.style.display = 'none';
+                        /*element.style.backgroundColor = `rgba(0, 0, 255, ${1 - index * 0.1})`;*/
+                        element.classList.add('dropdownItem');
+                        element.innerHTML = `index#${index}`;}, index * 50);
+                    });
+                    modal.addEventListener("animationend", () => {
+                        if (modal.style.animationName === 'modal_hide') {
+                            header_btn.style.display = 'inline';
+                           document.getElementById('modal').style.display = 'none'
+                        }
+                    });
+                    closeIcon.style.display = 'none';
+                    hamburger.style.display = 'inline';
+                }
+            }
+            else if (window.innerWidth > 600 /*&& window.innerWidth < 768*/) {
+                if (modalStyles.getPropertyValue('display') === 'none') {
+                    modal.style.animation = 'modal_show2 0.3s 1';
+                    modal.style.display = "block";
+                    /*tests[1].style.animation = 'dropContent 0.3s 1';
+                    tests[1].style.display = 'block';
+                    tests[1].innerHTML = dropdownItems.length;
+                    testX.style.animation = 'slideLeft 2s 1';*/
+                    dropdownItems.forEach((element, index) => {
+                        setTimeout(() => {
+                        /*element.style.setProperty('--animation-delay', `${index}s`);*/
+                        element.style.animation = 'dropContent 0.3s 1 forwards';
+                        element.style.display = 'block';
+                        /*element.style.backgroundColor = `rgba(0, 0, 255, ${1 - index * 0.1})`;*/
+                        element.classList.add('dropdownItem');
+                        element.innerHTML = `index#${index}`;}, index * 50);
+                    });
+                    /*modal_links.style.display = 'block';*/
+                    hamburger.style.display = 'none';
+                    closeIcon.style.display = 'inline';
+                }
+                else if (modalStyles.getPropertyValue('display') === 'block') {
+                    dropdownItems.forEach((element, index) => {
+                        setTimeout(() => {
+                        /*element.style.setProperty('--animation-delay', `${index}s`);*/
+                        element.style.animation = 'fadeout 0.3s 1 forwards';
+                        element.style.display = 'none';
+                        /*element.style.backgroundColor = `rgba(0, 0, 255, ${1 - index * 0.1})`;*/
+                        element.classList.add('dropdownItem');
+                        element.innerHTML = `index#${index}`;}, index * 50);
+                    });
+                    document.getElementById('modal').style.animation = 'modal_hide2 1s 1';
+                    modal.addEventListener("animationend", () => {
+                        if (modal.style.animationName === 'modal_hide2') {
+                            header_btn.style.display = 'inline';
+                           document.getElementById('modal').style.display = 'none';
+                           /*modal_links.style.display = 'none';*/
+                        }
+                    });
+                    closeIcon.style.display = 'none';
+                    hamburger.style.display = 'inline';
+                }
+            }
+        });
+
+        window.addEventListener('click', (event) => {
+            const test = event.target.id;
+            if (modal.style.display == 'block') {
+                if (test !== modal.id && test !== 'header_btn') {
+                    if (window.innerWidth < 600) {
+                        dropdownItems.forEach((element, index) => {
+                        setTimeout(() => {
+                        /*element.style.setProperty('--animation-delay', `${index}s`);*/
+                        element.style.animation = 'fadeout 0.3s 1 forwards';
+                        element.style.display = 'none';
+                        /*element.style.backgroundColor = `rgba(0, 0, 255, ${1 - index * 0.1})`;*/
+                        element.classList.add('dropdownItem');
+                        element.innerHTML = `index#${index}`;}, index * 50);
+                    });
+                        modal.style.animation = 'modal_hide 0.3s 1';
+                    }
+                    else if (window.innerWidth > 600) {
+                        modal.style.animation = 'modal_hide2 0.3s 1';
+                    }
+                    setTimeout(() => {modal.style.display = 'none';
+                    closeIcon.style.display = 'none';
+                    hamburger.style.display = 'inline';}, 300);
+                    /*modal.style.animation = 'modal_hide2 0.3s 1';
+                    modal.addEventListener('animationend', () => {
+                        if (modal.style.animationName = 'modal_hide2') {
+                        modal.style.display = 'none';
+                        modal.innerHTML = test;
+                        modalShow = false;
+                        closeIcon.style.display = 'none';
+                        hamburger.style.display = 'inline';
+                        }
+                    })*/
+                }
+            }
+        });
+
+        document.addEventListener('visibilitychange', function() {
+            document.querySelector('#modal').style.display = 'none';
+            document.querySelector('#header_btn').style.display = 'inline';
+            closeIcon.style.display = 'none';
+            hamburger.style.display = 'inline';
+        })
+
+        window.addEventListener("scroll", (event) => {
+            testX.textContent = `scrollTop: ${window.scrollY}`;
+        });
+
+    </script>
+</html>

@@ -1,0 +1,302 @@
+
+@keyframes modal_show {
+    0% {
+        width: 0px;
+        right: 0px;
+        left: 100%;
+    }
+    100% {
+        width: 100%;
+        right: 0px;
+        left: 0px;
+    }
+}
+
+@keyframes modal_hide {
+    0% {
+        width:100%;
+        left: 0%;
+    }
+    100% {
+        width: 0%;
+        left: 100%;
+    }
+}
+
+@keyframes modal_show2 {
+    0% {
+        left: 100%;
+        width: 0px;
+    }
+    100% {
+        left: 70%;
+        width: 30%;
+    }
+}
+
+@keyframes modal_hide2 {
+    0% {
+        left: 70%;
+        width: 30%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+@keyframes dropContent {
+    0% {
+        transform: translateX(500px);
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0px);
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes dropContentHide {
+    0% {
+        transform: translateX(0px);
+        transform: translateY(0px);
+        opacity: 1;
+    }
+    20% {
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(100px);
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+}
+
+@keyframes slideLeft {
+    0% {
+        transform: translateX(0px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(100px);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+html {
+    object-fit: cover;
+}
+
+body {
+    background: rgba(0,0,0,0.0);
+}
+
+#header {
+    box-shadow: 0px 0px 10px 0px grey;
+    height: 50px;
+    background-color: white;
+    text-align: center;
+    padding-top: 2.5px;
+    position: fixed;
+    width: 100%;
+}
+
+#modal {
+    /*background-color: #B0E5EB;*/
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: saturate(180%) blur(40px);
+    color: white;
+    top: 50px;
+    right: 0px;
+    bottom: 0px;
+    display: none;
+    position: fixed;
+    z-index: 2;
+    float: right;
+}
+
+#hamburger,
+#close_icon,
+#hamburgerSvg,
+#closeIconSvg {
+    position: absolute;
+    z-index: 1;
+    right: 0px;
+    top: 0px;
+    pointer-events: none;
+}
+
+#dropdownContent {
+    font-size: 24pt;
+    margin: 50px 0px 0px 0px;
+}
+
+.dropdownItem {
+    display: none;
+    /*animation-delay: var(--animation-delay);*/
+    animation-fill-mode: forwards;
+    overflow:hidden;
+}
+
+li {
+    list-style-type: none;
+    height: 50px;
+    overflow: hidden;
+    width: 100%;
+}
+
+li:hover {
+    background-color: grey;
+}
+
+#translateTest {
+    animation: dropContent 1s 1;
+}
+
+.test {
+    display: none;
+}
+
+#block1 {
+    height: 100%;
+    top: 50;
+    background-color: black;
+}
+
+#block2 {
+    height: 100%;
+    background-color: rgba(0,0,0,0);
+}
+
+#block3 {
+    height: 100%;
+    background-color: black;
+}
+
+#backgroundI {
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    /*object-fit: cover;*/
+    position: fixed;
+    z-index: -1;
+    top: 0px;
+}
+
+#block1a {
+    margin: auto;
+    color: white;
+}
+
+@media only screen and (max-width: 600px) {
+
+    #header_btn {
+        right: 0px;
+        top: 0px;
+        height: 50px;
+        width: 50px;
+        color: darkgray;
+        position: absolute;
+    }
+
+    #hamburger {
+        display: inline;
+    }
+
+    #close_icon {
+        display: none;
+    }
+
+    #modal {
+        width: 100%;
+    }
+
+    #dropdownList {
+        text-align: center;
+    }
+
+    ul {
+        padding: 0%;
+    }
+
+    #sidebar {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+
+    #header_btn {
+        right: 0px;
+        top: 0px;
+        height: 50px;
+        width: 50px;
+        color: darkgray;
+        position: absolute;
+    }
+
+    #hamburger {
+        display: inline;
+    }
+
+    #close_icon {
+        display: none;
+    }
+
+    #modal {
+        width: 30%;
+        display: none;
+    }
+
+    ul {
+        padding: 0% 0% 0% 25%;
+    }
+
+    #sidebar {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+
+    #header_btn {
+        display: none;
+    }
+
+    #modal {
+        display: none;
+    }
+
+    #container {
+        display: block;
+    }
+
+    #sidebar {
+        display: block;
+        color: white;
+        top: 50px;
+        right: 0px;
+        bottom: 0px;
+        position: fixed;
+        z-index: 2;
+        float: right;
+        width: 300px;
+        background-color: #525252;
+    }
+
+    #content {
+        display: block;
+        width: calc(100vw - 300px);
+    }
+}

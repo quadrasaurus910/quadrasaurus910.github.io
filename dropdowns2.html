@@ -42,11 +42,11 @@
                 <!--<div id="dropdownHeader" class="dropdownItem">Menu</div>-->
                 <ul id="dropdownList">
                     <div id="dropdownHeader" class="dropdownItem">Menu</div>
-                    <li class="dropdownItem">test<!--<a href="/page2.html">page2</a>--></li>
-                    <!--<li class="dropdownItem"><a href="/Page3.html">page3</a></li>
+                    <li class="dropdownItem">test<a href="/page2.html">page2</a></li>
+                    <li class="dropdownItem"><a href="/Page3.html">page3</a></li>
                     <li class="dropdownItem"><a href="/Page4.html">Palettes</a></li>
                     <li class="dropdownItem"><a href="/Europa.html">Europa</a></li>
-                    <li class="dropdownItem"><a href="/game.html">Game</a></li>-->
+                    <li class="dropdownItem"><a href="/game.html">Game</a></li>
                 </ul>
             </div>
         </div>
@@ -112,7 +112,7 @@
                         element.style.display = 'block';
                         /*element.style.backgroundColor = `rgba(0, 0, 255, ${1 - index * 0.1})`;*/
                         element.classList.add('dropdownItem');
-                        element.innerHTML = `index#${index}`;}, index * 50);
+                        /*element.innerHTML = `index#${index}`;*/}, index * 50);
                     });
                 }
                 else if (modalStyles.getPropertyValue('display') === 'block') {

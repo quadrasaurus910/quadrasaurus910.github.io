@@ -235,7 +235,9 @@ li:hover {
         padding: 0%;
     }
 
-    #sidebar {
+    #sidebar,
+    #sideBarList,
+    #sideBarListItem {
         display: none;
     }
 }
@@ -268,7 +270,9 @@ li:hover {
         padding: 0% 0% 0% 25%;
     }
 
-    #sidebar {
+    #sidebar,
+    #sideBarList,
+    #sideBarListItem {
         display: none;
     }
 }
@@ -298,6 +302,11 @@ li:hover {
         float: right;
         width: 300px;
         background-color: #525252;
+    }
+
+    #sideBarList,
+    #sideBarListItem {
+        display: block;
     }
 
     #content {

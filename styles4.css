@@ -209,10 +209,21 @@ li:hover {
     margin: 5px 0px 5px 0px;
 }
 
+#sideBarList {
+    margin: 10px 0px 0px 0px;
+}
+
+#sideBarListTitle {
+    color: white;
+    font-size: 22pt;
+    margin: 0px 0px 5px 0px;
+}
+
 #sideBarListItem,
 #sidebar a {
     text-decoration: none;
     color: white;
+    font-size: 18pt;
 }
 
 @media only screen and (max-width: 600px) {

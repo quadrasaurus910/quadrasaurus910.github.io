@@ -195,11 +195,14 @@ li:hover {
 }
 
 #block1a {
-    top: 50px;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
     position: relative;
     z-index: 1;
-    background-color: greenyellow;
     color: white;
+    text-align: center;
+    margin: 5px 5px 5px 5px;
 }
 
 .dropdownItem a {

@@ -224,6 +224,8 @@ li:hover {
     color: white;
     font-size: 22pt;
     margin: 0px 0px 5px 0px;
+    padding: 0px 0px 3px 0px;
+    border-bottom: 1px solid white;
 }
 
 #sideBarListItem,
@@ -256,9 +258,9 @@ li:hover {
         width: 100%;
     }
 
-    #dropdownList {
+    /*#dropdownList {
         text-align: center;
-    }
+    }*/
 
     ul {
         padding: 0%;

@@ -225,7 +225,6 @@ li:hover {
     font-size: 22pt;
     margin: 0px 0px 5px 0px;
     padding: 0px 0px 3px 0px;
-    border-bottom: 1px solid white;
 }
 
 #sideBarListItem,
@@ -338,6 +337,14 @@ li:hover {
     #sideBarList,
     #sideBarListItem {
         display: block;
+    }
+
+    #sideBarTitleLine {
+        position: fixed;
+        width: 260px;
+        top: 110px;
+        right: 20px;
+        border-bottom: 1px solid white;
     }
 
     #content {

@@ -46,6 +46,15 @@
       border-width: 2px;
       color: black;
     }
+
+    #testButton {
+      background-color: rgba(0, 0, 0, 0);
+      border-color: blue;
+      border-radius: 5px;
+      border-style: solid;
+      border-width: 2px;
+      width: 150px;
+    }
   </style>
   <body>
     <div id="main">
@@ -56,8 +65,9 @@
       <p name="feedback"></p>
       <br>
       <div class="row">
-        <button class="btn col" name="newQuestion">New Question</button>
-        <button class="btn col" name="submitAnswer">Submit</button>
+        <button class="btn col" name="newQuestion" type="button">New Question</button>
+        <button class="btn col" name="submitAnswer" type="button">Submit</button>
+        <button name="testButton" type="button">test</button>
       </div>
     </div>
   </body>

@@ -24,6 +24,22 @@
       text-align: center;
       margin: 10px 0px 10px 0px;
     }
+
+    .btn {
+      margin: 10px 10px 10px 10px;
+    }
+
+    #newQuestion {
+      background-color: white;
+      border-color: blue;
+      color: blue;
+    }
+
+    #submit {
+      background-color: white;
+      border-color: black;
+      color: black;
+    }
   </style>
   <body>
     <div id="main">
@@ -31,12 +47,12 @@
       <form>
         <p name="question"></p>
         <br>
-        <input name="answer">
+        <input name="answer" placeholder="answer">
         <p name="feedback"></p>
         <br>
         <div class="row">
-          <button name="newQuestion">New Question</button>
-          <button name="submit">Submit</button>
+          <button class="btn col" name="newQuestion">New Question</button>
+          <button class="btn col" name="submit">Submit</button>
         </div>
       </form>
     </div>

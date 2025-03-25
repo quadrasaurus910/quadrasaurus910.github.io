@@ -25,6 +25,10 @@
       margin: 10px 0px 10px 0px;
     }
 
+    #qDiv {
+      text-align: center;
+    }
+
     #answer {
       text-align: center;
     }
@@ -60,10 +64,13 @@
   <body>
     <div id="main">
       <h1>Problem</h1>
-      <p name="question"></p>
-      <br>
-      <input name="answer" placeholder="answer">
-      <p name="feedback"></p>
+      <div id="qDiv">
+        <br>
+        <p id="question"></p>
+        <br>
+        <input id="answer" placeholder="answer">
+        <p id="feedback"></p>
+      </div>
       <br>
       <div class="row">
         <div class="col">
@@ -72,7 +79,30 @@
         <div class="col">
           <button class="btn" id="submitAnswer" type="button">Submit</button>
         </div>
-        <button id="testButton" type="button">test</button>
       </div>
     </div>
   </body>
+  <script>
+    var question = document.querySelector('#question');
+    var answer = document.querySelector('answer');
+    var feedback = document.querySelector('feedback');
+
+    function getRandomNumberWithTwoDecimals() {
+      const randomNumber = Math.random();
+      const roundedNumber = Math.round(randomNumber * 100) / 100;
+      return roundedNumber;
+    }
+
+    function genNum() {
+      var num1 = getRandomNumberWithTwoDecimals;
+      var num2 = getRandomNumberWithTwoDecimals;
+      question.innerHTML = num1 + ' / ' + num2 + ' = ';
+      return num1 / num2;
+    }
+
+    window.addEventListener("load", () => {
+      genNum;
+    });
+
+  </script>
+</html>

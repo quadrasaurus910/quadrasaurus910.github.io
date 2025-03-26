@@ -90,6 +90,7 @@
     var question = document.querySelector('#question');
     var answer = document.querySelector('answer');
     var feedback = document.querySelector('feedback');
+    var body = document.body;
 
     function getRandomNumberWithTwoDecimals() {
       const randomNumber = Math.random();
@@ -106,6 +107,7 @@
 
     window.addEventListener("load", (event) => {
       feedback.innerHTML = "testing";
+      body.style.backgroundColor = "blue";
       genNum;
     });
 

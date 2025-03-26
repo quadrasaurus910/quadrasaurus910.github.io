@@ -106,6 +106,14 @@
       return num1 / num2;
     }
 
+    function getRandomRounded() {
+      // Generate a random number between 0 (inclusive) and 1 (exclusive)
+      let randomNumber = Math.random();
+      // Round to the hundredths place
+      let roundedNumber = Math.round(randomNumber * 100) / 100;
+    return roundedNumber;
+}
+
     document.addEventListener("DOMContentLoaded", (event) => {
       feedback.innerHTML = "testing";
       body.style.backgroundColor = "blue";
@@ -114,7 +122,7 @@
 
     submitAnswer.onclick = () => {
       submitAnswer.style.backgroundColor = 'blue';
-      feedback.innerHTML = getRandomNumberWithTwoDecimals;
+      feedback.innerHTML = getRandomRounded;
     }
 
   </script>

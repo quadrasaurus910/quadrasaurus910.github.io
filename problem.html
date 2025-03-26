@@ -112,7 +112,7 @@
       // Round to the hundredths place
       let roundedNumber = Math.round(randomNumber * 100) / 100;
     return roundedNumber;
-}
+  }
 
     document.addEventListener("DOMContentLoaded", (event) => {
       feedback.innerHTML = "testing";
@@ -121,8 +121,9 @@
     });
 
     submitAnswer.onclick = () => {
+      var num3 = getRandomRounded;
       submitAnswer.style.backgroundColor = 'blue';
-      feedback = getRandomRounded;
+      feedback.innerHTML = num3;
     }
 
   </script>

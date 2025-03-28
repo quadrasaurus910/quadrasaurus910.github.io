@@ -153,7 +153,7 @@
 
     submitAnswer.onclick = () => {
       console.log(parseFloat(answer.value));
-      if (parseFloat(answer) == parseFloat(quotient)) {
+      if (parseFloat(answer.value) == parseFloat(quotient)) {
         feedback.innerHTML = 'correct';
       } else {
         feedback.innerHTML = 'incorrect';

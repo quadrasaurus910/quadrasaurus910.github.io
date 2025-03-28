@@ -152,6 +152,7 @@
     }
 
     submitAnswer.onclick = () => {
+      console.log(parseFloat(answer));
       if (parseFloat(answer) == parseFloat(quotient)) {
         feedback.innerHTML = 'correct';
       } else {

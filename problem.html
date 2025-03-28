@@ -89,6 +89,7 @@
         <p id="question"></p>
         <span class="hidden" id="number1"></span>
         <span class="hidden" id="number2"></span>
+        <span class="hidden" id="quotient"></span>
         <br>
         <input id="answer" placeholder="answer">
         <p id="feedback"></p>
@@ -107,24 +108,26 @@
   <script>
     var question = document.querySelector('#question');
     var number1 = document.querySelector('#number1');
-    var number2 = document.querySelector('number2');
+    var number2 = document.querySelector('#number2');
+    var quotient = document.querySelector('#quotient');
     var answer = document.querySelector('#answer');
     var feedback = document.querySelector('#feedback');
     var newQuestion = document.querySelector('#newQuestion');
     var submitAnswer = document.querySelector('#submitAnswer');
     var body = document.body;
 
-    function getRandomNumberWithTwoDecimals() {
-      const randomNumber = Math.random();
+    function getRandomNumberWithTwoDecimals(multiplicand = 1) {
+      const randomNumber = Math.random() * multiplicand;
       const roundedNumber = Math.round(randomNumber * 100) / 100;
       return roundedNumber;
     }
 
     function genNum() {
-      var num1 = getRandomNumberWithTwoDecimals();
-      var num2 = getRandomNumberWithTwoDecimals();
+      var num1 = getRandomNumberWithTwoDecimals(1);
+      var num2 = getRandomNumberWithTwoDecimals(100);
       number1 = num1;
       number2 = num2;
+      quotient = num1 / num2;
       question.innerHTML = num1 + ' / ' + num2 + ' = ';
       return num1 / num2;
     }
@@ -142,11 +145,11 @@
       genNum();
       console.log(number1);
       console.log(number2);
+      console.log(quotient);
     });
 
     newQuestion.onclick = () => {
-      var num3 = getRandomRounded();
-      feedback.innerHTML = num3;
+      genNum();
     }
 
   </script>

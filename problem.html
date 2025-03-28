@@ -127,7 +127,7 @@
       var num2 = getRandomNumberWithTwoDecimals(1);
       number1 = num1;
       number2 = num2;
-      quotient = num1 / num2;
+      quotient = Math.round((num1 / num2) * 100) / 100;
       question.innerHTML = num1 + ' / ' + num2 + ' = ';
       return num1 / num2;
     }

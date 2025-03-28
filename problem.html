@@ -111,8 +111,8 @@
     }
 
     function genNum() {
-      var num1 = getRandomNumberWithTwoDecimals;
-      var num2 = getRandomNumberWithTwoDecimals;
+      var num1 = getRandomNumberWithTwoDecimals();
+      var num2 = getRandomNumberWithTwoDecimals();
       question.innerHTML = num1 + ' / ' + num2 + ' = ';
       return num1 / num2;
     }
@@ -126,13 +126,13 @@
     }
 
     document.addEventListener("DOMContentLoaded", (event) => {
-      feedback.innerHTML = "testing";
-      genNum;
+      feedback.innerHTML = getRandomNumberWithTwoDecimals();
+      genNum();
     });
 
     submitAnswer.onclick = () => {
-      var num3 = getRandomRounded;
-      feedback.innerHTML = Math.random();
+      var num3 = getRandomRounded();
+      feedback.innerHTML = num3;
     }
 
   </script>

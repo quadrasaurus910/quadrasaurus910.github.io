@@ -48,7 +48,8 @@
       color: blue;
     }
 
-    #newQuestion:active {
+    #newQuestion:active,
+    #newQuestion:hover {
       background-color: blue;
       color: white;
     }
@@ -60,7 +61,8 @@
       color: black;
     }
 
-    #submitAnswer:active {
+    #submitAnswer:active,
+    #submitAnswer:hover {
       background-color: grey;
       color: white;
     }
@@ -74,6 +76,10 @@
       width: 150px;
       height: 75px;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
   <body>
     <div id="main">
@@ -81,6 +87,8 @@
       <div id="qDiv">
         <br>
         <p id="question"></p>
+        <span class="hidden" id="number1"></span>
+        <span class="hidden" id="number2"></span>
         <br>
         <input id="answer" placeholder="answer">
         <p id="feedback"></p>
@@ -98,6 +106,8 @@
   </body>
   <script>
     var question = document.querySelector('#question');
+    var number1 = document.querySelector('#number1');
+    var number2 = document.querySelector('number2');
     var answer = document.querySelector('#answer');
     var feedback = document.querySelector('#feedback');
     var newQuestion = document.querySelector('#newQuestion');
@@ -113,6 +123,8 @@
     function genNum() {
       var num1 = getRandomNumberWithTwoDecimals();
       var num2 = getRandomNumberWithTwoDecimals();
+      number1 = num1;
+      number2 = num2;
       question.innerHTML = num1 + ' / ' + num2 + ' = ';
       return num1 / num2;
     }
@@ -128,9 +140,11 @@
     document.addEventListener("DOMContentLoaded", (event) => {
       feedback.innerHTML = getRandomNumberWithTwoDecimals();
       genNum();
+      console.log(number1);
+      console.log(number2);
     });
 
-    submitAnswer.onclick = () => {
+    newQuestion.onclick = () => {
       var num3 = getRandomRounded();
       feedback.innerHTML = num3;
     }

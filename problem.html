@@ -151,5 +151,13 @@
       genNum();
     }
 
+    submitAnswer.onclick = () => {
+      if (answer == quotient) {
+        feedback.innerHTML = 'correct';
+      } else {
+        feedback.innerHTML = 'incorrect';
+      }
+    }
+
   </script>
 </html>

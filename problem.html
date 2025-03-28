@@ -48,6 +48,11 @@
       color: blue;
     }
 
+    #newQuestion:active {
+      background-color: blue;
+      color: white;
+    }
+
     #submitAnswer {
       background-color: white;
       border-color: black;
@@ -56,7 +61,7 @@
     }
 
     #submitAnswer:active {
-      background-color: blue;
+      background-color: grey;
       color: white;
     }
 
@@ -95,6 +100,7 @@
     var question = document.querySelector('#question');
     var answer = document.querySelector('#answer');
     var feedback = document.querySelector('#feedback');
+    var newQuestion = document.querySelector('#newQuestion');
     var submitAnswer = document.querySelector('#submitAnswer');
     var body = document.body;
 
@@ -126,7 +132,6 @@
 
     submitAnswer.onclick = () => {
       var num3 = getRandomRounded;
-      submitAnswer.style.backgroundColor = 'blue';
       feedback.innerHTML = Math.random();
     }
 

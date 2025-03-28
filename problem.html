@@ -29,6 +29,10 @@
       text-align: center;
     }
 
+    #question {
+      font-size: 20pt;
+    }
+
     #answer {
       text-align: center;
     }
@@ -91,7 +95,7 @@
         <span class="hidden" id="number2"></span>
         <span class="hidden" id="quotient"></span>
         <br>
-        <input id="answer" placeholder="answer">
+        <input id="answer" placeholder="answer" type="number">
         <p id="feedback"></p>
       </div>
       <br>
@@ -148,14 +152,17 @@
     });
 
     newQuestion.onclick = () => {
+      feedback.innerHTML = '';
       genNum();
     }
 
     submitAnswer.onclick = () => {
       console.log(parseFloat(answer.value));
       if (parseFloat(answer.value) == parseFloat(quotient)) {
+        feedback.style.color = 'green';
         feedback.innerHTML = 'correct';
       } else {
+        feedback.style.color = 'red';
         feedback.innerHTML = 'incorrect';
       }
     }

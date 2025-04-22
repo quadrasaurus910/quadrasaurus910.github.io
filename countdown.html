@@ -331,6 +331,9 @@
                 testP.innerHTML = newDate;
                 jsDate = new Date(dateT);
                 testP2.innerHTML = jsDate;
+                jsd2 = new Date();
+                thisYear = jsd2.getFullYear();
+                thisAnny = new Date(thisYear, 9, 10);
                 console.log("test");
                 if (jsDate.getTime() == newDate.getTime() || (jsDate.getTime() == oldDate.getTime())) {
                     dateDiv.style.display = 'none';

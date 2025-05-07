@@ -334,7 +334,9 @@
                 jsd2 = new Date();
                 thisYear = jsd2.getFullYear();
                 thisAnny = new Date(thisYear, 9, 10);
-                var thisAnny2 = new Date('August 10') + year + ('00:00:00');
+                var yearStr = thisYear.toString();
+                var annyStr = 'August 10, ' + yearStr + ' 00:00:00';
+                var thisAnny2 = new Date(annyStr).getTime();
                 testP.innerHTML = thisAnny;
                 console.log("test");
                 if (jsDate.getTime() == newDate.getTime() || (jsDate.getTime() == oldDate.getTime())) {
@@ -356,7 +358,7 @@
                     countdownDiv.style.animation = 'trans3b 3s 1';
 
                     var countDownDate = new Date("Aug 10, 2025 00:00:00"/*"July 17, 2024 8:19:00"*/).getTime();
-                    var countDownDate2 = new Date('August 10') + thisYear + ('00:00:00').getTime();
+                    var countDownDate2 = thisAnny2;
 
                     // Update the count down every 1 second
                     var x = setInterval(function() {

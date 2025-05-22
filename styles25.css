@@ -1,0 +1,11 @@
+body {
+    background-color: black;
+}
+
+#main {
+    width: 384px;
+    height: 700px;
+    z-index: 1;
+    background-color: aqua;
+    margin: auto;
+}

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Dynamic Animated Sentences (Mobile Optimized)</title>
+
+        <style>
+            /* --- General Body & Container Styles --- */
+            body {
+                margin: 0;
+                overflow: hidden;
+                background-color: #222;
+                /* Dark background for better contrast */
+                color: #F5FDFF;
+                /* Default text color */
+                font-family: sans-serif;
+                height: 100vh;
+                /* Ensure body takes full viewport height */
+                width: 100vw;
+                /* Ensure body takes full viewport width */
+                display: flex;
+                /* Helps center or control container if needed */
+                justify-content: center;
+                align-items: center;
+            }
+
+            #animation-container {
+                position: relative;
+                /* Crucial for absolute positioning of sentences */
+                width: 100%;
+                /* Fill parent (body) */
+                height: 100%;
+                /* Fill parent (body) */
+                /* You can add a background image here if desired */
+            }
+
+            /* --- Styles for Individual Sentence Containers --- */
+            .sentence-to-animate {
+                position: absolute;
+                /* Allows precise positioning */
+                opacity: 0;
+                /* Initially hidden */
+                pointer-events: none;
+                /* Prevents text from being clickable if you don't want it */
+                white-space: nowrap;
+                /* Keep words on one line unless explicitly broken */
+                padding: 5px;
+                /* Small padding so text isn't right on edge */
+                box-sizing: border-box;
+                /* Include padding in width/height calculations */
+                /* Hint to the browser for performance optimization */
+                will-change: transform, opacity, left, top, font-size;
+                text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+                /* General text shadow for readability */
+            }
+
+            /* --- Styles for Individual Words (Spans) within Sentences --- */
+            .sentence-to-animate span {
+                opacity: 0;
+                /* Individual words start invisible for fade-in/out */
+                display: inline-block;
+                /* Allows individual word animation */
+                /* Hint to the browser for performance optimization */
+                will-change: opacity;
+            }
+
+            /* --- Keyframe Animation for Words --- */
+            @keyframes fade-in-out {
+                0% {
+                    opacity: 0;
+                }
+
+                20% {
+                    opacity: 1;
+                }
+
+                80% {
+                    opacity: 1;
+                }
+
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            /* Class applied by JS to trigger word animation */
+            .word-animate {
+                animation: fade-in-out 2s ease-in-out forwards;
+                /* Match JS cleanup time */
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="animation-container">
+            <p class="sentence-to-animate">Hello there, this is the first animated message.</p>
+            <p class="sentence-to-animate">Welcome to our animated text display!</p>
+            <p class="sentence-to-animate">Randomized elements appearing and disappearing.</p>
+            <p class="sentence-to-animate">Enjoy the dynamic text experience.</p>
+            <p class="sentence-to-animate">This is another sample sentence for the animation pool.</p>
+            <p class="sentence-to-animate">A different message to keep things interesting.</p>
+            <p class="sentence-to-animate">Experience the power of Web animation.</p>
+            <p class="sentence-to-animate">Words floating gracefully across your screen.</p>
+            <p class="sentence-to-animate">Continuous loop, never ending fun.</p>
+            <p class="sentence-to-animate">Optimized for mobile performance.</p>
+            <p class="sentence-to-animate">Hope you enjoy this visual treat!</p>
+        </div>
+
+        <script>
+            // --- 1. Reusable function to wrap words in spans ---
+            function wrapWordsInSpans(element) {
+                if (!element || typeof element.textContent !== 'string') {
+                    console.error("Invalid element provided to wrapWordsInSpans.");
+                    return;
+                }
+                const textContent = element.textContent;
+                const words = textContent.split(/\s+/).filter(word => word.length > 0);
+                element.innerHTML = ''; // Clear original content
+                words.forEach((word, index) => {
+                    const span = document.createElement('span');
+                    span.textContent = word;
+                    element.appendChild(span);
+                    if (index < words.length - 1) {
+                        element.appendChild(document.createTextNode(' '));
+                    }
+                });
+            }
+
+            // --- 2. Main animation control function ---
+            const animationContainer = document.getElementById('animation-container');
+            const allSentenceElements = Array.from(document.querySelectorAll('.sentence-to-animate'));
+
+            // --- NEW: Pre-calculate and cache element sizes for different font sizes ---
+            const FONT_SIZE_MIN = 12; // Minimum font size in pixels
+            const FONT_SIZE_MAX = 42; // Maximum font size in pixels
+            const FONT_SIZE_STEP = 2; // Step for pre-calculating sizes
+            const cachedElementSizes = new Map(); // Map<HTMLElement, Map<fontSize, {width, height}>>
+
+            async function preCalculateElementSizes() {
+                console.log("Starting element size pre-calculation...");
+                // Temporarily attach elements to measure in a hidden, off-screen container
+                const tempContainer = document.createElement('div');
+                tempContainer.style.position = 'absolute';
+                tempContainer.style.visibility = 'hidden'; // Hide it
+                tempContainer.style.left = '-9999px';
+                tempContainer.style.top = '-9999px';
+                tempContainer.style.whiteSpace = 'nowrap'; // Ensure words don't wrap during measurement
+                document.body.appendChild(tempContainer);
+
+                for (const el of allSentenceElements) {
+                    cachedElementSizes.set(el, new Map());
+                    // Clear any existing inline styles that might interfere with measurement
+                    el.style.removeProperty('left');
+                    el.style.removeProperty('top');
+                    el.style.removeProperty('opacity');
+
+                    tempContainer.appendChild(el); // Move to temp container for measurement
+
+                    for (let fs = FONT_SIZE_MIN; fs <= FONT_SIZE_MAX; fs += FONT_SIZE_STEP) {
+                        el.style.fontSize = `${fs}px`;
+                        await new Promise(resolve => requestAnimationFrame(resolve)); // Wait for render
+                        const rect = el.getBoundingClientRect();
+                        cachedElementSizes.get(el).set(fs, {
+                            width: rect.width,
+                            height: rect.height
+                        });
+                    }
+                }
+                // Restore elements to their original parent (animationContainer) and ensure hidden state
+                allSentenceElements.forEach(el => {
+                    el.style.opacity = 0; // Ensure hidden
+                    el.style.removeProperty('font-size'); // Remove temporary font size
+                    animationContainer.appendChild(el); // Move back to main animation container
+                });
+                document.body.removeChild(tempContainer);
+                console.log("Element sizes pre-calculated successfully.");
+            }
+
+            // Initialize all sentences by wrapping their words in spans
+            allSentenceElements.forEach(el => {
+                wrapWordsInSpans(el);
+                el.style.opacity = 0; // Ensure they are all hidden initially
+            });
+
+            const MAX_SIMULTANEOUS_ANIMATIONS = 4;
+            const ACTIVE_ANIMATION_PADDING = 30; // Min pixels distance between elements
+            const MAX_POSITION_ATTEMPTS = 20; // Max attempts to find a non-overlapping position
+
+            const activeElementsData = []; // Store data for active elements: { element, x, y, width, height }
+            let availableElements = [...allSentenceElements]; // Copy of all elements to pick from
+
+            async function animateElementsRandomly() {
+                await preCalculateElementSizes(); // Run once at the very start to fill the cache
+
+                while (true) {
+                    // 1. Wait until there's a slot available and elements to pick from
+                    if (activeElementsData.length >= MAX_SIMULTANEOUS_ANIMATIONS || availableElements.length === 0) {
+                        // If we've run out of elements and all current animations are done, reset pool
+                        if (availableElements.length === 0 && activeElementsData.length === 0) {
+                            availableElements = [...allSentenceElements];
+                            console.log("Resetting available elements pool.");
+                        }
+                        await new Promise(resolve => setTimeout(resolve, getRandomDelay(500, 1000))); // Wait a bit
+                        continue; // Check conditions again
+                    }
+
+                    // 2. Pick a random element that is not currently active
+                    const randomIndex = Math.floor(Math.random() * availableElements.length);
+                    const chosenElement = availableElements[randomIndex];
+                    availableElements.splice(randomIndex, 1); // Remove from available pool
+
+                    // 3. Assign random font size
+                    const randomFontSize = getRandomDelay(FONT_SIZE_MIN, FONT_SIZE_MAX);
+                    chosenElement.style.fontSize = `${randomFontSize}px`;
+
+                    // 4. Get element size from cache (optimized)
+                    const cachedSizes = cachedElementSizes.get(chosenElement);
+                    // Find the exact or closest smaller measured font size
+                    let {
+                        width,
+                        height
+                    } = cachedSizes.get(randomFontSize) || cachedSizes.get(randomFontSize - (randomFontSize % FONT_SIZE_STEP));
+
+                    // Fallback if no exact or closest cached size is found (shouldn't happen with proper range)
+                    if (!width || !height) {
+                        console.warn(`No cached size for font-size ${randomFontSize}, measuring directly.`);
+                        width = chosenElement.getBoundingClientRect().width;
+                        height = chosenElement.getBoundingClientRect().height;
+                    }
+
+                    let x, y;
+                    let foundPosition = false;
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+
+                    let attempts = 0;
+                    while (!foundPosition && attempts < MAX_POSITION_ATTEMPTS) {
+                        attempts++;
+
+                        const startOffScreenProbability = 0.4; // 40% chance to start off-screen
+                        let tempX, tempY;
+
+                        if (Math.random() < startOffScreenProbability) {
+                            // Start from off-screen edge
+                            const edge = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
+                            const buffer = 50; // How far off the edge it can start
+
+                            if (edge === 0) { // Top
+                                tempX = getRandomDelay(0, viewportWidth - width);
+                                tempY = -height - getRandomDelay(0, buffer);
+                            } else if (edge === 1) { // Right
+                                tempX = viewportWidth + getRandomDelay(0, buffer);
+                                tempY = getRandomDelay(0, viewportHeight - height);
+                            } else if (edge === 2) { // Bottom
+                                tempX = getRandomDelay(0, viewportWidth - width);
+                                tempY = viewportHeight + getRandomDelay(0, buffer);
+                            } else { // Left
+                                tempX = -width - getRandomDelay(0, buffer);
+                                tempY = getRandomDelay(0, viewportHeight - height);
+                            }
+                        } else {
+                            // Start fully within viewport
+                            tempX = getRandomDelay(0, Math.max(0, viewportWidth - width)); // Ensure non-negative
+                            tempY = getRandomDelay(0, Math.max(0, viewportHeight - height)); // Ensure non-negative
+                        }
+
+                        // Check for overlap with active elements
+                        let overlaps = false;
+                        for (const activeData of activeElementsData) {
+                            // Simple AABB collision detection with padding
+                            if (
+                                tempX < activeData.x + activeData.width + ACTIVE_ANIMATION_PADDING &&
+                                tempX + width + ACTIVE_ANIMATION_PADDING > activeData.x &&
+                                tempY < activeData.y + activeData.height + ACTIVE_ANIMATION_PADDING &&
+                                tempY + height + ACTIVE_ANIMATION_PADDING > activeData.y
+                            ) {
+                                overlaps = true;
+                                break; // Overlaps, so break and try a new position
+                            }
+                        }
+
+                        if (!overlaps) {
+                            foundPosition = true;
+                            x = tempX;
+                            y = tempY;
+                        }
+                    }
+
+                    if (!foundPosition) {
+                        console.warn("Could not find non-overlapping position after many attempts. Placing randomly anyway.");
+                        // Fallback: place randomly, but ensure it's at least mostly visible
+                        x = getRandomDelay(0, Math.max(0, viewportWidth - width));
+                        y = getRandomDelay(0, Math.max(0, viewportHeight - height));
+                    }
+
+                    chosenElement.style.left = `${x}px`;
+                    chosenElement.style.top = `${y}px`;
+                    chosenElement.style.opacity = 1; // Make the element container visible
+
+                    // Store its new position and size in activeElementsData
+                    activeElementsData.push({
+                        element: chosenElement,
+                        x,
+                        y,
+                        width,
+                        height
+                    });
+
+                    // 5. Animate its words
+                    const words = chosenElement.querySelectorAll('span');
+                    const wordAnimationDuration = 1500; // Matches CSS animation duration
+                    const wordDelayPerWord = 100; // Delay between each word's animation start
+                    const totalWordAnimationTime = (words.length * wordDelayPerWord) + wordAnimationDuration;
+
+                    words.forEach((word, index) => {
+                        setTimeout(() => {
+                            word.classList.add('word-animate');
+                        }, index * wordDelayPerWord);
+                    });
+
+                    // 6. Schedule element removal/reset after its words have all animated
+                    setTimeout(() => {
+                        words.forEach(word => {
+                            word.classList.remove('word-animate');
+                            word.style.opacity = 0; // Ensure individual spans are reset to transparent
+                        });
+                        chosenElement.style.opacity = 0; // Hide the entire element
+                        chosenElement.style.removeProperty('font-size'); // Clean up font size for next appearance
+
+                        // Remove from activeElementsData
+                        const indexToRemove = activeElementsData.findIndex(data => data.element === chosenElement);
+                        if (indexToRemove !== -1) {
+                            activeElementsData.splice(indexToRemove, 1);
+                        }
+                        availableElements.push(chosenElement); // Add back to available pool
+                    }, totalWordAnimationTime);
+
+
+                    // 7. Stagger the start of the next element's animation
+                    const randomStartDelay = getRandomDelay(1000, 3000); // Vary delay between 1-3 seconds
+                    await new Promise(resolve => setTimeout(resolve, randomStartDelay));
+                }
+            }
+
+            function getRandomDelay(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            // Start the continuous animation loop AFTER the page has fully loaded
+            window.addEventListener('load', animateElementsRandomly);
+
+            // Optional: Re-calculate positions on resize.
+            // For a phone, this might not happen often unless orientation changes.
+            // A full re-initialization is often simplest for dynamic layouts.
+            window.addEventListener('resize', () => {
+                // For production, you might debounce this or implement a more complex
+                // re-positioning logic for already active elements.
+                // For simplicity here, we'll just allow new ones to appear correctly.
+                // If critical: location.reload(); // Simple but disruptive reset
+            });
+        </script>
+
+    </body>
+
+</html>

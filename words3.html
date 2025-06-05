@@ -11,11 +11,13 @@
             body {
                 margin: 0;
                 overflow: hidden;
+                /*
                 background-color: #222;
                 background-image: url('church.png');
                 background-repeat: no-repeat;
                 background-attachment: fixed;
                 background-position: center; 
+                */
                 /* Dark background for better contrast */
                 color: #F5FDFF;
                 /* Default text color */
@@ -28,6 +30,15 @@
                 /* Helps center or control container if needed */
                 justify-content: center;
                 align-items: center;
+            }
+
+            #div2 {
+                background-image: url("church.png");
+                display: block;
+                height: 700px;
+                position: absolute;
+                right: calc(50% - 192px);
+                width: 384px;
             }
 
             #animation-container {
@@ -112,6 +123,7 @@
             <p class="sentence-to-animate">Optimized for mobile performance.</p>
             <p class="sentence-to-animate">Hope you enjoy this visual treat!</p>
         </div>
+        <div id="div2" name="div2"></div>
 
         <script>
             // --- 1. Reusable function to wrap words in spans ---

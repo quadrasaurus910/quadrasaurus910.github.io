@@ -41,9 +41,11 @@
             #hourDiv,
             #minuteDiv,
             #secondDiv {
-                background-color: #9EB8D1;
+                /*background-color: #9EB8D1;
                 height: 100px;
-                background-clip: text;
+                background-clip: text;*/
+                color: #9EB8D1;
+                border-radius: 10px;
             }
 
             #dayTitle,
@@ -62,9 +64,14 @@
             #hour,
             #minute,
             #second {
-                margin: 0px 0px 0px 15px;
-                opacity: 0.65;
+                margin: 10px 10px 10px 10px;
+                /*opacity: 0.65;*/
                 font-size: 20pt;
+            }
+
+            .glass {
+                background-color: rgba(0, 0, 0, 0.4);
+                backdrop-filter: saturate(180%) blur(40px);
             }
 
             #animation-container {
@@ -151,7 +158,7 @@
             <p class="sentence-to-animate">To endure</p>
             <p class="sentence-to-animate">whatever comes</p>
         </div>
-        <div id="div2" name="div2">
+        <div class="glass" id="div2" name="div2">
             <div id="dayDiv" name="dayDiv">
                 <div id="dayTitle" name="dayTitle">DAYS</div>
                 <div id="day" name="day"></div>

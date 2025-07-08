@@ -454,10 +454,11 @@
             var now = new Date().getTime();
             var distance = thisAnny - now;
             var distance1b = anny.getTime() - now;
-            day.innerHTML = Math.floor(distance1b / (1000 * 60 * 60 * 24));
+            var days1a = Math.floor(distance1b / (1000 * 60 * 60 * 24));
             hour.innerHTML = Math.floor(distance1b / (1000 * 60 * 60));
             minute.innerHTML = Math.floor(distance1b / (1000 * 60));
             second.innerHTML = Math.floor(distance1b / 1000);
+            day.innerHTML = days1a;
 
             /* button.addEventListener('click', function() {
                 var inputV = input.value;

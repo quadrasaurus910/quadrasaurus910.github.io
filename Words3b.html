@@ -452,8 +452,9 @@
             var annyStr = 'August 10, ' + yearStr + ' 00:00:00';
             var thisAnny = new Date(annyStr).getTime();
             var now = new Date().getTime();
+            var now1b = d.getTime();
             var distance = thisAnny - now;
-            var distance1b = anny.getTime() - now;
+            var distance1b = now - anny.getTime();
             var days1a = Math.floor(distance1b / (1000 * 60 * 60 * 24));
             hour.innerHTML = Math.floor(distance1b / (1000 * 60 * 60));
             minute.innerHTML = Math.floor(distance1b / (1000 * 60));

@@ -1,0 +1,283 @@
+/* Basic Resets & Body Styles */
+:root {
+    --header-height: 60px;
+    --sidebar-width-medium: 250px; /* Width for medium screens */
+    --sidebar-width-large: 300px; /* Width for large screens */
+    --transition-duration: 0.3s;
+    --primary-bg: #282c34;
+    --secondary-bg: #3c4048;
+    --text-color: #f0f0f0;
+    --accent-color: #61dafb;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text-color);
+    overflow-x: hidden; /* Prevent horizontal scroll due to sidebar transitions */
+    background-color: var(--primary-bg);
+}
+
+/* Background Image */
+#backgroundI {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Send to background */
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.5); /* Dim the background image */
+}
+
+/* Header Styles */
+#mainHeader {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    height: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensure header is on top */
+}
+
+#siteTitle {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#sidebarToggleBtn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 2em; /* Size of the Material Symbol */
+    display: flex; /* To center the icon */
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#sidebarToggleBtn .close-icon {
+    display: none; /* Hidden by default */
+}
+
+/* Mobile Sidebar Overlay (active on small screens) */
+#mobileSidebarOverlay {
+    position: fixed;
+    top: 0;
+    left: 0; /* Starts off-screen */
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark overlay */
+    z-index: 999; /* Below header, above content */
+    display: flex;
+    justify-content: flex-start; /* Align content to the left inside the overlay */
+    align-items: flex-start; /* Align content to the top inside the overlay */
+    padding-top: var(--header-height); /* Space for header */
+    transform: translateX(-100%); /* Hidden off-screen by default */
+    transition: transform var(--transition-duration) ease-out;
+    box-sizing: border-box; /* Include padding in width/height */
+}
+
+#mobileSidebarOverlay #dropdownContent {
+    background-color: var(--secondary-bg);
+    width: 80%; /* Takes up 80% of screen width */
+    height: 100%; /* Fills remaining height */
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    overflow-y: auto; /* Scroll if content overflows */
+}
+
+#mobileSidebarOverlay #dropdownList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#mobileSidebarOverlay .dropdownItem {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0; /* Hidden by default for staggered animation */
+    transform: translateX(-20px); /* Offset for slide-in animation */
+    transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out;
+}
+
+#mobileSidebarOverlay .dropdownItem:last-child {
+    border-bottom: none;
+}
+
+#mobileSidebarOverlay .dropdownItem a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    font-size: 1.1em;
+}
+
+#mobileSidebarOverlay .dropdownItem.dropdownHeader {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--accent-color);
+    margin-bottom: 10px;
+}
+
+/* Desktop Sidebar (visible on larger screens) */
+#desktopSidebar {
+    background-color: var(--secondary-bg);
+    width: 0; /* Hidden by default on small screens */
+    flex-shrink: 0; /* Prevent it from shrinking */
+    padding: 0; /* No padding when hidden */
+    overflow-y: auto;
+    transition: width var(--transition-duration) ease-out, padding var(--transition-duration) ease-out;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#desktopSidebar #sideBarList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#desktopSidebar .sideBarListItem {
+    padding: 10px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#desktopSidebar .sideBarListItem:last-child {
+    border-bottom: none;
+}
+
+#desktopSidebar .sideBarListItem a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    font-size: 1.1em;
+}
+
+#desktopSidebar #sideBarListTitle {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-color);
+    margin-bottom: 10px;
+}
+
+/* Main Container Layout (Flexbox) */
+#container {
+    display: flex;
+    min-height: calc(100vh - var(--header-height)); /* Fill remaining viewport height */
+    margin-top: var(--header-height);
+    box-sizing: border-box; /* Include padding in width/height */
+}
+
+#content {
+    flex-grow: 1; /* Content takes up remaining space */
+    padding: 20px;
+    background-color: rgba(40, 44, 52, 0.8); /* Slightly transparent to see background */
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#block1, #block2, #block3 {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: var(--primary-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#block1a {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* State Classes controlled by JavaScript */
+body.sidebar-open #mobileSidebarOverlay {
+    transform: translateX(0); /* Bring overlay into view */
+}
+
+body.sidebar-open #sidebarToggleBtn .menu-icon {
+    display: none;
+}
+
+body.sidebar-open #sidebarToggleBtn .close-icon {
+    display: inline-flex; /* Use flex for Material Symbol alignment */
+}
+
+/* Keyframes for staggered dropdown item animation */
+@keyframes fadeInSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOutSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+}
+
+/* ====================================
+   Media Queries for Responsiveness
+   ==================================== */
+
+/* Medium Screens (min-width: 600px) */
+@media (min-width: 600px) {
+    #mobileSidebarOverlay {
+        display: none; /* Hide mobile overlay on medium+ screens */
+    }
+
+    #mainHeader #sidebarToggleBtn {
+        display: flex; /* Button remains visible on medium screens */
+    }
+
+    #desktopSidebar {
+        width: var(--sidebar-width-medium); /* Sidebar takes fixed width */
+        padding: 20px 0; /* Add padding when visible */
+    }
+
+    #container {
+        flex-direction: row; /* Default flex direction (content then sidebar) */
+    }
+}
+
+/* Large Screens (min-width: 769px) */
+@media (min-width: 769px) {
+    #mainHeader #sidebarToggleBtn {
+        display: none; /* Hide button on large screens */
+    }
+
+    #desktopSidebar {
+        width: var(--sidebar-width-large); /* Wider sidebar */
+        order: -1; /* Move sidebar to the left */
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2); /* Shadow on the right side now */
+    }
+
+    #content {
+        /* No specific changes needed here, flex-grow handles it */
+    }
+}
+
+/* Specific sidebar positioning logic for medium vs large screen */
+@media (min-width: 600px) and (max-width: 768px) {
+    #desktopSidebar {
+        order: 1; /* Puts sidebar to the right of content */
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2); /* Shadow on the left side now */
+    }
+}

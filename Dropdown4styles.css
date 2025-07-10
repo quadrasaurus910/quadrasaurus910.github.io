@@ -269,9 +269,11 @@ body.sidebar-open #sidebarToggleBtn .close-icon {
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2); /* Shadow on the right side now */
     }
 
+    /*
     #content {
-        /* No specific changes needed here, flex-grow handles it */
+         No specific changes needed here, flex-grow handles it 
     }
+    */
 }
 
 /* Specific sidebar positioning logic for medium vs large screen */

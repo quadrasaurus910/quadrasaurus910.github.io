@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Timeline Narrative</title>
+    <style>
+        /* Basic reset and body styling */
+        body {
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars and ensure timeline runs off-screen */
+            font-family: 'Inter', sans-serif; /* Using Inter font as per instructions */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            background-color: #f4f4f4;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Timeline Wrapper - the visible window for the timeline */
+        .timeline-wrapper {
+            width: 100vw; /* Occupy full viewport width */
+            height: 120px; /* Height for the visible part of the timeline */
+            position: relative;
+            overflow: hidden; /* Crucial to hide the parts of the timeline that go off-screen */
+            display: flex;
+            align-items: center;
+            margin-top: 50px; /* Space above for images */
+            border-radius: 8px; /* Rounded corners */
+            /*box-shadow: inset 0 0 10px rgba(0,0,0,0.1); /* Subtle inner shadow */
+        }
+
+        /* The actual timeline line - much wider than the viewport */
+        #timeline-line {
+            position: absolute;
+            height: 6px; /* Thickness of the timeline line */
+            background: linear-gradient(to right, #a7a7a7, #333, #a7a7a7); /* Gradient for a subtle effect */
+            width: 3000px; /* Example: Much wider than viewport to simulate infinite length */
+            /* Removed 'left: -1000px;' - now controlled entirely by transform */
+            top: 50%; /* Vertically center the line in its wrapper */
+            transform: translateY(-50%); /* Adjust for perfect vertical centering */
+            border-radius: 3px; /* Rounded line ends */
+            opacity: 0; /* Initially hidden */
+            /* Initial transition properties will be set by JavaScript */
+            transition: transform 0s ease-in-out, opacity 0s linear;
+        }
+
+        /* Individual timeline points (dots and years) */
+        .timeline-point {
+            position: absolute;
+            top: 50%; /* Relative to the timeline line */
+            transform: translateY(-50%); /* Center vertically */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px; /* Allocate space for each point */
+            padding-top: 20px; /* Space for the dot */
+            padding-bottom: 20px; /* Space for the year */
+            box-sizing: border-box;
+        }
+
+        .timeline-point .dot {
+            width: 16px;
+            height: 16px;
+            background-color: #007bff; /* Blue dot */
+            border-radius: 50%;
+            border: 3px solid white; /* White border around dot */
+            box-shadow: 0 0 0 3px #007bff, 0 2px 5px rgba(0,0,0,0.2); /* Outer ring and shadow */
+            margin-bottom: 15px; /* Space between dot and year */
+            transition: all 0.3s ease-in-out; /* Smooth transition for dot changes */
+        }
+
+        .timeline-point .year {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            white-space: nowrap; /* Prevent year from wrapping */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Styles for the image pop-ups */
+        .event-image {
+            position: fixed; /* Fixed position relative to the viewport */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5); /* Centered, scaled down, and hidden initially */
+            opacity: 0;
+            visibility: hidden; /* Ensures it doesn't block clicks when hidden */
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Stronger shadow for pop-up effect */
+            z-index: 100; /* Ensure it's above other content */
+            max-width: 90vw; /* Responsive width */
+            max-height: 80vh; /* Responsive height */
+            overflow-y: auto; /* In case content is too long */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Initial transition for pop-up appearance */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .event-image img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Remove extra space below image */
+            margin-bottom: 20px;
+            border-radius: 8px; /* Rounded image corners */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .event-image p {
+            font-size: 1.1em;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Class for hiding an image (fade out) */
+        .event-image.hiding {
+            transition: opacity 0.3s ease-in, transform 0.3s ease-in, visibility 0s linear 0.3s;
+        }
+
+        /* Media queries for smaller screens */
+        @media (max-width: 768px) {
+            .timeline-wrapper {
+                height: 80px;
+                margin-top: 30px;
+            }
+            #timeline-line {
+                height: 4px;
+            }
+            .timeline-point .dot {
+                width: 12px;
+                height: 12px;
+                border-width: 2px;
+                box-shadow: 0 0 0 2px #007bff, 0 1px 3px rgba(0,0,0,0.1);
+            }
+            .timeline-point .year {
+                font-size: 0.9em;
+            }
+            .event-image {
+                padding: 20px;
+                max-width: 95vw;
+                max-height: 75vh;
+            }
+            .event-image img {
+                margin-bottom: 15px;
+            }
+            .event-image p {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="timeline-wrapper">
+        <div id="timeline-line">
+            <!-- Timeline points. Left values are crucial for positioning. -->
+            <!-- These are just examples, adjust spacing as needed -->
+            <div class="timeline-point" data-year="1995" style="left: 0px;">
+                <div class="dot"></div>
+                <div class="year">1995</div>
+            </div>
+            <div class="timeline-point" data-year="2000" style="left: 200px;">
+                <div class="dot"></div>
+                <div class="year">2000</div>
+            </div>
+            <div class="timeline-point" data-year="2005" id="dot-2005" style="left: 400px;">
+                <div class="dot"></div>
+                <div class="year">2005</div>
+            </div>
+            <div class="timeline-point" data-year="2010" style="left: 600px;">
+                <div class="dot"></div>
+                <div class="year">2010</div>
+            </div>
+            <div class="timeline-point" data-year="2015" style="left: 800px;">
+                <div class="dot"></div>
+                <div class="year">2015</div>
+            </div>
+            <div class="timeline-point" data-year="2020" style="left: 1000px;">
+                <div class="dot"></div>
+                <div class="year">2020</div>
+            </div>
+            <div class="timeline-point" data-year="2025" id="dot-2025" style="left: 1200px;">
+                <div class="dot"></div>
+                <div class="year">2025</div>
+            </div>
+            <div class="timeline-point" data-year="2030" style="left: 1400px;">
+                <div class="dot"></div>
+                <div class="year">2030</div>
+            </div>
+            <div class="timeline-point" data-year="2035" style="left: 1600px;">
+                <div class="dot"></div>
+                <div class="year">2035</div>
+            </div>
+            <div class="timeline-point" data-year="2040" style="left: 1800px;">
+                <div class="dot"></div>
+                <div class="year">2040</div>
+            </div>
+            <!-- Add more points as needed to ensure the "no ending" effect -->
+        </div>
+    </div>
+
+    <!-- Image pop-ups - initially hidden -->
+    <div id="image-2005" class="event-image">
+        <img src="https://placehold.co/400x300/007bff/ffffff?text=Event+2005" alt="Key event in 2005">
+        <p>This is a significant moment from the year 2005. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+
+    <div id="image-2025" class="event-image">
+        <img src="https://placehold.co/400x300/ff7f50/ffffff?text=Event+2025" alt="Key event in 2025">
+        <p>A pivotal development in 2025. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get references to the main DOM elements
+            const timelineWrapper = document.querySelector('.timeline-wrapper');
+            const timelineLine = document.getElementById('timeline-line');
+            const dot2005 = document.getElementById('dot-2005');
+            const dot2025 = document.getElementById('dot-2025');
+            const image2005 = document.getElementById('image-2005');
+            const image2025 = document.getElementById('image-2025');
+
+            // Animation timing constants (in milliseconds)
+            const initialDelay = 2000; // Delay before timeline appears
+            const timelineFadeInDuration = 1000; // Duration for timeline to fade in
+            const zoomDuration = 1500; // Duration for initial zoom
+            const imagePopDuration = 700; // Duration for image pop-up animation
+            const imageDisplayDuration = 5000; // Image stays on screen for 5 seconds
+            const imageHideDuration = 500; // Duration for image fade-out animation
+            const briefPause = 500; // Pause after an action (e.g., after image hides)
+            const slideDuration = 4000; // Duration for sliding between points (increased for slower transition)
+            const fadeOutDuration = 2000; // Duration for final fade out (increased)
+
+            // Helper function to create a delay (Promise-based for async/await)
+            const delay = ms => new Promise(res => setTimeout(res, ms));
+
+            // Function to animate an image popping up
+            function popUpAnimation(element) {
+                element.style.visibility = 'visible';
+                element.style.transition = `opacity ${imagePopDuration}ms ease-out, transform ${imagePopDuration}ms ease-out`;
+                element.style.opacity = '1';
+                element.style.transform = 'translate(-50%, -50%) scale(1)';
+            }
+
+            // Function to animate an image hiding (fading out)
+            function popDownAnimation(element) {
+                element.style.transition = `opacity ${imageHideDuration}ms ease-in, transform ${imageHideDuration}ms ease-in`;
+                element.style.opacity = '0';
+                element.style.transform = 'translate(-50%, -50%) scale(0.8)'; // Scale down slightly
+                // After the transition, make it completely invisible to prevent interaction
+                setTimeout(() => {
+                    element.style.visibility = 'hidden';
+                }, imageHideDuration);
+            }
+
+            // Function to get the center X position of a dot relative to the timeline-line's left edge
+            function getDotXPosition(dotElement) {
+                // offsetLeft gives position relative to its parent (timelineLine)
+                return dotElement.offsetLeft + dotElement.offsetWidth / 2;
+            }
+
+            // Main animation sequence function
+            async function startTimelineAnimation() {
+                // Calculate target X positions of the dots within the timeline-line's coordinate system
+                // These are relative to the timelineLine's own left edge (its 0px mark)
+                const dot2005X = getDotXPosition(dot2005);
+                const dot2025X = getDotXPosition(dot2025);
+
+                // Get the center of the viewport for positioning
+                const viewportCenterX = window.innerWidth / 2;
+
+                // --- Initial Delay and Timeline Fade-in ---
+                await delay(initialDelay); // Wait 2 seconds before anything appears
+
+                timelineLine.style.transition = `opacity ${timelineFadeInDuration}ms ease-in-out`;
+                timelineLine.style.opacity = '1';
+                await delay(timelineFadeInDuration); // Wait for the timeline to fade in
+
+                // --- Step 1: Initial zoom in to 2005 ---
+                const initialZoomFactor = 1.5; // How much to zoom in
+
+                // Set transform-origin to the top-left of the timelineLine for consistent calculations
+                // This means all transforms (scale, translate) will be relative to the timelineLine's (0,0) point.
+                timelineLine.style.transformOrigin = `0 0`;
+
+                // Calculate the translateX needed to bring dot2005 to the viewport center AFTER scaling.
+                // The formula is: TX = (DesiredViewportX / Scale) - DotX_RelativeToElementOrigin
+                const targetTranslateX_2005 = (viewportCenterX / initialZoomFactor) - dot2005X;
+
+                timelineLine.style.transition = `transform ${zoomDuration}ms ease-in-out`;
+                timelineLine.style.transform = `scale(${initialZoomFactor}) translateX(${targetTranslateX_2005}px)`;
+
+                await delay(zoomDuration + briefPause); // Wait for zoom to complete and a brief pause
+
+                // --- Step 2: Pop up first image (2005) ---
+                popUpAnimation(image2005);
+                await delay(imageDisplayDuration); // Image stays for 5 seconds
+                popDownAnimation(image2005);
+                await delay(imageHideDuration + briefPause); // Wait for image to hide and a brief pause
+
+                // --- Step 3: Slide right to 2025 (while maintaining zoom) ---
+                // Calculate the translateX needed to bring dot2025 to the viewport center AFTER scaling.
+                const targetTranslateX_2025 = (viewportCenterX / initialZoomFactor) - dot2025X;
+
+                // Use ease-in-out for the slide transition
+                timelineLine.style.transition = `transform ${slideDuration}ms ease-in-out`;
+                timelineLine.style.transform = `scale(${initialZoomFactor}) translateX(${targetTranslateX_2025}px)`;
+
+                await delay(slideDuration + briefPause); // Wait for slide to complete and a brief pause
+
+                // --- Step 4: Pop up second image (2025) ---
+                popUpAnimation(image2025);
+                await delay(imageDisplayDuration); // Image stays for 5 seconds
+                popDownAnimation(image2025);
+                await delay(imageHideDuration + briefPause); // Wait for image to hide and a brief pause
+
+                // --- Step 5: Continue sliding right and fade away ---
+                // Calculate a final translateX that moves it sufficiently further right off-screen.
+                // We calculate a new position that is one viewport width (at the current zoom) beyond 2025's centered position.
+                const finalTranslateX_FadeOut = targetTranslateX_2025 - (window.innerWidth / initialZoomFactor);
+
+                timelineLine.style.transition = `transform ${fadeOutDuration}ms ease-out, opacity ${fadeOutDuration}ms linear`;
+                timelineLine.style.transform = `scale(${initialZoomFactor}) translateX(${finalTranslateX_FadeOut}px)`;
+                timelineLine.style.opacity = '0';
+
+                await delay(fadeOutDuration); // Wait for fade out to complete
+
+                // --- Animation Finished ---
+                timelineLine.style.display = 'none'; // Completely hide the timeline after animation
+                console.log("Timeline animation finished!");
+            }
+
+            // Start the animation automatically when the DOM is ready
+            startTimelineAnimation();
+        });
+    </script>
+</body>
+</html>

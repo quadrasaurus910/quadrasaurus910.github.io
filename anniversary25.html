@@ -31,7 +31,7 @@
                 background-image: url("church.png");
                 display: block;
                 height: 700px;
-
+                overflow: scroll;
                 position: absolute;
                 right: calc(50% - 192px);
                 width: 384px;
@@ -67,11 +67,16 @@
             #day,
             #hour,
             #minute,
-            #second,
-            #noteText {
+            #second {
                 margin: 10px 10px 10px 10px;
                 /*opacity: 0.65;*/
                 font-size: 20pt;
+            }
+
+            #noteText {
+                color: #586065;
+                font-size: 16pt;
+                margin: 10px;
             }
 
             .glass {

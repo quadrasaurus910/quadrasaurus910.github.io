@@ -41,8 +41,7 @@
             #dayDiv,
             #hourDiv,
             #minuteDiv,
-            #secondDiv,
-            #noteDiv {
+            #secondDiv {
                 /*background-color: #9EB8D1;
                 height: 100px;
                 background-clip: text;*/
@@ -72,6 +71,14 @@
                 margin: 10px 10px 10px 10px;
                 /*opacity: 0.65;*/
                 font-size: 20pt;
+            }
+
+            #noteDiv {
+                color: #586065;
+                border-radius: 10px;
+                margin: 5px 5px 1000px 5px;
+                position: relative;
+                z-index: 3;
             }
 
             #noteText {
@@ -213,6 +220,7 @@
                     We'll keep showing each other our love until they stop sending days
                 </div>
             </div>
+            <div id="buffer" name="buffer"></div>
         </div>
 
         <script>

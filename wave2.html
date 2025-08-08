@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Text Lines</title>
+    <!-- Google Fonts: Libre Baskerville -->
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic reset and body styling */
+        body {
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars due to centering */
+            font-family: 'Inter', sans-serif; /* Fallback font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            background-color: #ffffff; /* White background */
+            color: #000; /* Default text color set to black */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Main Container - 16:9 aspect ratio, centered */
+        .main-container {
+            position: absolute; /* Allows precise centering */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centers the div */
+            width: clamp(300px, 80vw, 800px); /* Responsive width, clamped for landscape */
+            aspect-ratio: 16 / 9; /* Maintains 16:9 landscape aspect ratio */
+            background-color: #f0f0f0; /* Light background for the inner box */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            overflow: hidden; /* Crucial for text slide-in effect */
+            display: flex; /* For internal layout */
+            flex-direction: column; /* Stack children vertically */
+        }
+
+        /* Content Box - holds the text lines */
+        .content-box {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around; /* Evenly space the text lines */
+            padding: 20px 40px; /* More padding on sides for text to slide into */
+            box-sizing: border-box;
+        }
+
+        /* Wrapper for each text line - hides overflowing text */
+        .text-line-wrapper {
+            position: relative;
+            width: 100%; /* Take full width of content-box */
+            height: 85px; /* INCREASED HEIGHT to prevent clipping during wave animation */
+            overflow: hidden;
+            display: flex; /* Use flex to align the inner p tag */
+            align-items: center; /* Vertically center the p tag */
+        }
+
+        /* Animated Text - initial state and slide-in animation */
+        .animated-text {
+            font-family: 'Libre Baskerville', serif; /* Changed font */
+            width: 100%; /* Crucial: Make it take full width of its parent wrapper */
+            text-align: right; /* Align text content to the right */
+            white-space: nowrap; /* Prevent text wrapping */
+            transform: translateX(-105%); /* Start off-screen to the left (more than 100% to ensure it's fully hidden) */
+            opacity: 1; /* Always visible */
+            /* Transition for the slide-in (opacity transition removed) */
+            transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1); /* Slower, smoother ease-out (increased to 1.8s) */
+            font-size: clamp(1.8em, 6vw, 4em); /* Increased and responsive font size */
+            font-weight: 700; /* Use bold variant for Libre Baskerville */
+            color: #000000; /* Black text */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* Subtle shadow for black text on light background */
+            margin: 0; /* Remove default paragraph margins */
+        }
+
+        /* State for when text has slid into view */
+        .animated-text.slide-in {
+            transform: translateX(0); /* Slides right into its final position (right-aligned due to text-align: right) */
+            opacity: 1; /* Ensure it stays visible */
+        }
+
+        /* Individual letter styling for wave effect */
+        .animated-text span {
+            display: inline-block; /* Allows individual letter transforms */
+            opacity: 1; /* Always visible to see the slide effect clearly */
+        }
+
+        /* Keyframes for the initial letter wave animation */
+        @keyframes letterWave {
+            0% { transform: translateY(0); }
+            25% { transform: translateY(-15px); } /* Move up 15 pixels */
+            100% { transform: translateY(0); } /* Move back down */
+        }
+
+        /* When .waving is applied, apply the initial letter wave animation once */
+        .animated-text.waving span {
+            animation-name: letterWave;
+            animation-duration: 1s; /* Wave duration */
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards; /* Keep the final state */
+            animation-iteration-count: 1; /* Play once */
+        }
+
+        /* Keyframes for the looping letter wave animation with a built-in pause */
+        @keyframes loopingLetterWave {
+            0% { transform: translateY(0); }
+            10% { transform: translateY(-15px); } /* Wave up (10% of 5s = 0.5s) */
+            20% { transform: translateY(0); } /* Wave down (another 10% = 0.5s) */
+            /* Hold at the final position for the remaining 80% of the 5-second duration (4s pause) */
+            21% { transform: translateY(0); }
+            100% { transform: translateY(0); }
+        }
+
+        /* When .looping-waving is applied, apply the continuous looping wave animation */
+        .animated-text.looping-waving span {
+            animation-name: loopingLetterWave;
+            animation-duration: 5s; /* Total loop duration: 1s wave + 4s pause */
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
+            animation-iteration-count: infinite; /* Loop infinitely */
+            /* animation-delay is set by JS for stagger */
+        }
+
+        /* Media queries for smaller screens */
+        @media (max-width: 768px) {
+            .main-container {
+                width: 90vw; /* Wider on small screens */
+            }
+            .content-box {
+                padding: 15px 25px;
+            }
+            .text-line-wrapper {
+                height: 70px; /* Adjusted height for smaller screens */
+            }
+            .animated-text {
+                font-size: clamp(1.2em, 8vw, 2.8em);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="content-box">
+            <div class="text-line-wrapper">
+                <p class="animated-text" data-line-index="0">Happy</p>
+            </div>
+            <div class="text-line-wrapper">
+                <p class="animated-text" data-line-index="1">Anniversary</p>
+            </div>
+            <div class="text-line-wrapper">
+                <p class="animated-text" data-line-index="2">Brittany</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedTextElements = document.querySelectorAll('.animated-text');
+
+            // Animation timing constants
+            const lineStartDelay = 1000; // Delay before first line starts animation
+            const lineStaggerDelay = 500; // Shorter delay between each successive line's animation start
+            const slideInDuration = 1800; // DURATION FOR TEXT TO SLIDE INTO PLACE (NOW 1.8 SECONDS)
+            const letterWaveDuration = 1000; // Duration for each letter's wave animation (matches CSS keyframe)
+            const letterWaveStartDelay = 200; // Time AFTER slide-in starts before letter wave begins
+            const letterWaveStagger = 60; // Delay between each letter's wave start (last to first)
+            const loopingPauseDuration = 4000; // 4 seconds pause before the loop repeats
+
+            // Helper function to create a delay
+            const delay = ms => new Promise(res => setTimeout(res, ms));
+
+            // Function to split text into individual letter spans
+            function splitTextIntoLetters(element) {
+                const textContent = element.textContent;
+                element.innerHTML = ''; // Clear original text
+                for (let i = 0; i < textContent.length; i++) {
+                    const char = textContent[i];
+                    const span = document.createElement('span');
+                    span.textContent = char === ' ' ? '\u00A0' : char; // Use non-breaking space for spaces
+                    element.appendChild(span);
+                }
+                return element; // Return the modified element
+            }
+
+            // Function to animate a single line of text sequence (slide-in then initial wave)
+            async function animateSingleLineSequence(lineElement) {
+                // Force a reflow to ensure the browser paints the initial state
+                lineElement.offsetWidth; 
+
+                // 1. Trigger slide-in animation
+                lineElement.classList.add('slide-in');
+
+                // Wait for the slide-in to almost complete before starting the wave
+                await delay(slideInDuration - letterWaveStartDelay);
+
+                // 2. Trigger initial letter wave animation
+                const letters = lineElement.querySelectorAll('span');
+                const totalLetters = letters.length;
+
+                // Apply the waving class to trigger the CSS animation (for initial wave)
+                lineElement.classList.add('waving');
+
+                // Stagger letter animations from last to first
+                for (let i = 0; i < totalLetters; i++) {
+                    const letter = letters[totalLetters - 1 - i]; // Process last letter first
+                    letter.style.animationDelay = `${i * letterWaveStagger}ms`;
+                }
+                // We don't await the full wave duration here, allowing the next line to start.
+            }
+
+            // Function to start all line animations with staggered delays and then initiate the loop
+            async function startAllLineAnimations() {
+                // Split text into letters for all lines first
+                animatedTextElements.forEach(splitTextIntoLetters);
+
+                let maxInitialAnimationDuration = 0;
+                
+                // First, run the initial staggered slide-in and wave animation
+                for (let i = 0; i < animatedTextElements.length; i++) {
+                    const lineElement = animatedTextElements[i];
+                    const currentLineDelay = (i === 0) ? lineStartDelay : lineStaggerDelay;
+                    await delay(currentLineDelay);
+                    animateSingleLineSequence(lineElement);
+                    
+                    // Calculate the total time for this line's initial animation
+                    const totalLetters = lineElement.querySelectorAll('span').length;
+                    const thisLineDuration = currentLineDelay + slideInDuration + (totalLetters * letterWaveStagger) + letterWaveDuration;
+                    maxInitialAnimationDuration = Math.max(maxInitialAnimationDuration, thisLineDuration);
+                }
+
+                // Wait for the entire initial animation sequence to finish
+                // We don't need `maxInitialAnimationEndTime`, just a single delay
+                // after the last `await delay` in the loop. The `lineStaggerDelay`
+                // in the loop already handles most of the staggering, we just need to wait
+                // for the last letter of the last line to complete its wave.
+                const lastLine = animatedTextElements[animatedTextElements.length - 1];
+                const lastLineLetters = lastLine.querySelectorAll('span');
+                const lastLineWaveTime = (lastLineLetters.length * letterWaveStagger) + letterWaveDuration;
+                await delay(lastLineWaveTime);
+
+                // Now, add the explicit 4-second pause
+                await delay(loopingPauseDuration);
+
+                // And finally, start the staggered looping animation
+                for (let i = 0; i < animatedTextElements.length; i++) {
+                    const lineElement = animatedTextElements[i];
+                    // Stagger the start of the looping animation just like the initial one
+                    if (i > 0) {
+                        await delay(lineStaggerDelay);
+                    }
+                    
+                    // Remove the initial 'waving' class and add the new one for looping
+                    lineElement.classList.remove('waving');
+                    lineElement.classList.add('looping-waving');
+                    
+                    // The CSS animation will handle the rest, but we re-apply the stagger delay
+                    // for each letter to ensure it works from a fresh state.
+                    const letters = lineElement.querySelectorAll('span');
+                    const totalLetters = letters.length;
+                    for (let j = 0; j < totalLetters; j++) {
+                        const letter = letters[totalLetters - 1 - j];
+                        letter.style.animationDelay = `${j * letterWaveStagger}ms`;
+                    }
+                }
+            }
+
+            // Start the full animation sequence when the DOM is ready
+            startAllLineAnimations();
+        });
+    </script>
+</body>
+</html>

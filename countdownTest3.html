@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown</title>
+    <style>
+        @keyframes slide {
+            from {
+                width: 0px;
+            }
+            to {
+                width: 400px;
+            }
+        }
+
+        @keyframes trans1 {
+            0% {
+                background-color: black;
+            }
+            50% {
+                background-color: #DD87C3;
+            }
+            100% {
+                background-color: white;
+            }
+        }
+
+        @keyframes trans2 {
+            0% {
+                background-color: white;
+            }
+            50% {
+                background-color: black;
+            }
+            100% {
+                background-image: url('IMG_0351.jpeg');
+            }
+        }
+
+        @keyframes trans3 {
+            from {
+                width: 80%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+
+        @keyframes trans3b {
+            from {
+                width: 0%;
+            }
+            to {
+                width: 80%;
+            }
+        }
+
+        div,
+        #testP,
+        #testP2 {
+            display: none;
+        }
+
+        #dateDiv {
+            text-align: center;
+            margin: 100px 0% 0% 0%;
+        }
+
+        #dateText {
+            font-size: 24pt;
+        }
+        
+        #date {
+            padding: 10px;
+            font-size: 18pt;
+            border-radius: 5px;
+        }
+
+        .text1 {
+            font-size: 24pt;
+            color: #DD87C3;
+            position: relative;
+            width: 0px;
+            text-align: left;
+            overflow: hidden;
+            white-space: nowrap;
+            height: 40px;
+        }
+
+        #countdownDiv {
+            text-align: center;
+            border: 2px solid white;
+            border-radius: 6px;
+            margin: 30% auto auto auto;
+            width: 0%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .cdc1 {
+            text-align: center;
+            margin: 0% 0% 0% 0%;
+            color: white;
+            height: 50px;
+            font-family: Garamond, serif;
+            white-space: nowrap;
+        }
+
+        .countDivClass {
+            font-size: 26pt;
+            color: white;
+            border-top: 0.5px solid white;
+            margin: 0pt 0pt 0pt 0pt;
+            padding: 0px 0px 20px 0px;
+            height: 60px;
+        }
+
+        #countdown {
+            padding: 5px 0px 0px 0px;
+            font-size: 24pt;
+        }
+
+        #dateBtn {
+            width: 220px;
+            height: 100px;
+            background-color: rgba(0, 0, 0, 0);
+            color: pink;
+            border: 3px solid pink;
+            border-radius: 10px;
+            font-size: 26pt;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #dateBtn:hover,
+        #dateBtn:focus {
+            background-color: rgba(238, 180, 214, 1);
+        }
+
+        body {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+
+        #redirect-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 20;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="text1" id="text1">Hello, Brittany!</p>
+    <div id="dateDiv" data-page="page0">
+        <p id="dateText">Please enter our anniversary date.</p>
+        <input type="date" id="date" name="date" autofocus>
+        <br>
+        <button id="dateBtn" name="dateBtn" data-page="countdownDiv">Submit</button>
+        <p id="testP"></p>
+        <p id="testP2"></p>
+    </div>
+    <div id="countdownDiv">
+        <div class="cdc1">
+            <p id="countdown"></p>
+        </div>
+        <div class="countDivClass">
+            <p>until</p>
+        </div>
+        <div class="countDivClass">
+            <p>Anniversary</p>
+        </div>
+    </div>
+    <div id="redirect-text">Redirecting to the anniversary page...</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const text1 = document.querySelector('#text1');
+            const dateDiv = document.querySelector('#dateDiv');
+            const dateInput = document.querySelector('#date');
+            const dateBtn = document.querySelector('#dateBtn');
+            const countdownDiv = document.querySelector('#countdownDiv');
+            const countdownEl = document.querySelector('#countdown');
+            const body = document.body;
+            const redirectText = document.getElementById('redirect-text');
+            const backgroundImageUrl = 'IMG_0351.jpeg';
+
+            function startCountdown() {
+                // Preload the background image
+                const img = new Image();
+                img.onload = () => {
+                    dateDiv.style.display = 'none';
+                    countdownDiv.style.display = 'block';
+
+                    // Animate the background and countdown container
+                    body.style.animation = 'trans2 2s forwards';
+                    countdownDiv.style.animation = 'trans3b 3s forwards';
+
+                    // Set target date to next August 10th
+                    const now = new Date();
+                    const currentYear = now.getFullYear();
+                    let targetDate = new Date(currentYear, 7, 10); // August is month 7 (0-indexed)
+                    if (now > targetDate) {
+                        targetDate.setFullYear(currentYear + 1);
+                    }
+                    
+                    const updateCountdown = () => {
+                        const currentTime = new Date();
+                        const difference = targetDate - currentTime;
+    
+                        if (difference <= 0) {
+                            clearInterval(countdownInterval);
+                            handleAnniversaryDay();
+                            return;
+                        }
+
+                        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                        countdownEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    };
+
+                    updateCountdown();
+                    countdownInterval = setInterval(updateCountdown, 1000);
+                };
+                img.src = backgroundImageUrl;
+            }
+
+            function handleAnniversaryDay() {
+                countdownDiv.style.animation = 'trans3 3s forwards';
+                setTimeout(() => {
+                    countdownDiv.style.display = 'none';
+                    redirectText.style.opacity = '1';
+                    setTimeout(() => {
+                        window.location.href = 'anniversary_page.html';
+                    }, 2000);
+                }, 3000);
+            }
+
+            text1.style.animation = 'slide 4s forwards';
+            text1.addEventListener('animationend', () => {
+                text1.style.display = 'none';
+                dateDiv.style.display = 'block';
+                body.style.animation = 'trans1 2s forwards';
+            });
+
+            dateBtn.addEventListener('click', function () {
+                const inputDate = new Date(dateInput.value);
+                
+                // Set correct anniversary dates for comparison (August 10th)
+                const firstAnniversary = new Date('2005-08-10');
+                const now = new Date();
+                const nextAnniversary = new Date(now.getFullYear(), 7, 10); // August is month 7
+
+                // Normalize dates to remove time differences
+                const inputDateNormalized = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
+                const firstAnniversaryNormalized = new Date(firstAnniversary.getFullYear(), firstAnniversary.getMonth(), firstAnniversary.getDate());
+                const nextAnniversaryNormalized = new Date(nextAnniversary.getFullYear(), nextAnniversary.getMonth(), nextAnniversary.getDate());
+
+                if (inputDateNormalized.getTime() === firstAnniversaryNormalized.getTime() || inputDateNormalized.getTime() === nextAnniversaryNormalized.getTime()) {
+                    startCountdown();
+                } else {
+                    alert("Hey, that's not our anniversary!");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

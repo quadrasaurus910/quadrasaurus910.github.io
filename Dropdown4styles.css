@@ -180,7 +180,7 @@ body {
 #content {
     flex-grow: 1; /* Content takes up remaining space */
     padding: 20px;
-    background-color: rgba(40, 44, 52, 0.8); /* Slightly transparent to see background */
+    /* background-color: rgba(40, 44, 52, 0.8); /* Slightly transparent to see background */
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
 }
 

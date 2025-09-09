@@ -8,6 +8,7 @@
     --secondary-bg: #3c4048;
     --text-color: #f0f0f0;
     --accent-color: #61dafb;
+    --translucent-bg: rgba(10, 10, 10, 0.7);
 }
 
 body {
@@ -33,7 +34,7 @@ body {
 
 /* Header Styles */
 #mainHeader {
-    background-color: var(--secondary-bg);
+    background-color:var(--translucent-bg); /*var(--secondary-bg);*/
     color: var(--text-color);
     height: var(--header-height);
     display: flex;

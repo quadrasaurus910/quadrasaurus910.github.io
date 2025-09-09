@@ -34,7 +34,7 @@ body {
 
 /* Header Styles */
 #mainHeader {
-    background-color:var(--translucent-bg); /*var(--secondary-bg);*/
+    background-color:var(--secondary-bg);
     color: var(--text-color);
     height: var(--header-height);
     display: flex;

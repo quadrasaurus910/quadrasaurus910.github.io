@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Drawing App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+        }
+        #drawingCanvas {
+            border: 2px solid #333;
+            background-color: white;
+            cursor: crosshair;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .controls button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+        .controls input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        .controls input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .controls input[type="color"]::-webkit-color-swatch {
+            border: 1px solid #ccc;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Simple Drawing App</h1>
+    <canvas id="drawingCanvas" width="800" height="600"></canvas>
+    
+    <div class="controls">
+        <label for="colorPicker">Ink Color:</label>
+        <input type="color" id="colorPicker" value="#000000">
+        <button id="clearButton">Clear Canvas</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+    const clearButton = document.getElementById('clearButton');
+
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    // Set initial drawing properties
+    ctx.strokeStyle = '#000000';
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 5;
+
+    // Function to get the correct coordinates regardless of event type
+    function getEventPos(e) {
+        if (e.touches) {
+            return {
+                x: e.touches[0].clientX - canvas.offsetLeft,
+                y: e.touches[0].clientY - canvas.offsetTop
+            };
+        } else {
+            return {
+                x: e.offsetX,
+                y: e.offsetY
+            };
+        }
+    }
+
+    // Function to handle drawing
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        // Prevent default touch behaviors like scrolling
+        e.preventDefault();
+
+        const pos = getEventPos(e);
+        
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+
+        lastX = pos.x;
+        lastY = pos.y;
+    }
+
+    // Event Listeners for mouse and touch
+    canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        const pos = getEventPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+    });
+
+    canvas.addEventListener('touchstart', (e) => {
+        isDrawing = true;
+        const pos = getEventPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+    });
+
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchmove', draw);
+
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('touchend', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+    canvas.addEventListener('touchcancel', () => isDrawing = false);
+
+    // Event Listener for the color picker
+    colorPicker.addEventListener('change', (e) => {
+        ctx.strokeStyle = e.target.value;
+    });
+
+    // Event Listener for the clear button
+    clearButton.addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+    </script>
+
+</body>
+</html>

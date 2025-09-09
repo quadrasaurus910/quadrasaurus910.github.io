@@ -184,7 +184,7 @@ body {
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
-#block1, #block2, #block3 {
+#block1, #block2, #block3, .block {
     margin-bottom: 20px;
     padding: 20px;
     background-color: var(--primary-bg);
@@ -195,6 +195,10 @@ body {
 #block1a {
     font-size: 1.2em;
     font-weight: bold;
+}
+
+.blockTitle {
+    font-size: 1.2em;
 }
 
 /* State Classes controlled by JavaScript */

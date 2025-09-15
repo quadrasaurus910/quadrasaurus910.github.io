@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+        body {
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            z-index: 10;
+        }
+        
+        .background-photo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* The key change: use cover to fill the container without distortion */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: url('https://placehold.co/1200x800/262626/fff?text=Add+Your+Photo+Here');
+            filter: brightness(0.7);
+            z-index: 0;
+        }
+        
+        .text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+        }
+
+        .birthday-text {
+            color: white;
+            font-size: clamp(2rem, 10vw, 5rem);
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <canvas id="canvas"></canvas>
+
+    <div class="background-photo"></div>
+
+    <div class="text-container">
+        <h1 class="birthday-text p-4 rounded-xl">Happy Birthday</h1>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+
+        // Set canvas dimensions to match the window size.
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+
+        // Configuration for the bouncing circles.
+        const config = {
+            circleCount: 50,
+            minSize: 10,
+            maxSize: 60,
+            minOpacity: 0.1,
+            maxOpacity: 0.5,
+            colors: ["#FFC0CB", "#FF69B4", "#FF1493", "#C71585", "#DA70D6", "#9932CC"]
+        };
+
+        // --- Class for a Bouncing Circle ---
+        class Circle {
+            constructor() {
+                this.reset();
+            }
+
+            // Function to reset the circle's properties and reposition it off-screen.
+            reset() {
+                this.radius = Math.random() * (config.maxSize - config.minSize) + config.minSize;
+                
+                // Random starting position off-screen
+                const side = Math.floor(Math.random() * 4);
+                switch (side) {
+                    case 0: // Top
+                        this.x = Math.random() * canvas.width;
+                        this.y = -this.radius;
+                        break;
+                    case 1: // Right
+                        this.x = canvas.width + this.radius;
+                        this.y = Math.random() * canvas.height;
+                        break;
+                    case 2: // Bottom
+                        this.x = Math.random() * canvas.width;
+                        this.y = canvas.height + this.radius;
+                        break;
+                    case 3: // Left
+                        this.x = -this.radius;
+                        this.y = Math.random() * canvas.height;
+                        break;
+                }
+
+                // Random velocity for initial movement.
+                this.dx = (Math.random() - 0.5) * 2;
+                this.dy = (Math.random() - 0.5) * 2;
+
+                this.color = config.colors[Math.floor(Math.random() * config.colors.length)];
+                this.opacity = Math.random() * (config.maxOpacity - config.minOpacity) + config.minOpacity;
+            }
+
+            // Function to draw the circle.
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+            }
+
+            // Function to update the circle's position and handle bouncing.
+            update() {
+                // Update position
+                this.x += this.dx;
+                this.y += this.dy;
+
+                // Bounce off walls or reset if it goes too far.
+                if (this.x - this.radius > canvas.width || this.x + this.radius < 0 ||
+                    this.y - this.radius > canvas.height || this.y + this.radius < 0) {
+                    this.reset();
+                }
+            }
+        }
+
+        // Create the initial circles.
+        const circles = [];
+        for (let i = 0; i < config.circleCount; i++) {
+            circles.push(new Circle());
+        }
+
+        // --- Main animation loop ---
+        function animate() {
+            // Clear the canvas.
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Animate and draw each circle.
+            circles.forEach(circle => {
+                circle.update();
+                circle.draw();
+            });
+
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // --- Event Listeners and Initial Call ---
+        window.addEventListener('load', () => {
+            animate();
+        });
+
+        // Clean up on window unload
+        window.addEventListener('unload', () => {
+            cancelAnimationFrame(animationFrameId);
+        });
+    </script>
+</body>
+</html>

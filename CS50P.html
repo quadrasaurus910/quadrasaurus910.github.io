@@ -12,6 +12,7 @@
         /* Custom style for the linear gradient background - tightened transition */
         body {
             font-family: 'Inter', sans-serif;
+            /* Tighter gradient transition between 30% and 70% */
             background: linear-gradient(135deg, #50CDF9 30%, #FFE600 70%);
             height: 100vh;
             width: 100vw;
@@ -28,7 +29,7 @@
             max-width: 1200px;
             max-height: 800px;
             display: flex;
-            align-items: center; /* Vertically centers the two main columns */
+            align-items: center;
             position: relative;
             z-index: 1;
         }
@@ -40,21 +41,20 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            /* Starts the text higher up on the screen */
             justify-content: flex-start; 
             align-items: flex-start;
             padding-top: 15vh;
         }
 
-        /* Base style for the ghosting text (now black and less bold) */
+        /* Base style for the ghosting text */
         .ghost-text {
             position: absolute;
             white-space: nowrap;
-            font-weight: 700; /* Less bold than before */
-            /* Responsive font size */
+            font-weight: 500;
             font-size: clamp(3rem, 15vw, 6rem); 
-            color: #000000; /* Black text */
-            transition: all 0.8s ease-out; /* Smooth movement transition */
+            color: #000000;
+            /* IMPORTANT: Use transition: none to ensure instantaneous "pop" effect */
+            transition: none;
         }
 
         /* --- Overlay Text Container (Right Side) --- */
@@ -91,52 +91,64 @@
     <script>
         const animationContainer = document.getElementById('animation-container');
         const textToAnimate = "CS50P";
-        const numCopies = 5;
-        const opacityDrop = 0.20; 
+        const numVisibleCopies = 4; // Total number of lines in the stack
+        const opacityDrop = 0.20; // 20% less transparent per copy
         const textElements = [];
 
+        // Utility function to create a time delay
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
         // --- 1. Create Initial Text Elements ---
-        for (let i = 0; i < numCopies; i++) {
+        // We only need 4 elements for the 4-line stack
+        for (let i = 0; i < numVisibleCopies; i++) {
             const div = document.createElement('div');
             div.textContent = textToAnimate;
             div.classList.add('ghost-text');
-            div.style.zIndex = numCopies - i; 
+            div.style.zIndex = numVisibleCopies - i; 
+            
+            // Start all elements hidden and at the top position
+            div.style.opacity = 0;
+            div.style.transform = `translateY(0vh)`;
+
             animationContainer.appendChild(div);
             textElements.push(div);
         }
 
-        let animationState = 0;
+        // --- 2. Animation Logic (Sequential Step) ---
+        async function startAnimationSequence() {
+            while (true) {
+                // 1. Sequentially reveal the lines with a 500ms delay
+                for (let i = 0; i < numVisibleCopies; i++) {
+                    const element = textElements[i];
+                    
+                    // Vertical position (8vh separation for non-overlap)
+                    const verticalOffset = i * 16; 
+                    element.style.transform = `translateY(${verticalOffset}vh)`;
+                    
+                    // Opacity: 100%, 80%, 60%, 40% (since i starts at 0)
+                    const finalOpacity = Math.max(0, 1 - (opacityDrop * i));
+                    element.style.opacity = finalOpacity.toFixed(2);
+                    
+                    // Wait 0.5 seconds before showing the next line
+                    await delay(500); 
+                }
 
-        // --- 2. Animation Logic ---
-        function updateAnimation() {
-            for (let i = 0; i < numCopies; i++) {
-                const element = textElements[i];
+                // 2. Pause when the full stack is visible for 1 second
+                await delay(1000); 
+
+                // 3. Reset all lines instantly (hidden, at the top)
+                textElements.forEach(element => {
+                    element.style.opacity = 0;
+                    element.style.transform = `translateY(0vh)`; 
+                });
                 
-                // Calculate the logical index (0 = top text, 4 = bottom ghost)
-                const logicalIndex = (i - animationState + numCopies) % numCopies;
-                
-                // Calculate the final opacity: 1 - (0.2 * logical index)
-                const finalOpacity = Math.max(0, 1 - (opacityDrop * logicalIndex));
-
-                // Calculate the vertical offset (increased spacing for no overlap)
-                const verticalOffset = logicalIndex * 8; // Increased from 4 to 8 for more space
-
-                // Apply styles
-                element.style.opacity = finalOpacity.toFixed(2);
-                element.style.transform = `translateY(${verticalOffset}vh)`;
+                // 4. Pause briefly before starting the sequence again
+                await delay(500);
             }
-            
-            // Advance the state for the next loop
-            animationState = (animationState + 1) % numCopies;
         }
 
         // --- 3. Start the Loop ---
-        const intervalTime = 1000; // 1000ms = 1 second (Slower animation)
-
-        window.onload = function() {
-            updateAnimation(); // Run once immediately
-            setInterval(updateAnimation, intervalTime);
-        };
+        window.onload = startAnimationSequence;
     </script>
 </body>
 </html>

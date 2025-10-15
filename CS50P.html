@@ -50,7 +50,7 @@
         .ghost-text {
             position: absolute;
             white-space: nowrap;
-            font-weight: 500;
+            font-weight: 600;
             font-size: clamp(3rem, 15vw, 6rem); 
             color: #000000;
             /* IMPORTANT: Use transition: none to ensure instantaneous "pop" effect */
@@ -76,7 +76,7 @@
         }
 
         .overlay-title {
-            font-size: clamp(1.5vw, 4vw, 4.5vw)
+            font-size: clamp(1.5vw, 4vw, 4.5vw);
             padding: 0px;
         }
     </style>
@@ -137,7 +137,7 @@
                     element.style.transform = `translateY(${verticalOffset}vh)`;
                     
                     // Opacity: 100%, 80%, 60%, 40% (since i starts at 0)
-                    const finalOpacity = Math.max(0, 1 - (opacityDrop * i));
+                    const finalOpacity = Math.max(0, (opacityDrop * i));
                     element.style.opacity = finalOpacity.toFixed(2);
                     
                     // Wait 0.5 seconds before showing the next line

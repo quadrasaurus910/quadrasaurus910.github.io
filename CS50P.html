@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS50P Animated Background</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Load Inter for the font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        /* Custom style for the linear gradient background - tightened transition */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #50CDF9 30%, #FFE600 70%);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .content-wrapper {
+            width: 90%;
+            height: 90%;
+            max-width: 1200px;
+            max-height: 800px;
+            display: flex;
+            align-items: center; /* Vertically centers the two main columns */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- CS50P Animation Container (Left Side) --- */
+        #animation-container {
+            position: relative;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Starts the text higher up on the screen */
+            justify-content: flex-start; 
+            align-items: flex-start;
+            padding-top: 15vh;
+        }
+
+        /* Base style for the ghosting text (now black and less bold) */
+        .ghost-text {
+            position: absolute;
+            white-space: nowrap;
+            font-weight: 700; /* Less bold than before */
+            /* Responsive font size */
+            font-size: clamp(3rem, 15vw, 6rem); 
+            color: #000000; /* Black text */
+            transition: all 0.8s ease-out; /* Smooth movement transition */
+        }
+
+        /* --- Overlay Text Container (Right Side) --- */
+        .overlay-text {
+            width: 50%;
+            padding: 2rem;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif; 
+            font-weight: 700;
+        }
+
+        .overlay-text h1 {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            margin-bottom: 0.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <div id="animation-container">
+            <!-- Ghost text will be injected here by JavaScript -->
+        </div>
+
+        <div class="overlay-text">
+            <h1>Introduction to Programming</h1>
+            <h1>with Python</h1>
+        </div>
+    </div>
+
+    <script>
+        const animationContainer = document.getElementById('animation-container');
+        const textToAnimate = "CS50P";
+        const numCopies = 5;
+        const opacityDrop = 0.20; 
+        const textElements = [];
+
+        // --- 1. Create Initial Text Elements ---
+        for (let i = 0; i < numCopies; i++) {
+            const div = document.createElement('div');
+            div.textContent = textToAnimate;
+            div.classList.add('ghost-text');
+            div.style.zIndex = numCopies - i; 
+            animationContainer.appendChild(div);
+            textElements.push(div);
+        }
+
+        let animationState = 0;
+
+        // --- 2. Animation Logic ---
+        function updateAnimation() {
+            for (let i = 0; i < numCopies; i++) {
+                const element = textElements[i];
+                
+                // Calculate the logical index (0 = top text, 4 = bottom ghost)
+                const logicalIndex = (i - animationState + numCopies) % numCopies;
+                
+                // Calculate the final opacity: 1 - (0.2 * logical index)
+                const finalOpacity = Math.max(0, 1 - (opacityDrop * logicalIndex));
+
+                // Calculate the vertical offset (increased spacing for no overlap)
+                const verticalOffset = logicalIndex * 8; // Increased from 4 to 8 for more space
+
+                // Apply styles
+                element.style.opacity = finalOpacity.toFixed(2);
+                element.style.transform = `translateY(${verticalOffset}vh)`;
+            }
+            
+            // Advance the state for the next loop
+            animationState = (animationState + 1) % numCopies;
+        }
+
+        // --- 3. Start the Loop ---
+        const intervalTime = 1000; // 1000ms = 1 second (Slower animation)
+
+        window.onload = function() {
+            updateAnimation(); // Run once immediately
+            setInterval(updateAnimation, intervalTime);
+        };
+    </script>
+</body>
+</html>

@@ -133,11 +133,11 @@
                     const element = textElements[i];
                     
                     // Vertical position (8vh separation for non-overlap)
-                    const verticalOffset = i * 16; 
+                    const verticalOffset = i * 16;
                     element.style.transform = `translateY(${verticalOffset}vh)`;
                     
                     // Opacity: 100%, 80%, 60%, 40% (since i starts at 0)
-                    const finalOpacity = Math.max(0, (opacityDrop * i));
+                    const finalOpacity = Math.max(0, 0.80 - (opacityDrop * i));
                     element.style.opacity = finalOpacity.toFixed(2);
                     
                     // Wait 0.5 seconds before showing the next line

@@ -7,4 +7,4 @@ until [ $count -gt 5 ]; do
   ((count++))
 done
 
-echo $count
+echo "Count is $count"

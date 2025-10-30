@@ -1,0 +1,12 @@
+--- ANSI Terminal Color Demonstration ---
+If your terminal supports ANSI codes, the text below will be colored.
+If not, you will see strange characters like '[0m', or no change at all.
+----------------------------------------
+[37m[40m Standard Black Background [0m
+[1m[37m[41m Important Warning (Red Background) [0m
+[30m[42m Success Message (Green Background) [0m
+[37m[44m Information (Blue Background) [0m
+[43m[31m[1m ALERT: Check Configuration! [0m
+[4m[30m[47m White Background Text [0m
+----------------------------------------
+Remember to always include the RESET code! The Python 'f-string' method makes it easy.

@@ -203,6 +203,12 @@ body {
     font-weight: 600;
 }
 
+.blockTitleSpan {
+    float: right;
+    font-size: 0.8em;
+    font-weight: 300;
+}
+
 /* State Classes controlled by JavaScript */
 body.sidebar-open #mobileSidebarOverlay {
     transform: translateX(0); /* Bring overlay into view */

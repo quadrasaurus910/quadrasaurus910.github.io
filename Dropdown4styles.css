@@ -19,6 +19,10 @@ body {
     background-color: var(--primary-bg);
 }
 
+a {
+    color: #B2E0E7;
+}
+
 /* Background Image */
 #backgroundI {
     position: fixed;

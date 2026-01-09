@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life HUD</title>
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --panel-color: #1a1d24;
+            --text-color: #e0e0e0;
+            --accent-color: #00ffcc; /* HUD Cyan */
+            --alert-color: #ff3366;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent body scroll, let panels scroll */
+        }
+
+        /* --- Header / HUD Top Bar --- */
+        header {
+            background-color: var(--panel-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .hud-title { font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
+        .time-widget { font-family: monospace; font-size: 1.1rem; color: var(--accent-color); }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none; /* Hidden on desktop */
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        /* --- Main Layout --- */
+        .container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+            position: relative;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 250px;
+            background-color: #14161b;
+            border-right: 1px solid #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item {
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active {
+            border-left: 3px solid var(--accent-color);
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        /* --- Dashboard Content --- */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto; /* Scroll ONLY the content area */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        /* Cards/Widgets */
+        .card {
+            background-color: var(--panel-color);
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .card h3 {
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* Inputs & Lists */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            background: #0f1115;
+            border: 1px solid #444;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        ul { list-style: none; }
+        li {
+            background: #222;
+            margin-bottom: 5px;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            border-left: 2px solid #555;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 100;
+                transform: translateX(-100%); /* Hide sidebar off-screen */
+                box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            }
+
+            .sidebar.open {
+                transform: translateX(0); /* Slide in */
+            }
+
+            /* Overlay when sidebar is open */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.7);
+                z-index: 90;
+            }
+            .overlay.active { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="hud-title">System Status</div>
+        <div class="time-widget" id="clock">00:00:00</div>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+            <div class="nav-item active">Dashboard</div>
+            <div class="nav-item">Finances</div>
+            <div class="nav-item">Routines</div>
+            <div class="nav-item">Settings</div>
+        </nav>
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+        <main class="main-content">
+            
+            <div class="card">
+                <h3>Quick Task Entry</h3>
+                <input type="text" id="taskInput" placeholder="Add new protocol..." onkeypress="handleEnter(event)">
+                <button onclick="addTask()" style="width:100%; padding: 10px; background: var(--accent-color); border:none; font-weight:bold;">ADD DATA</button>
+            </div>
+
+            <div class="card">
+                <h3>Active Protocols (Tasks)</h3>
+                <ul id="taskList">
+                    </ul>
+            </div>
+
+            <div class="card">
+                <h3>Financial Overview</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Income:</span>
+                    <span style="color: #4caf50;">$4,200</span>
+                </div>
+                <div style="background: #333; height: 10px; border-radius: 5px; overflow: hidden;">
+                    <div style="width: 70%; background: var(--accent-color); height: 100%;"></div>
+                </div>
+                <small style="color: #888; display:block; margin-top:5px;">70% to goal</small>
+            </div>
+
+            <div class="card">
+                <h3>Environment</h3>
+                <div style="font-size: 2rem;">72°F <span style="font-size: 1rem; color: #888;">Clear</span></div>
+                <p style="color: #888; font-size: 0.8rem;">Oak Island, NC</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 1. CLOCK FUNCTIONALITY
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 2. SIDEBAR TOGGLE
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        // 3. DATA PERSISTENCE (LocalStorage)
+        const taskInput = document.getElementById('taskInput');
+        const taskList = document.getElementById('taskList');
+
+        // Load data on startup
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem('myHudTasks');
+            if (savedData) {
+                const tasks = JSON.parse(savedData);
+                tasks.forEach(t => renderTask(t));
+            }
+        });
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') addTask();
+        }
+
+        function addTask() {
+            const text = taskInput.value;
+            if (text === '') return;
+
+            // Render to screen
+            renderTask(text);
+
+            // Save to LocalStorage
+            saveTaskToMemory(text);
+
+            // Clear input
+            taskInput.value = '';
+        }
+
+        function renderTask(text) {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${text}</span> <span style="color:var(--alert-color); cursor:pointer;" onclick="deleteTask(this, '${text}')">✖</span>`;
+            taskList.prepend(li); // Add to top
+        }
+
+        function saveTaskToMemory(text) {
+            let tasks = JSON.parse(localStorage.getItem('myHudTasks')) || [];
+            tasks.push(text);
+            localStorage.setItem('myHudTasks', JSON.stringify(tasks));
+        }
+
+        function deleteTask(element, text) {
+            // Remove from screen
+            element.parentElement.remove();
+
+            // Remove from Memory
+            let tasks = JSON.parse(localStorage.getItem('myHudTasks')) || [];
+            tasks = tasks.filter(t => t !== text); // simple filter (in real app use IDs)
+            localStorage.setItem('myHudTasks', JSON.stringify(tasks));
+        }
+    </script>
+</body>
+</html>

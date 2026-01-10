@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let moreChildren = more.children;
         let moreText = moreChildren[0];
         let moreIcon = moreChildren[1];
+        alert(moreText.innerHtml);
         if (moreText.innerHtml == 'MORE') {
             moreText.innerHtml == 'LESS';
         } else {

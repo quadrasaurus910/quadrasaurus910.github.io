@@ -85,6 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    var more = document.querySelector('#moreLess');
+    more.addEventListener('click', clickTest);
+
+    function clickTest() {
+        alert('this is a test');
+    }
+
     function toggleMore(event) {
         let more = event.target;
         let moreChildren = more.children;

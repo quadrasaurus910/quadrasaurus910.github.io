@@ -85,6 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function toggleMore(event) {
+        let more = event.target;
+        let moreChildren = more.children;
+        let moreText = moreChildren[0];
+        let moreIcon = moreChildren[1];
+        if (moreText.innerHtml == 'MORE') {
+            moreText.innerHtml == 'LESS';
+        } else {
+            moreText.innerHtml == 'MORE';
+        }
+    }
+
     // Optional: Scroll position logging (for debugging, can remove)
     // window.addEventListener("scroll", (event) => {
     //     document.querySelector('#testX').textContent = `scrollTop: ${window.scrollY}`;

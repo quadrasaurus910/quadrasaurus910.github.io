@@ -85,11 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    var more = document.querySelector('#moreLess');
+    var more = document.querySelectorAll('#moreLess');
     more.addEventListener('click', clickTest);
 
-    function clickTest() {
-        alert('this is a test');
+    function clickTest(event) {
+
+        alert(event.target.children[0].innerhtml);
     }
 
     function toggleMore(event) {

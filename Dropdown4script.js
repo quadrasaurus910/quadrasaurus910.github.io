@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var more = document.querySelectorAll('#moreLess');
     more.addEventListener('click', (event) => {
         let t = event.target;
-        alert(t.children[0].innerhtml);
+        alert("this was clicked");
     });
 
     function clickTest(event) {

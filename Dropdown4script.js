@@ -86,14 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     var more = document.querySelectorAll('#moreLess');
-    more.addEventListener('click', (event) => {
-        let t = event.target;
-        alert("this was clicked");
-    });
+    more.addEventListener('click', clickTest);
 
     function clickTest(event) {
-
-        alert(event.target.children[0].innerhtml);
+        alert('clicked');
+        // alert(event.target.children[0].innerhtml);
     }
 
     function toggleMore(event) {

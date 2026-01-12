@@ -31,6 +31,9 @@ textarea{height:200px}
 <button onclick="unequipItem()">Unequip</button>
 <div id="equipInfo"></div>
 </div><div class="panel">
+    <div class="panel">
+        <h3>Armor</h3>
+    </div>
 <h3>Stats</h3>
 <div id="stats"></div>
 <h3>Abilities</h3>
@@ -72,15 +75,17 @@ jobs:{
 
 equipment:{
  buster:{name:"Buster Sword",slot:"weapon",stats:{str:5}},
- excalibur:{name:"Excalibur",slot:"weapon",stats:{str:10,spd:2}},
- masamune:{name:"Masamune",slot:"weapon",stats:{str:8,spd:4}},
+ excalibur:{name:"Excalibur",slot:"weapon",stats:{str:1,spd:2}},
+ masamune:{name:"Masamune",slot:"weapon",stats:{str:99,spd:2}},
  mythrilSword:{name:"Mythril Sword",slot:"weapon",stats:{str:3}},
  bronzeArmor:{name:"Bronze Armor",slot:"armor",stats:{hp:200,def:2}},
  mythrilArmor:{name:"Mythril Armor",slot:"armor",stats:{hp:350,def:4}},
  genjiArmor:{name:"Genji Armor",slot:"armor",stats:{hp:500,def:6}},
  powerRing:{name:"Power Ring",slot:"accessory",stats:{str:2}},
  magicRing:{name:"Magic Ring",slot:"accessory",stats:{mag:3}},
- speedBoots:{name:"Speed Boots",slot:"accessory",stats:{spd:3}}
+ speedBoots:{name:"Speed Boots",slot:"accessory",stats:{spd:3}},
+ prismSpecs:{name:"Prism Specs",slot:"accessory",stats:{str:25,spd:4}},
+ rubyArmor:{name:"Ruby Armor",slot:"armor",stats:{hp:1000,def:20}}
 },
 
 materia:{

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expandable Content Examples</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 50px 20px;
+            margin: 0;
+        }
+
+        /* Container for each example */
+        .card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CHILD 1: Header/Intro */
+        .intro-section {
+            padding: 24px 24px 0 24px;
+        }
+        .intro-section p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* CHILD 2: The Expandable Area */
+        .expand-wrapper {
+            display: grid;
+            grid-template-rows: 0fr; /* The secret to animating auto height */
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .expand-wrapper.is-open {
+            grid-template-rows: 1fr;
+        }
+
+        /* The partial preview (The "Hint") */
+        .preview-hint {
+            height: 40px; /* Small slice of content shown */
+            overflow: hidden;
+            padding: 0 24px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .is-open .preview-hint {
+            height: 0;
+            padding: 0;
+            opacity: 0;
+        }
+
+        /* Gradient Overlay for the hint */
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--card-bg));
+            pointer-events: none;
+        }
+
+        .content-inner {
+            overflow: hidden; /* Necessary for the grid trick */
+        }
+
+        .expanded-body {
+            padding: 0 24px 24px 24px;
+        }
+
+        .video-container {
+            margin-top: 15px;
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* CHILD 3: The Footer/Button Area */
+        .action-area {
+            padding: 12px 24px 24px;
+            display: flex;
+            justify-content: flex-start;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--primary);
+            transition: 0.2s;
+        }
+
+        .toggle-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .toggle-btn .material-icons {
+            font-size: 20px;
+        }
+
+        /* VARIATION 2: Minimalist */
+        .card.minimalist {
+            box-shadow: none;
+            border: 1px solid #e2e8f0;
+            background: transparent;
+        }
+        .minimalist .overlay { background: linear-gradient(to bottom, transparent, var(--bg)); }
+        .minimalist.is-open { background: white; border-color: transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        /* VARIATION 3: Dark Mode */
+        .card.dark {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+        .dark .intro-section p { color: #f8fafc; }
+        .dark .overlay { background: linear-gradient(to bottom, transparent, #1e293b); }
+        .dark .action-area { border-color: #334155; }
+        .dark .toggle-btn { background: #334155; color: #38bdf8; }
+        .dark .toggle-btn:hover { background: #475569; }
+
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="intro-section">
+            <p>Example 1: The Classic Card</p>
+        </div>
+        
+        <div class="preview-hint">
+            <div class="overlay"></div>
+            <p>This is a short preview of the hidden content. It uses an overlay to suggest more...</p>
+        </div>
+
+        <div class="expand-wrapper">
+            <div class="content-inner">
+                <div class="expanded-body">
+                    <p>...is available below! Here you can find the full description of the topic. Below is an embedded video to provide more context to the user.</p>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button class="toggle-btn" onclick="toggleCard(this)">
+                <span class="btn-text">MORE</span>
+                <span class="material-icons">expand_more</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="card minimalist">
+        <div class="intro-section">
+            <p>Example 2: Modern Minimalist</p>
+        </div>
+        
+        <div class="preview-hint">
+            <div class="overlay"></div>
+            <p>Click below to see how a borderless card handles the expansion logic...</p>
+        </div>
+
+        <div class="expand-wrapper">
+            <div class="content-inner">
+                <div class="expanded-body">
+                    <p>The minimalist version focuses on typography and whitespace. The background color of the card can shift slightly to indicate it is "active" or "focused".</p>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/9bZkp7q19f0" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button class="toggle-btn" onclick="toggleCard(this)">
+                <span class="btn-text">MORE</span>
+                <span class="material-icons">expand_more</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="card dark">
+        <div class="intro-section">
+            <p>Example 3: Dark Mode Nightly</p>
+        </div>
+        
+        <div class="preview-hint">
+            <div class="overlay"></div>
+            <p>Even in dark mode, the gradient overlay helps bridge the gap between hidden and visible...</p>
+        </div>
+
+        <div class="expand-wrapper">
+            <div class="content-inner">
+                <div class="expanded-body">
+                    <p>Dark mode layouts are perfect for video content as they reduce eye strain and make the colors of the video "pop" against the background.</p>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/jNQXAC9IVRw" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button class="toggle-btn" onclick="toggleCard(this)">
+                <span class="btn-text">MORE</span>
+                <span class="material-icons">expand_more</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function toggleCard(btn) {
+            // Find the parent card and the specific wrapper
+            const card = btn.closest('.card');
+            const wrapper = card.querySelector('.expand-wrapper');
+            const btnText = btn.querySelector('.btn-text');
+            const icon = btn.querySelector('.material-icons');
+
+            // Check if it's already open
+            const isOpen = wrapper.classList.contains('is-open');
+
+            if (isOpen) {
+                // Shrink it
+                wrapper.classList.remove('is-open');
+                card.classList.remove('is-open');
+                btnText.innerText = "MORE";
+                icon.innerText = "expand_more";
+            } else {
+                // Expand it
+                wrapper.classList.add('is-open');
+                card.classList.add('is-open');
+                btnText.innerText = "LESS";
+                icon.innerText = "expand_less";
+            }
+        }
+    </script>
+</body>
+</html>

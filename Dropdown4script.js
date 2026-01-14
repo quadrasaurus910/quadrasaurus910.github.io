@@ -87,7 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var more = document.querySelectorAll('#moreLess');
     var testButton = document.querySelector('#testButton');
-    testButton.addEventListener('click', () => {});
+    testButton.addEventListener('click', () => {
+        alert('clicked');
+    });
 
     function clickTest() {
         alert('clicked');

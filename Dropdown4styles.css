@@ -234,6 +234,41 @@ a {
     font-weight: 300;
 }
 
+.expand-wrapper {
+    display: grid;
+    grid-template-rows: 0fr; /* The secret to animating auto height */
+    transition: var(--transition);
+    position: relative;
+}
+
+.expand-wrapper.is-open {
+    grid-template-rows: 1fr;
+}
+
+.preview-hint {
+    height: 40px; /* Small slice of content shown */
+    overflow: hidden;
+    padding: 0 24px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.is-open .preview-hint {
+    height: 0;
+    padding: 0;
+    opacity: 0;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--card-bg));
+    pointer-events: none;
+}
+
 /* State Classes controlled by JavaScript */
 body.sidebar-open #mobileSidebarOverlay {
     transform: translateX(0); /* Bring overlay into view */

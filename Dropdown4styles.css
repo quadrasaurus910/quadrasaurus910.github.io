@@ -211,7 +211,10 @@ a {
 #testButton {
     border: 1px solid #fff;
     border-radius: 3px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.01);
+    color: #fff;
+    font-size: 12pt;
+    padding: 3px 0px 3px 0px;
 }
 
 #moreLess {

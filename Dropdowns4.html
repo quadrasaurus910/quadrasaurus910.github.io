@@ -61,9 +61,15 @@
                     finished product.
                 </p>
             </div>
-            <div id="block2">
-                <p>10/29/2025 Completed CS50's Introduction to Programming with Python</p>
-                <div id="paragraph" name="paragraph">
+            <div class="card" id="block2">
+                <div>
+                    <p>10/29/2025 Completed CS50's Introduction to Programming with Python</p>
+                </div>
+                <div class="preview-hint">
+                    <div class="overlay"></div>
+                    <p>This is my final project's video submission</p>
+                </div>
+                <div class="expand-wrapper" id="paragraph" name="paragraph">
                     <div id="cs50pvid" name="cs50pvid">
                         <p>This is my final project's video submission</p>
                         <iframe width="560" height="315" src="https://www.youtube.com/embed/DF8jb7-GSDk?si=fpu-4s8eB0c-ed8K" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -71,8 +77,8 @@
                 </div>
                 <div id="buttonWrapper" name="buttonWrapper">
                     <button id="testButton" name="testButton">press me</button>
-                    <span onclick="toggleMore(event)" id="moreLess" name="moreLess">
-                        <span id="moreText" name="moreText" onclick="toggleMore(event)">MORE</span>
+                    <span class="toggle-btn" onclick="toggleCard(this)" id="moreLess" name="moreLess">
+                        <span class="btn-text" id="moreText" name="moreText" onclick="toggleMore(event)">MORE</span>
                         <i class="material-icons expand-more" id="expand-more">expand_more</i>
                     </span>
                 </div>

@@ -114,4 +114,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // window.addEventListener("scroll", (event) => {
     //     document.querySelector('#testX').textContent = `scrollTop: ${window.scrollY}`;
     // });
+
+    function toggleCard(btn) {
+        // Find the parent card and the specific wrapper
+        const card = btn.closest('.card');
+        const wrapper = card.querySelector('.expand-wrapper');
+        const btnText = btn.querySelector('.btn-text');
+        const icon = btn.querySelector('.material-icons');
+
+        // Check if it's already open
+        const isOpen = wrapper.classList.contains('is-open');
+
+        if (isOpen) {
+            // Shrink it
+            wrapper.classList.remove('is-open');
+            card.classList.remove('is-open');
+            btnText.innerText = "MORE";
+            icon.innerText = "expand_more";
+        } else {
+            // Expand it
+            wrapper.classList.add('is-open');
+            card.classList.add('is-open');
+            btnText.innerText = "LESS";
+            icon.innerText = "expand_less";
+        }
+    }
+
 });

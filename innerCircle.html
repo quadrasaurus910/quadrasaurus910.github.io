@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Inner Circle Text</title>
+    <title>Inner Edge Circular Text</title>
     <style>
         :root {
             /* --- CSS CONFIGURATION --- */
-            --bg-color: #ffffff;      /* Background color */
-            --text-color: #333333;    /* Text color */
-            --font-family: 'Arial', sans-serif;
-            --font-size: 24px;        /* Adjust font size here */
-            --letter-spacing: 2px;    /* Space between letters */
+            --bg-color: #ffffff;      /* White background */
+            --text-color: #1a4d1a;    /* Dark Green (matching your tree theme) */
+            --font-family: 'Arial Black', 'Impact', sans-serif; /* Thick font matches your image */
+            --font-size: 34px;        
+            --letter-spacing: 4px;    
         }
 
         body {
@@ -22,39 +22,40 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden; /* Prevents scrollbars if circle gets huge */
+            overflow: hidden;
             font-family: var(--font-family);
         }
 
-        /* Container for the SVG */
+        /* The canvas container ensures the SVG stays centered */
         #canvas-container {
-            width: 90vw;
-            height: 90vh;
+            width: 95vw;
+            height: 95vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         svg {
-            /* The SVG will scale nicely within the container */
+            /* Ensure SVG scales but doesn't overflow */
             max-width: 100%;
             max-height: 100%;
-            overflow: visible; /* Allows text to show even if slightly outside viewBox */
+            overflow: visible; 
         }
 
-        /* Text Styling */
         text {
             fill: var(--text-color);
             font-size: var(--font-size);
-            font-weight: bold;
             letter-spacing: var(--letter-spacing);
-            text-transform: uppercase; /* Optional: Looks better in circles */
+            font-weight: bold;
+            text-transform: uppercase; 
+            /* This ensures the text sits nicely in the middle of the invisible line */
+            dominant-baseline: middle; 
         }
 
-        /* Optional: Visual guide for the circle line (hidden by default) */
+        /* Debugging: Uncomment the stroke below to see the line the text sits on */
         path {
             fill: none;
-            stroke: none; /* Change to 'red' to see the line the text sits on */
+            stroke: none; /* Change to 'red' to visualize the path */
         }
     </style>
 </head>
@@ -72,75 +73,62 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        // Change this text to whatever you need. 
-        // The circle will grow or shrink to fit it.
-        const contentText = "This creates a line that rests on the inside of a circle following a circular plane. It grows depending on text length. ";
+        // --- TEXT CONFIGURATION ---
+        const contentText = "TREE REMOVAL TRIMMING STUMP";
         
-        // --- LOGIC ---
-        function renderCircularText() {
+        function renderInnerCircleText() {
             const svg = document.getElementById('circle-svg');
             const path = document.getElementById('circle-path');
             const textPathEl = document.getElementById('text-path-element');
             
-            // 1. Set the text content
+            // 1. Set the text
             textPathEl.textContent = contentText;
 
-            // 2. Measure the text length
-            // We need to access the <text> element to measure it, 
-            // but since it's inside a textPath, we get the computed length from the textPath itself after render.
-            // A trick to estimate length before final render is creating a temporary element or using getComputedTextLength
-            
-            // Force a quick update to let the browser calculate width based on font styles
+            // 2. Measure Text Length
+            // We create a temporary invisible element to measure exact pixel width
             const tempText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            tempText.setAttribute("font-size", getComputedStyle(document.body).getPropertyValue('--font-size'));
-            tempText.setAttribute("font-family", getComputedStyle(document.body).getPropertyValue('--font-family'));
-            tempText.setAttribute("letter-spacing", getComputedStyle(document.body).getPropertyValue('--letter-spacing'));
-            tempText.setAttribute("font-weight", "bold");
+            // Copy styles for accurate measurement
+            const computedStyle = getComputedStyle(document.body);
+            tempText.setAttribute("font-size", computedStyle.getPropertyValue('--font-size'));
+            tempText.setAttribute("font-family", computedStyle.getPropertyValue('--font-family'));
+            tempText.setAttribute("letter-spacing", computedStyle.getPropertyValue('--letter-spacing'));
             tempText.textContent = contentText;
             svg.appendChild(tempText);
             
             const textLength = tempText.getComputedTextLength();
-            svg.removeChild(tempText); // Clean up
+            svg.removeChild(tempText); 
 
             // 3. Calculate Radius
-            // Circumference = 2 * PI * r
-            // We want the text to form a circle, so Circumference ≈ Text Length
-            // We add a little buffer (1.2x) so the ends don't touch awkwardly
-            const bufferMultiplier = 1.1; 
-            const circumference = textLength * bufferMultiplier;
-            const radius = circumference / (2 * Math.PI);
+            // We want the text to look like a "smile" arc.
+            // If the text is long, we need a bigger circle so it doesn't wrap over itself.
+            // We use a divisor (e.g., 2 or 3) to ensure the text only takes up the bottom portion
+            // rather than a full 360 loop, matching the style of your image.
             
-            // 4. Update SVG ViewBox to fit the new circle size
-            // We add some padding for the viewBox so text isn't cut off
+            // If you want the text to be a full circle, use: radius = textLength / (2 * Math.PI);
+            // If you want it to be an ARC (like the image), we force a larger radius:
+            const radius = textLength / 1.5; 
+            
+            // 4. Update ViewBox to fit
             const viewSize = (radius * 2) + 100; // Diameter + padding
             const center = viewSize / 2;
-            
             svg.setAttribute("viewBox", `0 0 ${viewSize} ${viewSize}`);
 
-            // 5. Draw the Circle Path (Clockwise)
-            // A Clockwise path ensures text sits *inside* with bottoms pointing *outward*
-            // Command: M (Move) -> A (Arc)
-            // M cx, (cy - r) -> Start at top
-            // A r r 0 1 1 cx, (cy + r) -> Half circle to bottom
-            // A r r 0 1 1 cx, (cy - r) -> Half circle back to top
-            // The '1's in the Arc command are sweep-flags for Clockwise direction
+            // 5. Draw Counter-Clockwise (CCW) Path
+            // M = Move to Top Center
+            // A = Arc. The '0' before the last coordinates is the sweep-flag. 
+            // Setting sweep-flag to 0 makes it go Counter-Clockwise.
             
             const d = `
                 M ${center}, ${center - radius}
-                A ${radius} ${radius} 0 1 1 ${center} ${center + radius}
-                A ${radius} ${radius} 0 1 1 ${center} ${center - radius}
+                A ${radius} ${radius} 0 0 0 ${center} ${center + radius}
+                A ${radius} ${radius} 0 0 0 ${center} ${center - radius}
             `;
             
             path.setAttribute("d", d);
         }
 
-        // Run on load
-        window.addEventListener('DOMContentLoaded', renderCircularText);
-
-        // Optional: Re-calculate if window resizes (though viewBox handles scaling, 
-        // this is useful if you change font sizes dynamically)
-        window.addEventListener('resize', renderCircularText);
+        window.addEventListener('DOMContentLoaded', renderInnerCircleText);
+        window.addEventListener('resize', renderInnerCircleText);
     </script>
 </body>
 </html>

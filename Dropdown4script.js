@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
     var testButton = document.querySelector('#testButton');
     testButton.addEventListener('click', (event) => {
         var t = event.target;
-        alert('clicked');
+        // alert('clicked');
+        toggleCard(this);
     });
 
     function clickTest() {

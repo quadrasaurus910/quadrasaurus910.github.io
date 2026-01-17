@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Quadrasaurus910</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="Dropdown4styles.css" rel="stylesheet"> 
+</head>
+<body>
+
+    <header id="mainHeader">
+        <div id="siteTitle">Patrick's page</div>
+        <button id="sidebarToggleBtn" aria-label="Toggle Sidebar">
+            <span class="material-symbols-outlined menu-icon">menu</span>
+            <span class="material-symbols-outlined close-icon">close</span>
+        </button>
+    </header>
+
+    <div id="mobileSidebarOverlay">
+        <div id="dropdownContent">
+            <div id="sideBarTitleLine"></div>
+            <ul id="dropdownList">
+                <li class="dropdownItem dropdownHeader">Menu</li>
+                <li class="dropdownItem"><a href="/page2.html">Page 2</a></li>
+                <li class="dropdownItem"><a href="/Page3.html">Page 3</a></li>
+                <li class="dropdownItem"><a href="/Page4.html">Palettes</a></li>
+                <li class="dropdownItem"><a href="/Europa.html">Europa</a></li>
+                <li class="dropdownItem"><a href="/game.html">Game</a></li>
+                <li class="dropdownItem"><a href="/problem.html">Problem</a></li>
+                <li class="dropdownItem"><a href="/drawing1.html">Drawing</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="container">
+        <aside id="desktopSidebar">
+            <ul id="sideBarList">
+                <li id="sideBarListTitle">Menu</li>
+                <li class="sideBarListItem"><a href="/page2.html">Page 2</a></li>
+                <li class="sideBarListItem"><a href="/Page3.html">Page 3</a></li>
+                <li class="sideBarListItem"><a href="/Page4.html">Palettes</a></li>
+                <li class="sideBarListItem"><a href="/Europa.html">Europa</a></li>
+                <li class="sideBarListItem"><a href="/game.html">Game</a></li>
+                <li class="sideBarListItem"><a href="/problem.html">Problem</a></li>
+                <li class="sideBarListItem"><a href="/drawing1.html">Drawing</a></li>
+            </ul>
+        </aside>
+
+        <main id="content">
+            <div id="block1">
+                <div id="block1a">Welcome to my page.</div>
+                <p>It's used to post the progress of my computer science education. 
+                Here I'll share accomplishments, interests, side projects, and of 
+                course document any major brickwalls or setbacks.
+                </p>
+                <p>This site also acts as my personal sandbox to test and ultimately 
+                    showcase various scripts. This is a mixture of borrowed, taught, 
+                    and personally created scripts.
+                </p>
+            </div>
+
+            <!-- UPDATED BLOCK 2: Modern Minimalist Expansion -->
+            <div class="card" id="block2">
+                <div class="intro-section">
+                    <p>10/29/2025 Completed CS50's Introduction to Programming with Python</p>
+                </div>
+                
+                <div class="preview-hint">
+                    <div class="overlay"></div>
+                    <p>This is my final project's video submission...</p>
+                </div>
+
+                <div class="expand-wrapper">
+                    <div class="content-inner">
+                        <div class="expanded-body">
+                            <p>Watch the full video walkthrough of the final project below. This summarizes the core features and the logic behind the application.</p>
+                            <div class="video-container">
+                                <iframe width="560" height="315" src="https://www.youtube.com/embed/DF8jb7-GSDk?si=fpu-4s8eB0c-ed8K" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="buttonWrapper">
+                    <button class="toggle-btn" onclick="toggleCard(this)">
+                        <span class="btn-text">MORE</span>
+                        <i class="material-icons">expand_more</i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="block3" name="block3">
+                <div class="blockTitle">Xemu</div>
+                <p>I am now able to play SSX3 and hopefully many more on the desktop using
+                    the Xemu xbox emulator. One of the biggest hang-ups I encountered was
+                    locating the correct supporting files.
+                </p>
+            </div>
+            
+            <div class="block" id="block4" name="block4">
+                <div class="blockTitle">Linux<span class="blockTitleSpan">12/11/2025</span></div>
+                <p>Over the past year I've been trying to learn Linux. Focusing mainly on 
+                    the command line interface...
+                </p>
+            </div>
+            <div class="block" id="block5" name="block5"></div>
+        </main>
+    </div>
+
+    <div id="backgroundI" style="background-image: url('https://science.nasa.gov/wp-content/uploads/2024/07/pia17832-neowise-asteroid-tracks-among-the-stars.jpg');"></div>
+    <script src="Dropdown4script.js"></script> 
+</body>
+</html>

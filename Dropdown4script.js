@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
     var testButton = document.querySelector('#testButton');
     testButton.addEventListener('click', (event) => {
         var t = event.target;
-        // alert('clicked');
-        toggleCard(this);
+        alert('clicked');
+        // toggleCard(this);
     });
 
     function clickTest() {
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //     document.querySelector('#testX').textContent = `scrollTop: ${window.scrollY}`;
     // });
 
+    /*
     function toggleCard(btn) {
         // Find the parent card and the specific wrapper
         const card = btn.closest('.card');
@@ -140,5 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.innerText = "expand_less";
         }
     }
+    */
 
 });

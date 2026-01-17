@@ -242,7 +242,7 @@ a {
     position: relative;
 }
 
-.expand-wrapper .is-open {
+.expand-wrapper.is-open {
     grid-template-rows: 1fr;
 }
 

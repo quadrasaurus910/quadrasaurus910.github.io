@@ -18,6 +18,8 @@ body {
     color: var(--text-color);
     overflow-x: hidden; /* Prevent horizontal scroll due to sidebar transitions */
     background-color: var(--primary-bg);
+    display: flex;
+    flex-direction: column;
 }
 
 a {
@@ -240,6 +242,12 @@ a {
     grid-template-rows: 0fr; /* The secret to animating auto height */
     transition: var(--transition);
     position: relative;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .expand-wrapper.is-open {

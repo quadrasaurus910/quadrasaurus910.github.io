@@ -183,6 +183,12 @@ a { color: #B2E0E7; }
     border-radius: 8px;
 }
 
+.blockTitleSpan {
+    float: right;
+    font-size: 0.8em;
+    font-weight: 300;
+}
+
 /* Media Queries */
 @media (min-width: 600px) {
     #desktopSidebar { width: var(--sidebar-width-medium); }

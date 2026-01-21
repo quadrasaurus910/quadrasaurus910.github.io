@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Doodle Recorder</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fce4ec; /* Light pink background */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 { color: #880e4f; }
+
+        .controls {
+            margin-bottom: 10px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+        button:hover { transform: scale(1.05); background-color: #c2185b; }
+        button.secondary { background-color: #90a4ae; }
+
+        /* Canvas Styling */
+        .canvas-container {
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border-radius: 4px;
+            overflow: hidden;
+            background: white;
+            cursor: crosshair;
+        }
+
+        canvas { display: block; }
+
+        /* Output Area Styling */
+        .output-section {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+            display: none; /* Hidden until generated */
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 2px solid #e91e63;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+
+        label { color: #555; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <h1>💌 Doodle Recorder</h1>
+
+    <div class="controls">
+        <label for="thickness">Thickness:</label>
+        <input type="range" id="thickness" min="2" max="20" value="5">
+        
+        <input type="color" id="color" value="#e91e63">
+
+        <button class="secondary" onclick="clearCanvas()">Clear / Restart</button>
+        <button onclick="generateCode()">Generate Animation Code</button>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="drawCanvas" width="800" height="600"></canvas>
+    </div>
+
+    <div class="output-section" id="outputSection">
+        <h3>Copy this code into your Valentine's Page:</h3>
+        <textarea id="codeOutput" readonly></textarea>
+        <p style="font-size: 0.9em; color: #666;">Note: The generated code includes the SVG and the CSS needed to animate it.</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        const thicknessInput = document.getElementById('thickness');
+        const colorInput = document.getElementById('color');
+        
+        // State variables
+        let isDrawing = false;
+        let paths = []; // Stores all paths. Each path is an object: { points: [{x,y}], width, color }
+        let currentPath = null; 
+
+        // Canvas Setup
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.fillStyle = "white";
+        ctx.fillRect(0,0, canvas.width, canvas.height);
+
+        // --- Event Listeners ---
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        // Touch support (for mobile/tablet drawing)
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startDrawing(e.touches[0]);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            draw(e.touches[0]);
+        });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // --- Drawing Logic ---
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Start a new path data structure
+            currentPath = {
+                points: [{x, y}],
+                width: thicknessInput.value,
+                color: colorInput.value
+            };
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineWidth = thicknessInput.value;
+            ctx.strokeStyle = colorInput.value;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // visual drawing
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            // data recording
+            currentPath.points.push({x, y});
+        }
+
+        function stopDrawing() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            ctx.closePath();
+            
+            // Save the finished path to history
+            if (currentPath && currentPath.points.length > 1) {
+                paths.push(currentPath);
+            }
+            currentPath = null;
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            paths = []; // Clear history
+            document.getElementById('outputSection').style.display = 'none';
+        }
+
+        // --- Code Generation Logic ---
+
+        function generateCode() {
+            if (paths.length === 0) {
+                alert("Draw something first!");
+                return;
+            }
+
+            let svgContent = '';
+            let width = canvas.width;
+            let height = canvas.height;
+
+            // We generate a unique ID for this animation so it doesn't clash if you use multiple
+            const animId = 'anim-' + Math.floor(Math.random() * 10000);
+
+            paths.forEach((path, index) => {
+                // Convert points array to SVG Path "d" attribute
+                // M = Move to, L = Line to
+                let d = `M ${path.points[0].x} ${path.points[0].y}`;
+                for (let i = 1; i < path.points.length; i++) {
+                    d += ` L ${path.points[i].x} ${path.points[i].y}`;
+                }
+
+                // Calculate approximate length for CSS animation
+                let length = 0;
+                for (let i = 1; i < path.points.length; i++) {
+                    const p1 = path.points[i-1];
+                    const p2 = path.points[i];
+                    length += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                }
+                // Add a little buffer to length to ensure full closure
+                length = Math.ceil(length) + 10; 
+
+                // Create the SVG path element
+                // We set stroke-dasharray and stroke-dashoffset to the length
+                // The animation will animate offset to 0
+                svgContent += `<path d="${d}" 
+                                stroke="${path.color}" 
+                                stroke-width="${path.width}" 
+                                fill="none" 
+                                stroke-linecap="round" 
+                                stroke-linejoin="round" 
+                                style="stroke-dasharray: ${length}; stroke-dashoffset: ${length}; animation: drawPath 2s ease forwards ${index * 0.5}s;" 
+                               />\n`;
+            });
+
+            // Construct the final HTML block
+            const finalCode = `
+<div class="doodle-container" style="position: relative; width: 100%; max-width: ${width}px;">
+    <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; pointer-events: none;">
+        <style>
+            @keyframes drawPath {
+                to { stroke-dashoffset: 0; }
+            }
+        </style>
+        ${svgContent}
+    </svg>
+</div>
+`;
+
+            document.getElementById('codeOutput').value = finalCode;
+            document.getElementById('outputSection').style.display = 'block';
+            document.getElementById('outputSection').scrollIntoView({behavior: "smooth"});
+        }
+    </script>
+</body>
+</html>

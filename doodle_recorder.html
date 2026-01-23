@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Doodle Recorder V2</title>
+    <title>Valentine Doodle Recorder V4 - Sequential Preview</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -42,6 +42,8 @@
         }
         button:hover { transform: scale(1.05); background-color: #c2185b; }
         button.secondary { background-color: #90a4ae; }
+        button.preview-btn { background-color: #673ab7; }
+        button.preview-btn:hover { background-color: #512da8; }
 
         .canvas-container {
             position: relative;
@@ -50,9 +52,23 @@
             overflow: hidden;
             background: white;
             cursor: crosshair;
+            width: 800px;
+            height: 600px;
         }
 
         canvas { display: block; }
+
+        /* The Preview Overlay */
+        #previewOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: none;
+            pointer-events: none;
+        }
 
         .output-section {
             width: 100%;
@@ -71,14 +87,6 @@
             font-size: 12px;
             resize: vertical;
         }
-
-        label { color: #555; font-size: 14px; }
-        
-        .speed-control {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
     </style>
 </head>
 <body>
@@ -92,22 +100,25 @@
         <input type="color" id="color" value="#e91e63">
 
         <div class="speed-control">
-            <label for="speed">Draw Speed:</label>
-            <input type="range" id="speed" min="100" max="1000" value="300">
+            <label for="totalTime">Total Time (Seconds):</label>
+            <input type="range" id="totalTime" min="1" max="20" value="5">
+            <span id="timeValue">5s</span>
         </div>
 
         <button class="secondary" onclick="clearCanvas()">Clear</button>
+        <button class="preview-btn" onclick="playPreview()">Play Preview</button>
         <button onclick="generateCode()">Get Code</button>
     </div>
 
     <div class="canvas-container">
         <canvas id="drawCanvas" width="800" height="600"></canvas>
+        <div id="previewOverlay"></div>
     </div>
 
     <div class="output-section" id="outputSection">
         <h3>Copy this into your Valentine's Page:</h3>
         <textarea id="codeOutput" readonly></textarea>
-        <p style="font-size: 0.9em; color: #666;">This code now calculates exact timings so the writing flows smoothly from start to finish.</p>
+        <p style="font-size: 0.9em; color: #666;">This code uses absolute sequential timing. Each stroke waits for the one before it to end.</p>
     </div>
 
     <script>
@@ -115,19 +126,23 @@
         const ctx = canvas.getContext('2d');
         const thicknessInput = document.getElementById('thickness');
         const colorInput = document.getElementById('color');
-        const speedInput = document.getElementById('speed');
+        const timeInput = document.getElementById('totalTime');
+        const timeValue = document.getElementById('timeValue');
+        const previewOverlay = document.getElementById('previewOverlay');
+
+        timeInput.oninput = () => timeValue.innerText = timeInput.value + "s";
         
         let isDrawing = false;
         let paths = []; 
-        let currentPath = null; 
+        let currentPath = null;
 
-        // Canvas Defaults
+        [span_0](start_span)// Initialize Canvas[span_0](end_span)
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.fillStyle = "white";
         ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        // --- Interaction ---
+        [span_1](start_span)// Input Handlers[span_1](end_span)
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDrawing);
@@ -139,17 +154,15 @@
 
         function startDrawing(e) {
             isDrawing = true;
-            const rect = canvas.getBoundingClientRect();
+            [span_2](start_span)const rect = canvas.getBoundingClientRect();[span_2](end_span)
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-
             currentPath = {
                 points: [{x, y}],
                 width: thicknessInput.value,
                 color: colorInput.value
             };
-
-            ctx.beginPath();
+            [span_3](start_span)ctx.beginPath();[span_3](end_span)
             ctx.moveTo(x, y);
             ctx.lineWidth = thicknessInput.value;
             ctx.strokeStyle = colorInput.value;
@@ -157,106 +170,114 @@
 
         function draw(e) {
             if (!isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
+            [span_4](start_span)const rect = canvas.getBoundingClientRect();[span_4](end_span)
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-
             ctx.lineTo(x, y);
             ctx.stroke();
-
-            currentPath.points.push({x, y});
+            [span_5](start_span)currentPath.points.push({x, y});[span_5](end_span)
         }
 
         function stopDrawing() {
             if (!isDrawing) return;
             isDrawing = false;
             ctx.closePath();
-            
             if (currentPath && currentPath.points.length > 1) {
-                paths.push(currentPath);
+                [span_6](start_span)paths.push(currentPath);[span_6](end_span)
             }
             currentPath = null;
         }
 
         function clearCanvas() {
-            ctx.fillStyle = "white";
+            [span_7](start_span)ctx.fillStyle = "white";[span_7](end_span)
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             paths = [];
+            previewOverlay.style.display = 'none';
             document.getElementById('outputSection').style.display = 'none';
         }
 
-        // --- The Fixed Generation Logic ---
-
-        function generateCode() {
-            if (paths.length === 0) {
-                alert("Draw something first!");
-                return;
-            }
+        // --- Core Animation Logic ---
+        
+        function getGeneratedSVG() {
+            if (paths.length === 0) return null;
 
             let svgContent = '';
-            let width = canvas.width;
-            let height = canvas.height;
-            
-            // Speed logic: Higher pixels/sec = Faster drawing
-            const pixelsPerSecond = parseInt(speedInput.value); 
-            
-            // This variable tracks when the previous stroke finishes
-            let accumulatedDelay = 0;
+            const width = canvas.width;
+            const height = canvas.height;
+            const totalTargetTime = parseFloat(timeInput.value);
 
-            paths.forEach((path, index) => {
-                // 1. Build the SVG Path Data (d attribute)
+            let grandTotalLength = 0;
+            const processedPaths = paths.map(path => {
                 let d = `M ${path.points[0].x} ${path.points[0].y}`;
-                let totalLength = 0;
-
+                let len = 0;
                 for (let i = 1; i < path.points.length; i++) {
                     const p1 = path.points[i-1];
                     const p2 = path.points[i];
-                    d += ` L ${path.points[i].x} ${path.points[i].y}`;
-                    
-                    // Calculate distance between points to get total line length
-                    totalLength += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                    d += ` L ${p2.x} ${p2.y}`;
+                    len += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
                 }
+                const finalLen = Math.ceil(len);
+                grandTotalLength += finalLen;
+                return { d, length: finalLen, color: path.color, width: path.width };
+            });
 
-                // Buffer length slightly to ensure corners close fully
-                totalLength = Math.ceil(totalLength);
+            let currentDelay = 0;
+            processedPaths.forEach((path) => {
+                const strokeDuration = (path.length / grandTotalLength) * totalTargetTime;
                 
-                // 2. Calculate duration for THIS specific stroke
-                // Duration = Length / Speed
-                let duration = totalLength / pixelsPerSecond;
-                
-                // If it's a tiny dot, give it a minimum duration so it doesn't glitch
-                if (duration < 0.1) duration = 0.1;
-
-                // 3. Create the SVG Element
-                svgContent += `<path d="${d}" 
+                [span_8](start_span)[span_9](start_span)// SVG Path Generation with Sequential Delays[span_8](end_span)[span_9](end_span)
+                svgContent += `<path d="${path.d}" 
                                 stroke="${path.color}" 
                                 stroke-width="${path.width}" 
                                 fill="none" 
                                 stroke-linecap="round" 
                                 stroke-linejoin="round" 
                                 style="
-                                    stroke-dasharray: ${totalLength}; 
-                                    stroke-dashoffset: ${totalLength}; 
-                                    animation: drawPath ${duration.toFixed(2)}s linear forwards; 
-                                    animation-delay: ${accumulatedDelay.toFixed(2)}s;
-                                " 
-                               />\n`;
-
-                // 4. Update the delay for the NEXT stroke
-                accumulatedDelay += duration;
+                                    stroke-dasharray: ${path.length}; 
+                                    stroke-dashoffset: ${path.length}; 
+                                    animation: drawPath ${strokeDuration.toFixed(3)}s linear forwards; 
+                                    animation-delay: ${currentDelay.toFixed(3)}s;
+                                " />\n`;
+                currentDelay += strokeDuration;
             });
 
-            const finalCode = `
-<div class="doodle-container" style="position: relative; width: 100%; max-width: ${width}px;">
-    <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; pointer-events: none;">
-        <style>
-            @keyframes drawPath {
-                to { stroke-dashoffset: 0; }
+            return `
+<svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; display: block;">
+    <style>
+        @keyframes drawPath { to { stroke-dashoffset: 0; } }
+    </style>
+    ${svgContent}
+</svg>`;
+        }
+
+        function playPreview() {
+            const svg = getGeneratedSVG();
+            if (!svg) {
+                alert("Draw something first!");
+                return;
             }
-        </style>
-        ${svgContent}
-    </svg>
-</div>`;
+
+            // Show overlay and inject SVG
+            previewOverlay.innerHTML = svg;
+            previewOverlay.style.display = 'block';
+
+            // Hide overlay after animation finishes so you can keep drawing
+            const totalTimeMs = parseFloat(timeInput.value) * 1000;
+            setTimeout(() => {
+                previewOverlay.style.display = 'none';
+                previewOverlay.innerHTML = '';
+            }, totalTimeMs + 500);
+        }
+
+        function generateCode() {
+            const svg = getGeneratedSVG();
+            if (!svg) {
+                alert("Draw something first!");
+                return;
+            }
+
+            const width = canvas.width;
+            const finalCode = `<div class="doodle-container" style="position: relative; width: 100%; max-width: ${width}px; background: white;">\n${svg}\n</div>`;
 
             document.getElementById('codeOutput').value = finalCode;
             document.getElementById('outputSection').style.display = 'block';

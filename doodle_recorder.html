@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Doodle Recorder V4 - Sequential Preview</title>
+    <title>Valentine Doodle Recorder V5</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -43,22 +43,27 @@
         button:hover { transform: scale(1.05); background-color: #c2185b; }
         button.secondary { background-color: #90a4ae; }
         button.preview-btn { background-color: #673ab7; }
-        button.preview-btn:hover { background-color: #512da8; }
 
         .canvas-container {
             position: relative;
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
             border-radius: 4px;
-            overflow: hidden;
             background: white;
-            cursor: crosshair;
             width: 800px;
             height: 600px;
         }
 
-        canvas { display: block; }
+        /* Drawing canvas stays on top */
+        canvas { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block; 
+            z-index: 2; 
+            cursor: crosshair;
+        }
 
-        /* The Preview Overlay */
+        /* Preview layer stays below until needed, then jumps to front */
         #previewOverlay {
             position: absolute;
             top: 0;
@@ -67,7 +72,8 @@
             height: 100%;
             background: white;
             display: none;
-            pointer-events: none;
+            z-index: 10; /* Covers canvas during playback */
+            pointer-events: none; /* Never blocks clicks */
         }
 
         .output-section {
@@ -118,7 +124,7 @@
     <div class="output-section" id="outputSection">
         <h3>Copy this into your Valentine's Page:</h3>
         <textarea id="codeOutput" readonly></textarea>
-        <p style="font-size: 0.9em; color: #666;">This code uses absolute sequential timing. Each stroke waits for the one before it to end.</p>
+        [span_3](start_span)[span_4](start_span)<p style="font-size: 0.9em; color: #666;">This code ensures a single sequential flow[span_3](end_span)[span_4](end_span). Dots and crosses will wait their turn.</p>
     </div>
 
     <script>
@@ -136,13 +142,13 @@
         let paths = []; 
         let currentPath = null;
 
-        [span_0](start_span)// Initialize Canvas[span_0](end_span)
+        [span_5](start_span)// Initialize Canvas[span_5](end_span)
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.fillStyle = "white";
         ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        [span_1](start_span)// Input Handlers[span_1](end_span)
+        [span_6](start_span)// Events[span_6](end_span)
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDrawing);
@@ -154,7 +160,7 @@
 
         function startDrawing(e) {
             isDrawing = true;
-            [span_2](start_span)const rect = canvas.getBoundingClientRect();[span_2](end_span)
+            const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             currentPath = {
@@ -162,7 +168,7 @@
                 width: thicknessInput.value,
                 color: colorInput.value
             };
-            [span_3](start_span)ctx.beginPath();[span_3](end_span)
+            ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.lineWidth = thicknessInput.value;
             ctx.strokeStyle = colorInput.value;
@@ -170,12 +176,12 @@
 
         function draw(e) {
             if (!isDrawing) return;
-            [span_4](start_span)const rect = canvas.getBoundingClientRect();[span_4](end_span)
+            const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             ctx.lineTo(x, y);
             ctx.stroke();
-            [span_5](start_span)currentPath.points.push({x, y});[span_5](end_span)
+            [span_7](start_span)currentPath.points.push({x, y});[span_7](end_span)
         }
 
         function stopDrawing() {
@@ -183,27 +189,23 @@
             isDrawing = false;
             ctx.closePath();
             if (currentPath && currentPath.points.length > 1) {
-                [span_6](start_span)paths.push(currentPath);[span_6](end_span)
+                [span_8](start_span)paths.push(currentPath);[span_8](end_span)
             }
             currentPath = null;
         }
 
         function clearCanvas() {
-            [span_7](start_span)ctx.fillStyle = "white";[span_7](end_span)
+            ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             paths = [];
             previewOverlay.style.display = 'none';
             document.getElementById('outputSection').style.display = 'none';
         }
 
-        // --- Core Animation Logic ---
-        
         function getGeneratedSVG() {
             if (paths.length === 0) return null;
 
             let svgContent = '';
-            const width = canvas.width;
-            const height = canvas.height;
             const totalTargetTime = parseFloat(timeInput.value);
 
             let grandTotalLength = 0;
@@ -214,18 +216,17 @@
                     const p1 = path.points[i-1];
                     const p2 = path.points[i];
                     d += ` L ${p2.x} ${p2.y}`;
-                    len += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                    [span_9](start_span)len += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));[span_9](end_span)
                 }
                 const finalLen = Math.ceil(len);
                 grandTotalLength += finalLen;
                 return { d, length: finalLen, color: path.color, width: path.width };
             });
 
-            let currentDelay = 0;
+            [span_10](start_span)let currentDelay = 0;[span_10](end_span)
             processedPaths.forEach((path) => {
                 const strokeDuration = (path.length / grandTotalLength) * totalTargetTime;
                 
-                [span_8](start_span)[span_9](start_span)// SVG Path Generation with Sequential Delays[span_8](end_span)[span_9](end_span)
                 svgContent += `<path d="${path.d}" 
                                 stroke="${path.color}" 
                                 stroke-width="${path.width}" 
@@ -237,49 +238,36 @@
                                     stroke-dashoffset: ${path.length}; 
                                     animation: drawPath ${strokeDuration.toFixed(3)}s linear forwards; 
                                     animation-delay: ${currentDelay.toFixed(3)}s;
-                                " />\n`;
-                currentDelay += strokeDuration;
+                                [span_11](start_span)" />\n`; [cite: 44-48]
+                [cite_start]currentDelay += strokeDuration;[span_11](end_span)
             });
 
-            return `
-<svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; display: block;">
-    <style>
-        @keyframes drawPath { to { stroke-dashoffset: 0; } }
-    </style>
-    ${svgContent}
-</svg>`;
+            return `<svg viewBox="0 0 800 600" style="width: 100%; height: auto; display: block;">
+                <style>@keyframes drawPath { to { stroke-dashoffset: 0; } }</style>
+                ${svgContent}
+            [span_12](start_span)</svg>`;[span_12](end_span)
         }
 
         function playPreview() {
             const svg = getGeneratedSVG();
-            if (!svg) {
-                alert("Draw something first!");
-                return;
-            }
+            if (!svg) { alert("Draw something first!"); return; }
 
-            // Show overlay and inject SVG
             previewOverlay.innerHTML = svg;
             previewOverlay.style.display = 'block';
 
-            // Hide overlay after animation finishes so you can keep drawing
-            const totalTimeMs = parseFloat(timeInput.value) * 1000;
+            // Automatic clean-up after the total time
+            const totalTimeMs = (parseFloat(timeInput.value) * 1000) + 100;
             setTimeout(() => {
                 previewOverlay.style.display = 'none';
                 previewOverlay.innerHTML = '';
-            }, totalTimeMs + 500);
+            }, totalTimeMs);
         }
 
         function generateCode() {
             const svg = getGeneratedSVG();
-            if (!svg) {
-                alert("Draw something first!");
-                return;
-            }
-
-            const width = canvas.width;
-            const finalCode = `<div class="doodle-container" style="position: relative; width: 100%; max-width: ${width}px; background: white;">\n${svg}\n</div>`;
-
-            document.getElementById('codeOutput').value = finalCode;
+            if (!svg) { alert("Draw something first!"); return; }
+            const finalCode = `<div style="position: relative; width: 100%; max-width: 800px; background: white;">\n${svg}\n</div>`;
+            [span_13](start_span)document.getElementById('codeOutput').value = finalCode;[span_13](end_span)
             document.getElementById('outputSection').style.display = 'block';
             document.getElementById('outputSection').scrollIntoView({behavior: "smooth"});
         }

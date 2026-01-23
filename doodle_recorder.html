@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Doodle Recorder</title>
+    <title>Valentine Doodle Recorder V2</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #fce4ec; /* Light pink background */
+            background-color: #fce4ec;
             margin: 0;
             padding: 20px;
         }
@@ -26,6 +26,8 @@
             display: flex;
             gap: 15px;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         button {
@@ -41,7 +43,6 @@
         button:hover { transform: scale(1.05); background-color: #c2185b; }
         button.secondary { background-color: #90a4ae; }
 
-        /* Canvas Styling */
         .canvas-container {
             position: relative;
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
@@ -53,12 +54,11 @@
 
         canvas { display: block; }
 
-        /* Output Area Styling */
         .output-section {
             width: 100%;
             max-width: 800px;
             margin-top: 20px;
-            display: none; /* Hidden until generated */
+            display: none;
         }
         
         textarea {
@@ -73,20 +73,31 @@
         }
 
         label { color: #555; font-size: 14px; }
+        
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>💌 Doodle Recorder</h1>
+    <h1>💌 Handwriting Recorder</h1>
 
     <div class="controls">
-        <label for="thickness">Thickness:</label>
+        <label for="thickness">Size:</label>
         <input type="range" id="thickness" min="2" max="20" value="5">
         
         <input type="color" id="color" value="#e91e63">
 
-        <button class="secondary" onclick="clearCanvas()">Clear / Restart</button>
-        <button onclick="generateCode()">Generate Animation Code</button>
+        <div class="speed-control">
+            <label for="speed">Draw Speed:</label>
+            <input type="range" id="speed" min="100" max="1000" value="300">
+        </div>
+
+        <button class="secondary" onclick="clearCanvas()">Clear</button>
+        <button onclick="generateCode()">Get Code</button>
     </div>
 
     <div class="canvas-container">
@@ -94,9 +105,9 @@
     </div>
 
     <div class="output-section" id="outputSection">
-        <h3>Copy this code into your Valentine's Page:</h3>
+        <h3>Copy this into your Valentine's Page:</h3>
         <textarea id="codeOutput" readonly></textarea>
-        <p style="font-size: 0.9em; color: #666;">Note: The generated code includes the SVG and the CSS needed to animate it.</p>
+        <p style="font-size: 0.9em; color: #666;">This code now calculates exact timings so the writing flows smoothly from start to finish.</p>
     </div>
 
     <script>
@@ -104,37 +115,27 @@
         const ctx = canvas.getContext('2d');
         const thicknessInput = document.getElementById('thickness');
         const colorInput = document.getElementById('color');
+        const speedInput = document.getElementById('speed');
         
-        // State variables
         let isDrawing = false;
-        let paths = []; // Stores all paths. Each path is an object: { points: [{x,y}], width, color }
+        let paths = []; 
         let currentPath = null; 
 
-        // Canvas Setup
+        // Canvas Defaults
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.fillStyle = "white";
         ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        // --- Event Listeners ---
-        
+        // --- Interaction ---
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mouseout', stopDrawing);
         
-        // Touch support (for mobile/tablet drawing)
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            startDrawing(e.touches[0]);
-        });
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            draw(e.touches[0]);
-        });
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e.touches[0]); });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
         canvas.addEventListener('touchend', stopDrawing);
-
-        // --- Drawing Logic ---
 
         function startDrawing(e) {
             isDrawing = true;
@@ -142,7 +143,6 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            // Start a new path data structure
             currentPath = {
                 points: [{x, y}],
                 width: thicknessInput.value,
@@ -161,11 +161,9 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            // visual drawing
             ctx.lineTo(x, y);
             ctx.stroke();
 
-            // data recording
             currentPath.points.push({x, y});
         }
 
@@ -174,7 +172,6 @@
             isDrawing = false;
             ctx.closePath();
             
-            // Save the finished path to history
             if (currentPath && currentPath.points.length > 1) {
                 paths.push(currentPath);
             }
@@ -184,11 +181,11 @@
         function clearCanvas() {
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            paths = []; // Clear history
+            paths = [];
             document.getElementById('outputSection').style.display = 'none';
         }
 
-        // --- Code Generation Logic ---
+        // --- The Fixed Generation Logic ---
 
         function generateCode() {
             if (paths.length === 0) {
@@ -199,42 +196,56 @@
             let svgContent = '';
             let width = canvas.width;
             let height = canvas.height;
-
-            // We generate a unique ID for this animation so it doesn't clash if you use multiple
-            const animId = 'anim-' + Math.floor(Math.random() * 10000);
+            
+            // Speed logic: Higher pixels/sec = Faster drawing
+            const pixelsPerSecond = parseInt(speedInput.value); 
+            
+            // This variable tracks when the previous stroke finishes
+            let accumulatedDelay = 0;
 
             paths.forEach((path, index) => {
-                // Convert points array to SVG Path "d" attribute
-                // M = Move to, L = Line to
+                // 1. Build the SVG Path Data (d attribute)
                 let d = `M ${path.points[0].x} ${path.points[0].y}`;
-                for (let i = 1; i < path.points.length; i++) {
-                    d += ` L ${path.points[i].x} ${path.points[i].y}`;
-                }
+                let totalLength = 0;
 
-                // Calculate approximate length for CSS animation
-                let length = 0;
                 for (let i = 1; i < path.points.length; i++) {
                     const p1 = path.points[i-1];
                     const p2 = path.points[i];
-                    length += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                    d += ` L ${path.points[i].x} ${path.points[i].y}`;
+                    
+                    // Calculate distance between points to get total line length
+                    totalLength += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
                 }
-                // Add a little buffer to length to ensure full closure
-                length = Math.ceil(length) + 10; 
 
-                // Create the SVG path element
-                // We set stroke-dasharray and stroke-dashoffset to the length
-                // The animation will animate offset to 0
+                // Buffer length slightly to ensure corners close fully
+                totalLength = Math.ceil(totalLength);
+                
+                // 2. Calculate duration for THIS specific stroke
+                // Duration = Length / Speed
+                let duration = totalLength / pixelsPerSecond;
+                
+                // If it's a tiny dot, give it a minimum duration so it doesn't glitch
+                if (duration < 0.1) duration = 0.1;
+
+                // 3. Create the SVG Element
                 svgContent += `<path d="${d}" 
                                 stroke="${path.color}" 
                                 stroke-width="${path.width}" 
                                 fill="none" 
                                 stroke-linecap="round" 
                                 stroke-linejoin="round" 
-                                style="stroke-dasharray: ${length}; stroke-dashoffset: ${length}; animation: drawPath 2s ease forwards ${index * 0.5}s;" 
+                                style="
+                                    stroke-dasharray: ${totalLength}; 
+                                    stroke-dashoffset: ${totalLength}; 
+                                    animation: drawPath ${duration.toFixed(2)}s linear forwards; 
+                                    animation-delay: ${accumulatedDelay.toFixed(2)}s;
+                                " 
                                />\n`;
+
+                // 4. Update the delay for the NEXT stroke
+                accumulatedDelay += duration;
             });
 
-            // Construct the final HTML block
             const finalCode = `
 <div class="doodle-container" style="position: relative; width: 100%; max-width: ${width}px;">
     <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; pointer-events: none;">
@@ -245,8 +256,7 @@
         </style>
         ${svgContent}
     </svg>
-</div>
-`;
+</div>`;
 
             document.getElementById('codeOutput').value = finalCode;
             document.getElementById('outputSection').style.display = 'block';

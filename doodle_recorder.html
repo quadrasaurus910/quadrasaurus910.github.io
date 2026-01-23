@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Doodle Recorder V5</title>
+    <title>Valentine Handwriting Recorder - Tablet Fix</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -13,14 +13,16 @@
             background-color: #fce4ec;
             margin: 0;
             padding: 20px;
+            /* Prevents accidental pull-to-refresh on mobile */
+            overscroll-behavior: none;
         }
 
         h1 { color: #880e4f; }
 
         .controls {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             background: white;
-            padding: 10px 20px;
+            padding: 15px 25px;
             border-radius: 50px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
@@ -34,46 +36,27 @@
             background-color: #e91e63;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.1s;
         }
-        button:hover { transform: scale(1.05); background-color: #c2185b; }
+        button:hover { background-color: #c2185b; }
         button.secondary { background-color: #90a4ae; }
-        button.preview-btn { background-color: #673ab7; }
 
         .canvas-container {
-            position: relative;
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            border-radius: 4px;
+            border-radius: 8px;
             background: white;
-            width: 800px;
-            height: 600px;
+            line-height: 0; /* Removes tiny gap at bottom */
         }
 
-        /* Drawing canvas stays on top */
-        canvas { 
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: block; 
-            z-index: 2; 
+        canvas {
+            display: block;
             cursor: crosshair;
-        }
-
-        /* Preview layer stays below until needed, then jumps to front */
-        #previewOverlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            display: none;
-            z-index: 10; /* Covers canvas during playback */
-            pointer-events: none; /* Never blocks clicks */
+            /* CRITICAL FOR TABLETS: stops the page from moving while drawing */
+            touch-action: none; 
+            border-radius: 8px;
         }
 
         .output-section {
@@ -91,7 +74,6 @@
             border-radius: 8px;
             font-family: monospace;
             font-size: 12px;
-            resize: vertical;
         }
     </style>
 </head>
@@ -100,31 +82,27 @@
     <h1>💌 Handwriting Recorder</h1>
 
     <div class="controls">
-        <label for="thickness">Size:</label>
+        <label>Size:</label>
         <input type="range" id="thickness" min="2" max="20" value="5">
         
         <input type="color" id="color" value="#e91e63">
 
-        <div class="speed-control">
-            <label for="totalTime">Total Time (Seconds):</label>
-            <input type="range" id="totalTime" min="1" max="20" value="5">
-            <span id="timeValue">5s</span>
-        </div>
+        <label>Total Time (s):</label>
+        <input type="range" id="totalTime" min="1" max="20" value="5">
+        <span id="timeValue">5s</span>
 
         <button class="secondary" onclick="clearCanvas()">Clear</button>
-        <button class="preview-btn" onclick="playPreview()">Play Preview</button>
         <button onclick="generateCode()">Get Code</button>
     </div>
 
     <div class="canvas-container">
         <canvas id="drawCanvas" width="800" height="600"></canvas>
-        <div id="previewOverlay"></div>
     </div>
 
     <div class="output-section" id="outputSection">
-        <h3>Copy this into your Valentine's Page:</h3>
+        <h3>Sequential Animation Code:</h3>
         <textarea id="codeOutput" readonly></textarea>
-        [span_3](start_span)[span_4](start_span)<p style="font-size: 0.9em; color: #666;">This code ensures a single sequential flow[span_3](end_span)[span_4](end_span). Dots and crosses will wait their turn.</p>
+        <p>This code ensures the "t" is crossed and "i" is dotted only <b>after</b> the name is written.</p>
     </div>
 
     <script>
@@ -134,7 +112,6 @@
         const colorInput = document.getElementById('color');
         const timeInput = document.getElementById('totalTime');
         const timeValue = document.getElementById('timeValue');
-        const previewOverlay = document.getElementById('previewOverlay');
 
         timeInput.oninput = () => timeValue.innerText = timeInput.value + "s";
         
@@ -142,46 +119,44 @@
         let paths = []; 
         let currentPath = null;
 
-        [span_5](start_span)// Initialize Canvas[span_5](end_span)
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.fillStyle = "white";
         ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        [span_6](start_span)// Events[span_6](end_span)
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
-        
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e.touches[0]); });
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
-        canvas.addEventListener('touchend', stopDrawing);
+        // --- UNIFIED INPUT HANDLING (Mouse & Touch) ---
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            // Handle both touch and mouse events
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
 
         function startDrawing(e) {
             isDrawing = true;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const pos = getPos(e);
             currentPath = {
-                points: [{x, y}],
+                points: [pos],
                 width: thicknessInput.value,
                 color: colorInput.value
             };
             ctx.beginPath();
-            ctx.moveTo(x, y);
+            ctx.moveTo(pos.x, pos.y);
             ctx.lineWidth = thicknessInput.value;
             ctx.strokeStyle = colorInput.value;
         }
 
         function draw(e) {
             if (!isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            ctx.lineTo(x, y);
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
-            [span_7](start_span)currentPath.points.push({x, y});[span_7](end_span)
+            currentPath.points.push(pos);
         }
 
         function stopDrawing() {
@@ -189,25 +164,38 @@
             isDrawing = false;
             ctx.closePath();
             if (currentPath && currentPath.points.length > 1) {
-                [span_8](start_span)paths.push(currentPath);[span_8](end_span)
+                paths.push(currentPath);
             }
             currentPath = null;
         }
+
+        // Mouse Listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        window.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+
+        // Touch Listeners
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, {passive: false});
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, {passive: false});
+        canvas.addEventListener('touchend', stopDrawing);
 
         function clearCanvas() {
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             paths = [];
-            previewOverlay.style.display = 'none';
             document.getElementById('outputSection').style.display = 'none';
         }
 
-        function getGeneratedSVG() {
-            if (paths.length === 0) return null;
+        function generateCode() {
+            if (paths.length === 0) {
+                alert("Please draw your name first!");
+                return;
+            }
 
             let svgContent = '';
             const totalTargetTime = parseFloat(timeInput.value);
 
+            // 1. Calculate total length of ALL strokes combined
             let grandTotalLength = 0;
             const processedPaths = paths.map(path => {
                 let d = `M ${path.points[0].x} ${path.points[0].y}`;
@@ -216,17 +204,19 @@
                     const p1 = path.points[i-1];
                     const p2 = path.points[i];
                     d += ` L ${p2.x} ${p2.y}`;
-                    [span_9](start_span)len += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));[span_9](end_span)
+                    len += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
                 }
                 const finalLen = Math.ceil(len);
                 grandTotalLength += finalLen;
                 return { d, length: finalLen, color: path.color, width: path.width };
             });
 
-            [span_10](start_span)let currentDelay = 0;[span_10](end_span)
+            // 2. Assign timing so they play one after another
+            let currentDelay = 0;
             processedPaths.forEach((path) => {
+                // How much of the total time does this stroke get?
                 const strokeDuration = (path.length / grandTotalLength) * totalTargetTime;
-                
+
                 svgContent += `<path d="${path.d}" 
                                 stroke="${path.color}" 
                                 stroke-width="${path.width}" 
@@ -238,36 +228,23 @@
                                     stroke-dashoffset: ${path.length}; 
                                     animation: drawPath ${strokeDuration.toFixed(3)}s linear forwards; 
                                     animation-delay: ${currentDelay.toFixed(3)}s;
-                                [span_11](start_span)" />\n`; [cite: 44-48]
-                [cite_start]currentDelay += strokeDuration;[span_11](end_span)
+                                " />\n`;
+                
+                // The NEXT stroke starts only after this one finishes
+                currentDelay += strokeDuration;
             });
 
-            return `<svg viewBox="0 0 800 600" style="width: 100%; height: auto; display: block;">
-                <style>@keyframes drawPath { to { stroke-dashoffset: 0; } }</style>
-                ${svgContent}
-            [span_12](start_span)</svg>`;[span_12](end_span)
-        }
+            const finalCode = `
+<div style="width: 100%; max-width: 800px; background: transparent;">
+    <svg viewBox="0 0 800 600" style="width: 100%; height: auto; display: block;">
+        <style>
+            @keyframes drawPath { to { stroke-dashoffset: 0; } }
+        </style>
+        ${svgContent}
+    </svg>
+</div>`;
 
-        function playPreview() {
-            const svg = getGeneratedSVG();
-            if (!svg) { alert("Draw something first!"); return; }
-
-            previewOverlay.innerHTML = svg;
-            previewOverlay.style.display = 'block';
-
-            // Automatic clean-up after the total time
-            const totalTimeMs = (parseFloat(timeInput.value) * 1000) + 100;
-            setTimeout(() => {
-                previewOverlay.style.display = 'none';
-                previewOverlay.innerHTML = '';
-            }, totalTimeMs);
-        }
-
-        function generateCode() {
-            const svg = getGeneratedSVG();
-            if (!svg) { alert("Draw something first!"); return; }
-            const finalCode = `<div style="position: relative; width: 100%; max-width: 800px; background: white;">\n${svg}\n</div>`;
-            [span_13](start_span)document.getElementById('codeOutput').value = finalCode;[span_13](end_span)
+            document.getElementById('codeOutput').value = finalCode;
             document.getElementById('outputSection').style.display = 'block';
             document.getElementById('outputSection').scrollIntoView({behavior: "smooth"});
         }

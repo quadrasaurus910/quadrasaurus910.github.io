@@ -102,6 +102,7 @@ body.sidebar-open #sidebarToggleBtn .close-icon { display: block; }
 
 .blockTitleSpan {
    float: right;
+   font-size: 0.8em;
 }
 
 /* ====================================

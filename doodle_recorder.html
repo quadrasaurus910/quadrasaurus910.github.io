@@ -3,250 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Handwriting Recorder - Tablet Fix</title>
+    <title>Valentine Signature Recorder</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #fce4ec;
-            margin: 0;
-            padding: 20px;
-            /* Prevents accidental pull-to-refresh on mobile */
-            overscroll-behavior: none;
-        }
-
-        h1 { color: #880e4f; }
-
+        body { font-family: sans-serif; background-color: #fce4ec; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        h1 { color: #880e4f; margin-bottom: 10px; }
+        
         .controls {
-            margin-bottom: 20px;
-            background: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        button {
-            background-color: #e91e63;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover { background-color: #c2185b; }
-        button.secondary { background-color: #90a4ae; }
-
-        .canvas-container {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            border-radius: 8px;
-            background: white;
-            line-height: 0; /* Removes tiny gap at bottom */
-        }
-
-        canvas {
-            display: block;
-            cursor: crosshair;
-            /* CRITICAL FOR TABLETS: stops the page from moving while drawing */
-            touch-action: none; 
-            border-radius: 8px;
-        }
-
-        .output-section {
-            width: 100%;
-            max-width: 800px;
-            margin-top: 20px;
-            display: none;
+            background: white; padding: 15px; border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;
         }
         
-        textarea {
-            width: 100%;
-            height: 150px;
-            padding: 10px;
-            border: 2px solid #e91e63;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
+        button {
+            background-color: #e91e63; color: white; border: none; padding: 10px 20px;
+            border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 14px;
         }
+        button:hover { background-color: #c2185b; }
+        button.secondary { background-color: #607d8b; }
+
+        .canvas-wrapper {
+            position: relative; background: white; border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden;
+            cursor: crosshair;
+        }
+
+        /* Output Box */
+        .output-area { width: 100%; max-width: 800px; margin-top: 20px; display: none; }
+        textarea { width: 100%; height: 200px; padding: 10px; border: 2px solid #e91e63; border-radius: 8px; font-family: monospace; font-size: 12px; }
+        
+        label { font-size: 14px; color: #333; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <h1>💌 Handwriting Recorder</h1>
+    <h1>💌 Signature Recorder</h1>
 
     <div class="controls">
-        <label>Size:</label>
-        <input type="range" id="thickness" min="2" max="20" value="5">
+        <label>Size: <input type="range" id="thickness" min="2" max="15" value="4"></label>
+        <label>Color: <input type="color" id="color" value="#d81b60"></label>
+        <label>Speed: <input type="range" id="speed" min="1" max="10" value="5"></label>
         
-        <input type="color" id="color" value="#e91e63">
-
-        <label>Total Time (s):</label>
-        <input type="range" id="totalTime" min="1" max="20" value="5">
-        <span id="timeValue">5s</span>
-
-        <button class="secondary" onclick="clearCanvas()">Clear</button>
-        <button onclick="generateCode()">Get Code</button>
+        <div style="border-left: 1px solid #ddd; height: 30px; margin: 0 5px;"></div>
+        
+        <button class="secondary" onclick="resetCanvas()">Reset</button>
+        <button onclick="generateCode()">Create Animation</button>
     </div>
 
-    <div class="canvas-container">
-        <canvas id="drawCanvas" width="800" height="600"></canvas>
+    <div class="canvas-wrapper">
+        <canvas id="canvas" width="800" height="500"></canvas>
     </div>
 
-    <div class="output-section" id="outputSection">
-        <h3>Sequential Animation Code:</h3>
+    <div class="output-area" id="outputArea">
+        <h3>Paste this code into your HTML body:</h3>
         <textarea id="codeOutput" readonly></textarea>
-        <p>This code ensures the "t" is crossed and "i" is dotted only <b>after</b> the name is written.</p>
+        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">This code includes the SVG and a small script to animate it perfectly.</p>
     </div>
 
     <script>
-        const canvas = document.getElementById('drawCanvas');
+        // --- Drawing Logic ---
+        const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const thicknessInput = document.getElementById('thickness');
-        const colorInput = document.getElementById('color');
-        const timeInput = document.getElementById('totalTime');
-        const timeValue = document.getElementById('timeValue');
-
-        timeInput.oninput = () => timeValue.innerText = timeInput.value + "s";
-        
-        let isDrawing = false;
-        let paths = []; 
+        let paths = []; // Stores separate strokes
         let currentPath = null;
+        let isDrawing = false;
 
+        // Settings
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "#ffffff";
         ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        // --- UNIFIED INPUT HANDLING (Mouse & Touch) ---
+        // Events
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', move);
+        canvas.addEventListener('mouseup', end);
+        canvas.addEventListener('mouseout', end);
+        
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); start(e.touches[0]); });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e.touches[0]); });
+        canvas.addEventListener('touchend', end);
 
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            // Handle both touch and mouse events
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
-        }
-
-        function startDrawing(e) {
+        function start(e) {
             isDrawing = true;
             const pos = getPos(e);
-            currentPath = {
-                points: [pos],
-                width: thicknessInput.value,
-                color: colorInput.value
-            };
+            
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
-            ctx.lineWidth = thicknessInput.value;
-            ctx.strokeStyle = colorInput.value;
+            ctx.lineWidth = document.getElementById('thickness').value;
+            ctx.strokeStyle = document.getElementById('color').value;
+
+            currentPath = {
+                color: ctx.strokeStyle,
+                width: ctx.lineWidth,
+                points: [{x: pos.x, y: pos.y}]
+            };
         }
 
-        function draw(e) {
+        function move(e) {
             if (!isDrawing) return;
             const pos = getPos(e);
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
-            currentPath.points.push(pos);
+            currentPath.points.push({x: pos.x, y: pos.y});
         }
 
-        function stopDrawing() {
+        function end() {
             if (!isDrawing) return;
             isDrawing = false;
             ctx.closePath();
-            if (currentPath && currentPath.points.length > 1) {
-                paths.push(currentPath);
-            }
-            currentPath = null;
+            if (currentPath.points.length > 1) paths.push(currentPath);
         }
 
-        // Mouse Listeners
-        canvas.addEventListener('mousedown', startDrawing);
-        window.addEventListener('mousemove', draw);
-        window.addEventListener('mouseup', stopDrawing);
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
 
-        // Touch Listeners
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, {passive: false});
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, {passive: false});
-        canvas.addEventListener('touchend', stopDrawing);
-
-        function clearCanvas() {
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function resetCanvas() {
+            ctx.fillRect(0,0, canvas.width, canvas.height);
             paths = [];
-            document.getElementById('outputSection').style.display = 'none';
+            document.getElementById('outputArea').style.display = 'none';
         }
+
+        // --- Generator Logic (The New Approach) ---
 
         function generateCode() {
-            if (paths.length === 0) {
-                alert("Please draw your name first!");
-                return;
-            }
+            if (paths.length === 0) return alert("Please draw something first!");
 
-            let svgContent = '';
-            const totalTargetTime = parseFloat(timeInput.value);
+            const w = canvas.width;
+            const h = canvas.height;
+            const speedVal = document.getElementById('speed').value;
+            // Map 1-10 slider to a speed multiplier (higher is faster)
+            const speedMultiplier = speedVal * 0.5; 
+            
+            // Unique ID for this animation instance
+            const animId = "sig_" + Math.random().toString(36).substr(2, 9);
 
-            // 1. Calculate total length of ALL strokes combined
-            let grandTotalLength = 0;
-            const processedPaths = paths.map(path => {
-                let d = `M ${path.points[0].x} ${path.points[0].y}`;
-                let len = 0;
-                for (let i = 1; i < path.points.length; i++) {
-                    const p1 = path.points[i-1];
-                    const p2 = path.points[i];
-                    d += ` L ${p2.x} ${p2.y}`;
-                    len += Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-                }
-                const finalLen = Math.ceil(len);
-                grandTotalLength += finalLen;
-                return { d, length: finalLen, color: path.color, width: path.width };
-            });
-
-            // 2. Assign timing so they play one after another
-            let currentDelay = 0;
-            processedPaths.forEach((path) => {
-                // How much of the total time does this stroke get?
-                const strokeDuration = (path.length / grandTotalLength) * totalTargetTime;
-
-                svgContent += `<path d="${path.d}" 
-                                stroke="${path.color}" 
-                                stroke-width="${path.width}" 
-                                fill="none" 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                style="
-                                    stroke-dasharray: ${path.length}; 
-                                    stroke-dashoffset: ${path.length}; 
-                                    animation: drawPath ${strokeDuration.toFixed(3)}s linear forwards; 
-                                    animation-delay: ${currentDelay.toFixed(3)}s;
-                                " />\n`;
+            // 1. Convert paths to SVG strings
+            let svgPaths = "";
+            paths.forEach(p => {
+                let d = `M ${p.points[0].x} ${p.points[0].y}`;
+                for (let i=1; i<p.points.length; i++) d += ` L ${p.points[i].x} ${p.points[i].y}`;
                 
-                // The NEXT stroke starts only after this one finishes
-                currentDelay += strokeDuration;
+                // Note: We add opacity:0 initially to ensure it is hidden until JS wakes it up
+                svgPaths += `<path d="${d}" stroke="${p.color}" stroke-width="${p.width}" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0" />\n`;
             });
 
+            // 2. Build the Output String
+            // This includes a specialized script that will handle the sequencing
             const finalCode = `
-<div style="width: 100%; max-width: 800px; background: transparent;">
-    <svg viewBox="0 0 800 600" style="width: 100%; height: auto; display: block;">
-        <style>
-            @keyframes drawPath { to { stroke-dashoffset: 0; } }
-        </style>
-        ${svgContent}
+<div id="${animId}" style="position: relative; width: 100%; max-width: ${w}px; margin: 0 auto;">
+    <svg viewBox="0 0 ${w} ${h}" style="width: 100%; height: auto;">
+        ${svgPaths}
     </svg>
-</div>`;
+    
+    <script>
+    (function() {
+        const container = document.getElementById('${animId}');
+        const paths = container.querySelectorAll('path');
+        const speedMultiplier = ${speedMultiplier}; // Speed from recorder
+
+        async function animateSignature() {
+            for (let path of paths) {
+                // 1. Calculate precise length
+                const length = path.getTotalLength();
+                
+                // 2. Set up the Dash Array (Hide the line)
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+                path.style.opacity = '1'; // Make visible now that offset hides it
+
+                // 3. Calculate Duration based on length (Consistency!)
+                // Longer lines take longer time.
+                // Base calculation: length / (100 * speed)
+                const duration = length / (50 * speedMultiplier); 
+
+                // 4. Animate using Web Animations API
+                const animation = path.animate(
+                    [ { strokeDashoffset: length }, { strokeDashoffset: 0 } ],
+                    { duration: duration * 1000, easing: 'linear', fill: 'forwards' }
+                );
+
+                // 5. WAIT for this stroke to finish before starting the next
+                await animation.finished;
+            }
+        }
+
+        // Start animation when visible in viewport (Optional polish)
+        const observer = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting) {
+                animateSignature();
+                observer.disconnect();
+            }
+        });
+        observer.observe(container);
+    })();
+    <\/script>
+</div>
+`;
 
             document.getElementById('codeOutput').value = finalCode;
-            document.getElementById('outputSection').style.display = 'block';
-            document.getElementById('outputSection').scrollIntoView({behavior: "smooth"});
+            document.getElementById('outputArea').style.display = 'block';
+            document.getElementById('outputArea').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>

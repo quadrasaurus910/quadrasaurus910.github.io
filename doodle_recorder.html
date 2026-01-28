@@ -3,80 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Canvas Replay</title>
+    <title>Smart Crop Recorder</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f3e5f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         h1 { color: #4a148c; }
-        
-        .controls {
-            background: white; padding: 15px; border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;
-        }
-        
-        button {
-            background-color: #9c27b0; color: white; border: none; padding: 10px 20px;
-            border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
+        .controls { background: white; padding: 15px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+        button { background-color: #9c27b0; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         button:hover { background-color: #7b1fa2; transform: scale(1.05); }
         button.secondary { background-color: #78909c; }
-
-        .canvas-wrapper {
-            position: relative; background: white; border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: crosshair; overflow: hidden;
-        }
-
+        .canvas-wrapper { position: relative; background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: crosshair; overflow: hidden; }
         .output-area { width: 100%; max-width: 800px; margin-top: 20px; display: none; }
         textarea { width: 100%; height: 200px; padding: 10px; border: 2px solid #9c27b0; border-radius: 8px; font-family: monospace; font-size: 11px; }
     </style>
 </head>
 <body>
 
-    <h1>💌 Absolute Replay Recorder</h1>
-    <p style="margin-top:0; color:#666;">This version records exact movement. No SVG math glitches.</p>
-
+    <h1>💌 Smart Crop Recorder</h1>
     <div class="controls">
         <label>Thick: <input type="range" id="thickness" min="2" max="20" value="5"></label>
         <label>Color: <input type="color" id="color" value="#e91e63"></label>
-        <div style="width:1px; height:20px; background:#ccc;"></div>
         <button class="secondary" onclick="resetCanvas()">Clear</button>
-        <button onclick="generateCode()">Generate Replay Code</button>
+        <button onclick="generateCode()">Generate Cropped Code</button>
     </div>
 
     <div class="canvas-wrapper">
-        <canvas id="canvas" width="800" height="500"></canvas>
+        <canvas id="canvas" width="800" height="600"></canvas>
     </div>
 
     <div class="output-area" id="outputArea">
-        <h3>Paste this into your Valentine's Page:</h3>
+        <h3>Code for your Page:</h3>
         <textarea id="codeOutput" readonly></textarea>
+        <p style="color:#666; font-size:0.9em">
+            <strong>Note:</strong> This code creates a function called <code>playHandwriting()</code>. 
+            You must call this function in your Javascript when you want the drawing to start.
+        </p>
     </div>
 
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        
-        // This array will hold the entire "movie" of your drawing
-        // Structure: [ { x, y, drag, color, width } ]
         let recordedMoves = [];
         let isDrawing = false;
 
-        // Settings
+        // Init
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.fillStyle = "white";
         ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        // --- Recording Logic ---
-        
+        // Recording
         function addPoint(e, drag) {
             const rect = canvas.getBoundingClientRect();
-            const x = Math.round(e.clientX - rect.left); // Round to integer to save space
+            const x = Math.round(e.clientX - rect.left);
             const y = Math.round(e.clientY - rect.top);
-            
             const color = document.getElementById('color').value;
             const width = document.getElementById('thickness').value;
 
-            // Visual Feedback
             if (drag) {
                 ctx.lineTo(x, y);
                 ctx.stroke();
@@ -84,38 +66,28 @@
                 ctx.beginPath();
                 ctx.moveTo(x, y);
             }
-
-            // Record Data
-            // drag: true means "connected to previous point", false means "new stroke"
             recordedMoves.push({ x, y, drag, c: color, w: width });
         }
 
         canvas.addEventListener('mousedown', (e) => {
             isDrawing = true;
-            addPoint(e, false); // false = start new line
+            addPoint(e, false);
             ctx.lineWidth = document.getElementById('thickness').value;
             ctx.strokeStyle = document.getElementById('color').value;
         });
-        
-        canvas.addEventListener('mousemove', (e) => {
-            if (isDrawing) addPoint(e, true); // true = continue line
-        });
-        
-        canvas.addEventListener('mouseup', () => { isDrawing = false; });
-        canvas.addEventListener('mouseout', () => { isDrawing = false; });
+        canvas.addEventListener('mousemove', (e) => { if (isDrawing) addPoint(e, true); });
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseout', () => isDrawing = false);
 
-        // Touch Support
+        // Touch
         canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            isDrawing = true;
-            const touch = e.touches[0];
-            addPoint(touch, false);
+            e.preventDefault(); isDrawing = true;
+            addPoint(e.touches[0], false);
             ctx.lineWidth = document.getElementById('thickness').value;
             ctx.strokeStyle = document.getElementById('color').value;
         });
         canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (isDrawing) addPoint(e.touches[0], true);
+            e.preventDefault(); if (isDrawing) addPoint(e.touches[0], true);
         });
         canvas.addEventListener('touchend', () => isDrawing = false);
 
@@ -125,89 +97,86 @@
             document.getElementById('outputArea').style.display = 'none';
         }
 
-        // --- Generator Logic ---
+        // --- CROP & GENERATE LOGIC ---
 
         function generateCode() {
             if (recordedMoves.length === 0) return alert("Draw something first!");
 
-            // We compress the data slightly for the output
-            // Format: [x, y, drag(1/0), color, width]
-            // We only save color/width if they change, to save space, but for simplicity here we save all or optimize slightly.
-            // Let's just dump the JSON. It's robust.
+            // 1. Calculate Bounding Box
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
             
-            const jsonString = JSON.stringify(recordedMoves);
-            
+            recordedMoves.forEach(p => {
+                if (p.x < minX) minX = p.x;
+                if (p.x > maxX) maxX = p.x;
+                if (p.y < minY) minY = p.y;
+                if (p.y > maxY) maxY = p.y;
+            });
+
+            // Add some padding so the stroke isn't cut off at the edge
+            const padding = 15; 
+            const croppedWidth = (maxX - minX) + (padding * 2);
+            const croppedHeight = (maxY - minY) + (padding * 2);
+
+            // 2. Adjust all points to be relative to the new 0,0 (plus padding)
+            const adjustedMoves = recordedMoves.map(p => {
+                return {
+                    x: p.x - minX + padding,
+                    y: p.y - minY + padding,
+                    drag: p.drag,
+                    c: p.c,
+                    w: p.w
+                };
+            });
+
+            const jsonString = JSON.stringify(adjustedMoves);
+            const animId = "hw_" + Math.random().toString(36).substr(2, 5);
+
+            // 3. Generate Output
             const finalCode = `
-<div style="position: relative; width: 100%; max-width: 800px; margin: 0 auto;">
-    <canvas id="valentineCanvas" width="800" height="500" style="width: 100%; height: auto; background: transparent;"></canvas>
-</div>
+<canvas id="${animId}" width="${croppedWidth}" height="${croppedHeight}" style="display: block; width: ${croppedWidth}px; height: ${croppedHeight}px; background: transparent;"></canvas>
 
 <script>
-(function() {
-    const canvas = document.getElementById('valentineCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    // The recorded movie data
-    const moves = ${jsonString};
+    // Global function to trigger this specific animation
+    window.playHandwriting = function() {
+        const canvas = document.getElementById('${animId}');
+        if (!canvas) return; // safety check
+        const ctx = canvas.getContext('2d');
+        const moves = ${jsonString}; // The recorded data
 
-    // Settings
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    
-    let index = 0;
-    
-    // Speed: How many points to draw per frame?
-    // 1 = Normal (recorded speed-ish)
-    // 2 = 2x speed, etc.
-    const speed = 2; 
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.clearRect(0,0, canvas.width, canvas.height); // Ensure clean start
 
-    function animate() {
-        if (index >= moves.length) return; // Done
+        let index = 0;
+        const speed = 2; // Adjust speed here (1=slow, 5=fast)
 
-        // Draw a batch of points based on speed
-        for (let i = 0; i < speed; i++) {
-            if (index >= moves.length) break;
+        function animate() {
+            if (index >= moves.length) return;
 
-            const point = moves[index];
-            
-            if (!point.drag) {
-                // Start new stroke (Lift pen)
-                ctx.beginPath();
-                ctx.moveTo(point.x, point.y);
-                ctx.strokeStyle = point.c;
-                ctx.lineWidth = point.w;
-            } else {
-                // Draw line (Drag pen)
-                // We need to ensure we have the correct styles in case multiple paths exist
-                // Ideally we set style on 'move', but for performance we assume continuity or set it every time.
-                // To be safe against color changes in mid-stream (unlikely but possible):
-                ctx.strokeStyle = point.c;
-                ctx.lineWidth = point.w;
-                
-                ctx.lineTo(point.x, point.y);
-                ctx.stroke();
-                
-                // Reset path start to current to avoid long connected jagged lines if we didn't stroke() immediately
-                ctx.beginPath();
-                ctx.moveTo(point.x, point.y);
+            for (let i = 0; i < speed; i++) {
+                if (index >= moves.length) break;
+                const p = moves[index];
+
+                if (!p.drag) {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.strokeStyle = p.c;
+                    ctx.lineWidth = p.w;
+                } else {
+                    ctx.strokeStyle = p.c;
+                    ctx.lineWidth = p.w;
+                    ctx.lineTo(p.x, p.y);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                }
+                index++;
             }
-            index++;
+            requestAnimationFrame(animate);
         }
-        
-        requestAnimationFrame(animate);
-    }
-
-    // Start when visible
-    const observer = new IntersectionObserver((entries) => {
-        if(entries[0].isIntersecting) {
-            animate();
-            observer.disconnect();
-        }
-    });
-    observer.observe(canvas);
-})();
-<\/script>
-`;
+        animate();
+    };
+<\/script>`;
 
             document.getElementById('codeOutput').value = finalCode;
             document.getElementById('outputArea').style.display = 'block';

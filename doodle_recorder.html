@@ -3,40 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Crop Recorder</title>
+    <title>Valentine Crop Recorder</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f3e5f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        h1 { color: #4a148c; }
-        .controls { background: white; padding: 15px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
-        button { background-color: #9c27b0; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        h1 { color: #4a148c; margin-bottom: 5px; }
+        p { margin-top: 0; color: #666; font-size: 0.9rem; }
+        
+        .controls {
+            background: white; padding: 10px 20px; border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        
+        button {
+            background-color: #9c27b0; color: white; border: none; padding: 10px 20px;
+            border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
         button:hover { background-color: #7b1fa2; transform: scale(1.05); }
         button.secondary { background-color: #78909c; }
-        .canvas-wrapper { position: relative; background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: crosshair; overflow: hidden; }
+
+        .canvas-wrapper {
+            position: relative; background: white; border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: crosshair; overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
         .output-area { width: 100%; max-width: 800px; margin-top: 20px; display: none; }
-        textarea { width: 100%; height: 200px; padding: 10px; border: 2px solid #9c27b0; border-radius: 8px; font-family: monospace; font-size: 11px; }
+        textarea { width: 100%; height: 220px; padding: 10px; border: 2px solid #9c27b0; border-radius: 8px; font-family: monospace; font-size: 11px; }
     </style>
 </head>
 <body>
 
-    <h1>💌 Smart Crop Recorder</h1>
+    <h1>💌 Cropped Signature Recorder</h1>
+    <p>Draw anywhere. The tool will automatically find your signature and crop the excess.</p>
+
     <div class="controls">
         <label>Thick: <input type="range" id="thickness" min="2" max="20" value="5"></label>
         <label>Color: <input type="color" id="color" value="#e91e63"></label>
+        <div style="width:1px; height:20px; background:#ccc;"></div>
         <button class="secondary" onclick="resetCanvas()">Clear</button>
-        <button onclick="generateCode()">Generate Cropped Code</button>
+        <button onclick="generateCode()">Generate Animation</button>
     </div>
 
     <div class="canvas-wrapper">
-        <canvas id="canvas" width="800" height="600"></canvas>
+        <canvas id="canvas" width="800" height="500"></canvas>
     </div>
 
     <div class="output-area" id="outputArea">
-        <h3>Code for your Page:</h3>
+        <h3>Paste this into your page:</h3>
         <textarea id="codeOutput" readonly></textarea>
-        <p style="color:#666; font-size:0.9em">
-            <strong>Note:</strong> This code creates a function called <code>playHandwriting()</code>. 
-            You must call this function in your Javascript when you want the drawing to start.
-        </p>
+        <p><strong>Tip:</strong> The code below includes <code>playHandwriting()</code>. By default, it runs immediately. To wait for your other animations, simply delete the last line of the script.</p>
     </div>
 
     <script>
@@ -44,14 +59,18 @@
         const ctx = canvas.getContext('2d');
         let recordedMoves = [];
         let isDrawing = false;
-
-        // Init
+        
+        // Setup
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.fillStyle = "white";
-        ctx.fillRect(0,0, canvas.width, canvas.height);
+        
+        function clearScreen() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+        }
+        clearScreen();
 
-        // Recording
+        // --- Recording Logic ---
         function addPoint(e, drag) {
             const rect = canvas.getBoundingClientRect();
             const x = Math.round(e.clientX - rect.left);
@@ -69,6 +88,7 @@
             recordedMoves.push({ x, y, drag, c: color, w: width });
         }
 
+        // Mouse Events
         canvas.addEventListener('mousedown', (e) => {
             isDrawing = true;
             addPoint(e, false);
@@ -76,10 +96,18 @@
             ctx.strokeStyle = document.getElementById('color').value;
         });
         canvas.addEventListener('mousemove', (e) => { if (isDrawing) addPoint(e, true); });
-        canvas.addEventListener('mouseup', () => isDrawing = false);
-        canvas.addEventListener('mouseout', () => isDrawing = false);
+        
+        // Stop Drawing & Show Bounding Box
+        const stopDrawing = () => {
+            if(isDrawing) {
+                isDrawing = false;
+                drawBoundingBox();
+            }
+        };
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
 
-        // Touch
+        // Touch Events
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault(); isDrawing = true;
             addPoint(e.touches[0], false);
@@ -89,74 +117,97 @@
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault(); if (isDrawing) addPoint(e.touches[0], true);
         });
-        canvas.addEventListener('touchend', () => isDrawing = false);
+        canvas.addEventListener('touchend', stopDrawing);
+
 
         function resetCanvas() {
-            ctx.fillRect(0,0, canvas.width, canvas.height);
+            clearScreen();
             recordedMoves = [];
             document.getElementById('outputArea').style.display = 'none';
         }
 
-        // --- CROP & GENERATE LOGIC ---
-
-        function generateCode() {
-            if (recordedMoves.length === 0) return alert("Draw something first!");
-
-            // 1. Calculate Bounding Box
+        // --- Bounding Box Logic ---
+        function getBounds() {
+            if (recordedMoves.length === 0) return null;
             let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-            
             recordedMoves.forEach(p => {
                 if (p.x < minX) minX = p.x;
                 if (p.x > maxX) maxX = p.x;
                 if (p.y < minY) minY = p.y;
                 if (p.y > maxY) maxY = p.y;
             });
+            return { minX, maxX, minY, maxY };
+        }
 
-            // Add some padding so the stroke isn't cut off at the edge
-            const padding = 15; 
-            const croppedWidth = (maxX - minX) + (padding * 2);
-            const croppedHeight = (maxY - minY) + (padding * 2);
+        function drawBoundingBox() {
+            const b = getBounds();
+            if(!b) return;
+            
+            // Visual feedback only (draws a light red box)
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255, 0, 0, 0.3)';
+            ctx.lineWidth = 1;
+            const w = b.maxX - b.minX;
+            const h = b.maxY - b.minY;
+            // Add padding visual
+            ctx.strokeRect(b.minX - 10, b.minY - 10, w + 20, h + 20);
+            ctx.restore();
+        }
 
-            // 2. Adjust all points to be relative to the new 0,0 (plus padding)
-            const adjustedMoves = recordedMoves.map(p => {
-                return {
-                    x: p.x - minX + padding,
-                    y: p.y - minY + padding,
-                    drag: p.drag,
-                    c: p.c,
-                    w: p.w
-                };
-            });
+        // --- Generator Logic ---
+        function generateCode() {
+            const b = getBounds();
+            if (!b) return alert("Draw something first!");
+
+            // 1. Calculate Crop
+            const padding = 15;
+            const cropX = b.minX - padding;
+            const cropY = b.minY - padding;
+            const cropW = (b.maxX - b.minX) + (padding * 2);
+            const cropH = (b.maxY - b.minY) + (padding * 2);
+
+            // 2. Adjust Coordinates to new 0,0
+            const adjustedMoves = recordedMoves.map(p => ({
+                x: p.x - cropX,
+                y: p.y - cropY,
+                drag: p.drag ? 1 : 0, // Optimize: 1=true, 0=false
+                c: p.c,
+                w: p.w
+            }));
 
             const jsonString = JSON.stringify(adjustedMoves);
             const animId = "hw_" + Math.random().toString(36).substr(2, 5);
 
             // 3. Generate Output
             const finalCode = `
-<canvas id="${animId}" width="${croppedWidth}" height="${croppedHeight}" style="display: block; width: ${croppedWidth}px; height: ${croppedHeight}px; background: transparent;"></canvas>
+<div id="signature-container" style="display: inline-block; border: 1px dashed rgba(0,0,0,0.1);">
+    <canvas id="${animId}" width="${cropW}" height="${cropH}" style="display: block; width: ${cropW}px; height: ${cropH}px;"></canvas>
+</div>
 
 <script>
-    // Global function to trigger this specific animation
+    // DEFINE THE ANIMATION
     window.playHandwriting = function() {
-        const canvas = document.getElementById('${animId}');
-        if (!canvas) return; // safety check
-        const ctx = canvas.getContext('2d');
-        const moves = ${jsonString}; // The recorded data
+        const c = document.getElementById('${animId}');
+        if(!c) return;
+        const ctx = c.getContext('2d');
+        const moves = ${jsonString};
 
+        // Reset
+        ctx.clearRect(0, 0, c.width, c.height);
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.clearRect(0,0, canvas.width, canvas.height); // Ensure clean start
 
-        let index = 0;
-        const speed = 2; // Adjust speed here (1=slow, 5=fast)
+        let i = 0;
+        // SPEED SETTING: Increase to 3 or 4 for faster writing
+        const speed = 2; 
 
-        function animate() {
-            if (index >= moves.length) return;
+        function loop() {
+            if (i >= moves.length) return;
 
-            for (let i = 0; i < speed; i++) {
-                if (index >= moves.length) break;
-                const p = moves[index];
-
+            for (let k = 0; k < speed; k++) {
+                if (i >= moves.length) break;
+                const p = moves[i];
+                
                 if (!p.drag) {
                     ctx.beginPath();
                     ctx.moveTo(p.x, p.y);
@@ -170,12 +221,15 @@
                     ctx.beginPath();
                     ctx.moveTo(p.x, p.y);
                 }
-                index++;
+                i++;
             }
-            requestAnimationFrame(animate);
+            requestAnimationFrame(loop);
         }
-        animate();
+        loop();
     };
+
+    // --- AUTO START (DELETE THIS LINE TO CONTROL MANUALLY) ---
+    playHandwriting(); 
 <\/script>`;
 
             document.getElementById('codeOutput').value = finalCode;

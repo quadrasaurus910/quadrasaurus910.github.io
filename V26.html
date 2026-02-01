@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Card</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevents scrollbars during animation */
+            background-color: #fce4ec; /* Base background color */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* --- LAYER 1: ORBITAL HEARTS (Background) --- */
+        #heart-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; 
+            pointer-events: none;
+        }
+
+        .falling-heart {
+            position: absolute;
+            will-change: transform;
+            /* This is the magic that recolors your black PNGs */
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        /* --- LAYER 2: TEXT ANIMATION (Middle) --- */
+        #text-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centered */
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Example Text Styles (Customize this!) */
+        .message-word {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #880e4f;
+            opacity: 0; /* Hidden initially */
+            display: inline-block;
+            margin: 0 10px;
+            transition: all 0.8s ease-out;
+            transform: translateY(20px); /* Start slightly lower */
+        }
+        
+        .message-word.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- LAYER 3: HANDWRITING (Top Overlay) --- */
+        #handwriting-layer {
+            position: absolute;
+            bottom: 10%; /* Adjusts vertical position */
+            left: 0; 
+            width: 100%;
+            display: flex;
+            justify-content: center; /* Centers the canvas horizontally */
+            z-index: 20;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="heart-layer"></div>
+
+    <div id="text-layer">
+        <div id="word1" class="message-word">Happy</div>
+        <div id="word2" class="message-word">Valentine's</div>
+        <div id="word3" class="message-word">Day</div>
+    </div>
+
+    <div id="handwriting-layer">
+        
+        </div>
+
+    <script>
+        /* ============================================================
+           ❤️ CONFIGURATION: ORBITAL HEARTS
+           ============================================================ */
+        const config = {
+            // Colors to tint the black PNGs
+            colors: ['#e91e63', '#9c27b0', '#f44336', '#ff4081', '#ff5252', '#d500f9'],
+            
+            // Asset count (heart1.png to heart9.png)
+            totalImages: 9, 
+
+            // Movement & Physics
+            slant: 200,         // Horizontal drift distance (px)
+            speedMin: 3,        // Fastest fall speed (seconds)
+            speedMax: 8,        // Slowest fall speed (seconds)
+            
+            // Randomization Ranges
+            sizeMin: 20, sizeMax: 60,       // Size in px
+            opacityMin: 0.3, opacityMax: 0.9,
+            
+            // Perturbation (The Wiggle)
+            wobbleSpeed: 2,     // Higher = more rapid shaking
+            wobbleAmp: 30,      // Higher = wider wave path
+            
+            // Spin
+            spinSpeedMin: 0.5, spinSpeedMax: 3,
+
+            // Spawn Rates (Clustering Logic)
+            spawnFast: 50,      // Cluster delay (ms)
+            spawnSlow: 1200,    // Straggler delay (ms)
+            clusterChance: 0.6  // 60% chance to spawn a cluster
+        };
+
+
+        /* ============================================================
+           🚀 THE MASTER DIRECTOR
+           Controls when things happen.
+           ============================================================ */
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // 1. START HEARTS IMMEDIATELY (On Page Load)
+            startHeartRain();
+
+            // 2. TRIGGER TEXT (Example: 1 second delay)
+            setTimeout(() => {
+                revealText();
+            }, 1000);
+
+            // 3. TRIGGER HANDWRITING (Example: 4 seconds delay)
+            setTimeout(() => {
+                // This function comes from the code you paste in the handwriting div
+                if (window.playHandwriting) {
+                    window.playHandwriting();
+                }
+            }, 4000); 
+        });
+
+
+        /* ============================================================
+           ❤️ HEART ENGINE
+           ============================================================ */
+        function startHeartRain() {
+            spawnHeart();
+        }
+
+        function spawnHeart() {
+            const container = document.getElementById('heart-layer');
+            const el = document.createElement('div');
+            el.className = 'falling-heart';
+
+            // 1. Pick Image & Color
+            const imgNum = Math.floor(Math.random() * config.totalImages) + 1;
+            const color = config.colors[Math.floor(Math.random() * config.colors.length)];
+            
+            // Use Masking to tint the PNG
+            el.style.backgroundColor = color;
+            el.style.webkitMaskImage = `url('heart${imgNum}.png')`;
+            el.style.maskImage = `url('heart${imgNum}.png')`;
+
+            // 2. Random Properties
+            const startX = Math.random() * window.innerWidth;
+            const size = random(config.sizeMin, config.sizeMax);
+            const duration = random(config.speedMin, config.speedMax);
+            const opacity = random(config.opacityMin, config.opacityMax);
+            
+            // Physics Props
+            const spinDir = Math.random() > 0.5 ? 1 : -1;
+            const spinSpeed = random(config.spinSpeedMin, config.spinSpeedMax) * spinDir;
+            const wobbleOffset = Math.random() * Math.PI * 2; // Random start point in sine wave
+
+            // Initial CSS
+            el.style.width = `${size}px`;
+            el.style.height = `${size}px`; // Assume square hearts
+            el.style.opacity = opacity;
+            el.style.left = `${startX}px`;
+            el.style.top = `-${size + 50}px`; // Start above screen
+
+            container.appendChild(el);
+
+            // 3. Animation Loop (The Physics)
+            let startTime = null;
+            
+            function animate(time) {
+                if (!startTime) startTime = time;
+                const progress = (time - startTime) / (duration * 1000);
+
+                if (progress > 1) {
+                    el.remove(); // Cleanup
+                    return;
+                }
+
+                // Y Axis: Linear top to bottom
+                const currentY = -50 + (progress * (window.innerHeight + 150));
+
+                // X Axis: Slant + Sine Wave Perturbation
+                const slantX = progress * config.slant;
+                const wiggle = Math.sin((progress * config.wobbleSpeed * 10) + wobbleOffset) * config.wobbleAmp;
+                const currentX = slantX + wiggle;
+
+                // Rotation
+                const rotation = progress * 360 * spinSpeed;
+
+                el.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotation}deg)`;
+
+                requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+
+            // 4. Recursive Spawn (Groups vs Stragglers)
+            const isCluster = Math.random() < config.clusterChance;
+            const delay = isCluster 
+                ? random(config.spawnFast, config.spawnFast + 150)
+                : random(config.spawnSlow, config.spawnSlow + 800);
+            
+            setTimeout(spawnHeart, delay);
+        }
+
+        /* ============================================================
+           📝 TEXT ENGINE (Simple Fade/Slide)
+           ============================================================ */
+        function revealText() {
+            // Reveal Word 1
+            document.getElementById('word1').classList.add('visible');
+
+            // Reveal Word 2 after slight delay
+            setTimeout(() => {
+                document.getElementById('word2').classList.add('visible');
+            }, 800); // 0.8s later
+
+            // Reveal Word 3
+            setTimeout(() => {
+                document.getElementById('word3').classList.add('visible');
+            }, 1600); // 1.6s later
+        }
+
+        // Helper
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+    </script>
+</body>
+</html>

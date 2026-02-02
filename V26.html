@@ -100,12 +100,13 @@
         const config = {
             // Colors to tint the black PNGs
             colors: ['#e91e63', '#9c27b0', '#f44336', '#ff4081', '#ff5252', '#d500f9'],
+            colors2: ['#fff5c8', '#f9fee0', '#d0ecd5', '#c7528e', '#df879f', '#f19670', '#eebdb7', '#bd3c40', '#2895a4'],
             
             // Asset count (heart1.png to heart9.png)
             totalImages: 9, 
 
             // Movement & Physics
-            slant: 200,         // Horizontal drift distance (px)
+            slant: 400,         // Horizontal drift distance (px)
             speedMin: 3,        // Fastest fall speed (seconds)
             speedMax: 8,        // Slowest fall speed (seconds)
             
@@ -165,7 +166,7 @@
 
             // 1. Pick Image & Color
             const imgNum = Math.floor(Math.random() * config.totalImages) + 1;
-            const color = config.colors[Math.floor(Math.random() * config.colors.length)];
+            const color = config.colors2[Math.floor(Math.random() * config.colors2.length)];
             
             // Use Masking to tint the PNG
             el.style.backgroundColor = color;

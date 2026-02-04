@@ -50,7 +50,7 @@
         }
 
         .word-line {
-            font-size: 7rem; /* Big text */
+            font-size: 6.5rem; /* Big text */
             font-weight: 800;
             margin: 15px 0px 15px 0px;
             color: #880e4f;
@@ -118,6 +118,7 @@
         const config = {
             // Updated Colors
             colors: ['#e91e63', '#9c27b0', '#f44336', '#ff4081', '#ff5252', '#d500f9', '#c2185b'],
+            colors2: ['#fff5c8', '#f9fee0', '#d0ecd5', '#c7528e', '#df879f', '#f19670', '#eebdb7', '#bd3c40', '#2895a4'],
             totalImages: 9, 
             slant: 200, speedMin: 3, speedMax: 8,
             sizeMin: 20, sizeMax: 60,
@@ -138,7 +139,7 @@
             // 2. Start Text Animation (Wait 1s)
             setTimeout(() => {
                 animateText();
-            }, 1000);
+            }, 3000);
 
             // 3. Start Handwriting 
             // We calculate this based on when "Day" finishes.
@@ -203,7 +204,7 @@
             el.className = 'falling-heart';
 
             const imgNum = Math.floor(Math.random() * config.totalImages) + 1;
-            const color = config.colors[Math.floor(Math.random() * config.colors.length)];
+            const color = config.colors2[Math.floor(Math.random() * config.colors2.length)];
             
             el.style.backgroundColor = color;
             el.style.webkitMaskImage = `url('heart${imgNum}.png')`;

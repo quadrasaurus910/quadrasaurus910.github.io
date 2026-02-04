@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day Card</title>
+    <title>Happy Valentine's Day</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Prevents scrollbars during animation */
-            background-color: #fce4ec; /* Base background color */
+            overflow: hidden;
+            background-color: #fce4ec;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -29,7 +29,6 @@
         .falling-heart {
             position: absolute;
             will-change: transform;
-            /* This is the magic that recolors your black PNGs */
             -webkit-mask-size: contain;
             mask-size: contain;
             -webkit-mask-repeat: no-repeat;
@@ -38,43 +37,61 @@
             mask-position: center;
         }
 
-        /* --- LAYER 2: TEXT ANIMATION (Middle) --- */
-        #text-layer {
+        /* --- LAYER 2: TEXT ANIMATION (Left Aligned) --- */
+        #text-container {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Centered */
+            top: 40%; /* Adjust vertical placement */
+            left: 10%; /* Closer to the left side */
+            transform: translateY(-50%);
             z-index: 10;
-            text-align: center;
-            width: 100%;
+            display: flex;
+            flex-direction: column; /* Stacks words vertically */
+            align-items: flex-start; /* Aligns starts of words */
         }
 
-        /* Example Text Styles (Customize this!) */
-        .message-word {
-            font-size: 3rem;
-            font-weight: bold;
+        .word-line {
+            font-size: 5rem; /* Big text */
+            font-weight: 800;
             color: #880e4f;
-            opacity: 0; /* Hidden initially */
-            display: inline-block;
-            margin: 0 10px;
-            transition: all 0.8s ease-out;
-            transform: translateY(20px); /* Start slightly lower */
-        }
-        
-        .message-word.visible {
-            opacity: 1;
-            transform: translateY(0);
+            line-height: 1.1;
+            white-space: nowrap; /* Keeps word on one line */
+            position: relative;
         }
 
-        /* --- LAYER 3: HANDWRITING (Top Overlay) --- */
+        /* The individual letter style */
+        .letter {
+            display: inline-block;
+            opacity: 0; /* Invisible start */
+            transform: translateY(40px);
+        }
+
+        /* The "Pop, Float, Settle" Animation */
+        @keyframes popUpFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.5);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(-15px) scale(1.1); /* The overshoot */
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1); /* Settle */
+            }
+        }
+
+        /* --- LAYER 3: HANDWRITING (Overlaying "Day") --- */
         #handwriting-layer {
             position: absolute;
-            bottom: 10%; /* Adjusts vertical position */
-            left: 0; 
-            width: 100%;
-            display: flex;
-            justify-content: center; /* Centers the canvas horizontally */
             z-index: 20;
+            /* Positioning strategy: 
+               We put it inside the container via absolute position
+               so it sits right on top of the last word.
+            */
+            top: 85%;  /* Adjusts overlap with "Day" */
+            left: -20px; /* Slight offset to cover the word */
+            pointer-events: none;
         }
 
     </style>
@@ -83,74 +100,94 @@
 
     <div id="heart-layer"></div>
 
-    <div id="text-layer">
-        <div id="word1" class="message-word">Happy</div>
-        <div id="word2" class="message-word">Valentine's</div>
-        <div id="word3" class="message-word">Day</div>
-    </div>
+    <div id="text-container">
+        <div id="line1" class="word-line">Happy</div>
+        <div id="line2" class="word-line">Valentine's</div>
+        <div id="line3" class="word-line">Day</div>
 
-    <div id="handwriting-layer">
-        
-        </div>
+        <div id="handwriting-layer">
+            
+            </div>
+    </div>
 
     <script>
         /* ============================================================
-           ❤️ CONFIGURATION: ORBITAL HEARTS
+           ❤️ CONFIGURATION
            ============================================================ */
         const config = {
-            // Colors to tint the black PNGs
-            colors: ['#e91e63', '#9c27b0', '#f44336', '#ff4081', '#ff5252', '#d500f9'],
-            colors2: ['#fff5c8', '#f9fee0', '#d0ecd5', '#c7528e', '#df879f', '#f19670', '#eebdb7', '#bd3c40', '#2895a4'],
-            
-            // Asset count (heart1.png to heart9.png)
-            totalImages: 20, 
-
-            // Movement & Physics
-            slant: 400,         // Horizontal drift distance (px)
-            speedMin: 3,        // Fastest fall speed (seconds)
-            speedMax: 8,        // Slowest fall speed (seconds)
-            
-            // Randomization Ranges
-            sizeMin: 20, sizeMax: 600,       // Size in px
+            // Updated Colors
+            colors: ['#e91e63', '#9c27b0', '#f44336', '#ff4081', '#ff5252', '#d500f9', '#c2185b'],
+            totalImages: 9, 
+            slant: 200, speedMin: 3, speedMax: 8,
+            sizeMin: 20, sizeMax: 60,
             opacityMin: 0.3, opacityMax: 0.9,
-            
-            // Perturbation (The Wiggle)
-            wobbleSpeed: 2,     // Higher = more rapid shaking
-            wobbleAmp: 30,      // Higher = wider wave path
-            
-            // Spin
+            wobbleSpeed: 2, wobbleAmp: 30,
             spinSpeedMin: 0.5, spinSpeedMax: 3,
-
-            // Spawn Rates (Clustering Logic)
-            spawnFast: 50,      // Cluster delay (ms)
-            spawnSlow: 1200,    // Straggler delay (ms)
-            clusterChance: 0.6  // 60% chance to spawn a cluster
+            spawnFast: 50, spawnSlow: 1200, clusterChance: 0.6
         };
 
-
         /* ============================================================
-           🚀 THE MASTER DIRECTOR
-           Controls when things happen.
+           🎬 MASTER DIRECTOR (TIMELINE)
            ============================================================ */
         document.addEventListener("DOMContentLoaded", () => {
             
-            // 1. START HEARTS IMMEDIATELY (On Page Load)
+            // 1. Start Hearts
             startHeartRain();
 
-            // 2. TRIGGER TEXT (Example: 1 second delay)
+            // 2. Start Text Animation (Wait 1s)
             setTimeout(() => {
-                revealText();
+                animateText();
             }, 1000);
 
-            // 3. TRIGGER HANDWRITING (Example: 4 seconds delay)
+            // 3. Start Handwriting 
+            // We calculate this based on when "Day" finishes.
+            // Text animation takes roughly 2.5 seconds total with staggers.
+            // So we start handwriting at 1s (initial delay) + 2.5s (anim) = 3.5s
             setTimeout(() => {
-                // This function comes from the code you paste in the handwriting div
                 if (window.playHandwriting) {
                     window.playHandwriting();
                 }
-            }, 4000); 
+            }, 3800); 
         });
 
+        /* ============================================================
+           📝 TEXT ENGINE (Pop & Float)
+           ============================================================ */
+        function animateText() {
+            const lines = ['line1', 'line2', 'line3'];
+            let globalDelay = 0; // Tracks time across words
+
+            lines.forEach((lineId, lineIndex) => {
+                const element = document.getElementById(lineId);
+                const text = element.innerText;
+                element.innerHTML = ''; // Clear text to replace with spans
+
+                // Split into letters
+                [...text].forEach((char, charIndex) => {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    span.className = 'letter';
+                    
+                    // Handle spaces (they need width)
+                    if (char === ' ') span.style.width = '20px';
+
+                    // ANIMATION LOGIC
+                    // 1. Stagger letters quickly (0.05s apart)
+                    // 2. Stagger words (add extra time per line)
+                    const letterDelay = charIndex * 0.05; 
+                    const totalDelay = globalDelay + letterDelay;
+
+                    span.style.animation = `popUpFloat 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
+                    span.style.animationDelay = `${totalDelay}s`;
+
+                    element.appendChild(span);
+                });
+
+                // Add delay before next word starts (Overlap effect)
+                // We don't wait for the whole word to finish, just enough to look nice
+                globalDelay += 0.4; 
+            });
+        }
 
         /* ============================================================
            ❤️ HEART ENGINE
@@ -164,36 +201,31 @@
             const el = document.createElement('div');
             el.className = 'falling-heart';
 
-            // 1. Pick Image & Color
             const imgNum = Math.floor(Math.random() * config.totalImages) + 1;
-            const color = config.colors2[Math.floor(Math.random() * config.colors2.length)];
+            const color = config.colors[Math.floor(Math.random() * config.colors.length)];
             
-            // Use Masking to tint the PNG
             el.style.backgroundColor = color;
             el.style.webkitMaskImage = `url('heart${imgNum}.png')`;
             el.style.maskImage = `url('heart${imgNum}.png')`;
 
-            // 2. Random Properties
             const startX = Math.random() * window.innerWidth;
             const size = random(config.sizeMin, config.sizeMax);
             const duration = random(config.speedMin, config.speedMax);
             const opacity = random(config.opacityMin, config.opacityMax);
             
-            // Physics Props
             const spinDir = Math.random() > 0.5 ? 1 : -1;
             const spinSpeed = random(config.spinSpeedMin, config.spinSpeedMax) * spinDir;
-            const wobbleOffset = Math.random() * Math.PI * 2; // Random start point in sine wave
+            const wobbleOffset = Math.random() * Math.PI * 2;
 
-            // Initial CSS
             el.style.width = `${size}px`;
-            el.style.height = `${size}px`; // Assume square hearts
+            el.style.height = `${size}px`;
             el.style.opacity = opacity;
             el.style.left = `${startX}px`;
-            el.style.top = `-${size + 50}px`; // Start above screen
+            // Spawn further up so they don't pop in
+            el.style.top = `-${size + 100}px`; 
 
             container.appendChild(el);
 
-            // 3. Animation Loop (The Physics)
             let startTime = null;
             
             function animate(time) {
@@ -201,28 +233,26 @@
                 const progress = (time - startTime) / (duration * 1000);
 
                 if (progress > 1) {
-                    el.remove(); // Cleanup
+                    el.remove();
                     return;
                 }
 
-                // Y Axis: Linear top to bottom
-                const currentY = -50 + (progress * (window.innerHeight + 150));
+                // --- FIX FOR DISAPPEARING HEARTS ---
+                // Previously: window.innerHeight
+                // Now: window.innerHeight + 300
+                // This ensures they go WAY off screen before deleting
+                const currentY = -100 + (progress * (window.innerHeight + 300));
 
-                // X Axis: Slant + Sine Wave Perturbation
                 const slantX = progress * config.slant;
                 const wiggle = Math.sin((progress * config.wobbleSpeed * 10) + wobbleOffset) * config.wobbleAmp;
                 const currentX = slantX + wiggle;
-
-                // Rotation
                 const rotation = progress * 360 * spinSpeed;
 
                 el.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotation}deg)`;
-
                 requestAnimationFrame(animate);
             }
             requestAnimationFrame(animate);
 
-            // 4. Recursive Spawn (Groups vs Stragglers)
             const isCluster = Math.random() < config.clusterChance;
             const delay = isCluster 
                 ? random(config.spawnFast, config.spawnFast + 150)
@@ -231,28 +261,7 @@
             setTimeout(spawnHeart, delay);
         }
 
-        /* ============================================================
-           📝 TEXT ENGINE (Simple Fade/Slide)
-           ============================================================ */
-        function revealText() {
-            // Reveal Word 1
-            document.getElementById('word1').classList.add('visible');
-
-            // Reveal Word 2 after slight delay
-            setTimeout(() => {
-                document.getElementById('word2').classList.add('visible');
-            }, 800); // 0.8s later
-
-            // Reveal Word 3
-            setTimeout(() => {
-                document.getElementById('word3').classList.add('visible');
-            }, 1600); // 1.6s later
-        }
-
-        // Helper
-        function random(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+        function random(min, max) { return Math.random() * (max - min) + min; }
 
     </script>
 </body>

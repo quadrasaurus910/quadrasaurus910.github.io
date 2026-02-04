@@ -50,7 +50,7 @@
         }
 
         .word-line {
-            font-size: 10rem; /* Big text */
+            font-size: 7rem; /* Big text */
             font-weight: 800;
             margin: 15px 0px 15px 0px;
             color: #880e4f;
@@ -175,10 +175,10 @@
                     // ANIMATION LOGIC
                     // 1. Stagger letters quickly (0.05s apart)
                     // 2. Stagger words (add extra time per line)
-                    const letterDelay = charIndex * 0.05; 
+                    const letterDelay = charIndex * 0.1; 
                     const totalDelay = globalDelay + letterDelay;
 
-                    span.style.animation = `popUpFloat 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
+                    span.style.animation = `popUpFloat 1s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
                     span.style.animationDelay = `${totalDelay}s`;
 
                     element.appendChild(span);

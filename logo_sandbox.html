@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Animation Sandbox</title>
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background to see the colors pop */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* This container holds all the pieces. We scaled it down from 2800 to 500 for your screen */
+        .logo-container {
+            position: relative;
+            width: 500px; 
+            height: 500px;
+        }
+
+        /* This layers all the pieces perfectly on top of each other */
+        .logo-part {
+            position: absolute;
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            
+            /* CSS Masking: Uses your PNG transparency as a stencil */
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <div class="logo-part" id="part-outer" style="-webkit-mask-image: url('logo-outer.png'); mask-image: url('logo-outer.png');"></div>
+        <div class="logo-part" id="part-ul" style="-webkit-mask-image: url('logo-ul.png'); mask-image: url('logo-ul.png');"></div>
+        <div class="logo-part" id="part-ur" style="-webkit-mask-image: url('logo-ur.png'); mask-image: url('logo-ur.png');"></div>
+        <div class="logo-part" id="part-lr" style="-webkit-mask-image: url('logo-lr.png'); mask-image: url('logo-lr.png');"></div>
+        <div class="logo-part" id="part-ll" style="-webkit-mask-image: url('logo-ll.png'); mask-image: url('logo-ll.png');"></div>
+    </div>
+
+    <script>
+        // --- YOUR COLOR ARRAY ---
+        // You can add, remove, or change these hex codes anytime
+        const themeColors = [
+            '#FF3366', // Pink/Red
+            '#33CCFF', // Light Blue
+            '#FFCC00', // Yellow
+            '#00FF99', // Mint Green
+            '#FFFFFF'  // White
+        ];
+
+        // Grab the elements from the HTML
+        const partOuter = document.getElementById('part-outer');
+        const partUL = document.getElementById('part-ul');
+        const partUR = document.getElementById('part-ur');
+        const partLR = document.getElementById('part-lr');
+        const partLL = document.getElementById('part-ll');
+
+        // Test Layout: Let's assign colors from your array to prove it works
+        function initializeColors() {
+            partOuter.style.backgroundColor = themeColors[4]; // White
+            partUL.style.backgroundColor = themeColors[0];    // Pink
+            partUR.style.backgroundColor = themeColors[1];    // Blue
+            partLR.style.backgroundColor = themeColors[2];    // Yellow
+            partLL.style.backgroundColor = themeColors[3];    // Mint
+        }
+
+        // Run the setup
+        initializeColors();
+    </script>
+</body>
+</html>

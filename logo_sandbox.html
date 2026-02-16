@@ -36,6 +36,24 @@
             mask-size: contain;
             mask-repeat: no-repeat;
             mask-position: center;
+            transition: opacity 0.5s ease-in-out, filter 0.5s ease-in-out;
+        }
+
+        * NEW: Our effect classes */
+        .dim {
+            opacity: 0.15; /* Makes the piece mostly transparent */
+            filter: drop-shadow(0 0 0px transparent);
+        }
+
+        .glow {
+            opacity: 1; /* Fully visible */
+            /* This drop-shadow creates the glow. It uses the piece's current background color automatically! */
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6)) brightness(1.2); 
+        }
+        
+        .glow-steady {
+            /* A softer, permanent glow for the outer circle */
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
         }
     </style>
 </head>
@@ -78,6 +96,33 @@
 
         // Run the setup
         initializeColors();
+
+        const clockwisePath = [partUL, partUR, partLR, partLL];
+        let currentStep = 0;
+
+        function startClockwisePulse() {
+            // First, set all inner pieces to dim
+            clockwisePath.forEach(part => part.classList.add('dim'));
+
+            // Run this code every 800 milliseconds
+            setInterval(() => {
+                // 1. Find the piece that lit up last time and dim it
+                let prevStep = (currentStep === 0) ? 3 : currentStep - 1;
+                clockwisePath[prevStep].classList.remove('glow');
+                clockwisePath[prevStep].classList.add('dim');
+
+                // 2. Take the current piece and make it glow!
+                clockwisePath[currentStep].classList.remove('dim');
+                clockwisePath[currentStep].classList.add('glow');
+
+                // 3. Move the step forward, looping back to 0 if we hit the end
+                currentStep = (currentStep + 1) % clockwisePath.length;
+                
+            }, 800); // Change this number to speed up or slow down the pulse
+        }
+
+        // Start the animation!
+        startClockwisePulse();
     </script>
 </body>
 </html>

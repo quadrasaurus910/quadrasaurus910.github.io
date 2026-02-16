@@ -78,6 +78,14 @@
             '#FFFFFF'  // White
         ];
 
+        const themeColors2 = [
+            '#32A89E',
+            '#7B32A8',
+            '#A83A32',
+            '#BAAF6A',
+            '#87A4AB'
+        ];
+
         // Grab the elements from the HTML
         const partOuter = document.getElementById('part-outer');
         const partUL = document.getElementById('part-ul');
@@ -87,11 +95,11 @@
 
         // Test Layout: Let's assign colors from your array to prove it works
         function initializeColors() {
-            partOuter.style.backgroundColor = themeColors[4]; // White
-            partUL.style.backgroundColor = themeColors[0];    // Pink
-            partUR.style.backgroundColor = themeColors[1];    // Blue
-            partLR.style.backgroundColor = themeColors[2];    // Yellow
-            partLL.style.backgroundColor = themeColors[3];    // Mint
+            partOuter.style.backgroundColor = themeColors2[4]; // White
+            partUL.style.backgroundColor = themeColors2[0];    // Pink
+            partUR.style.backgroundColor = themeColors2[1];    // Blue
+            partLR.style.backgroundColor = themeColors2[2];    // Yellow
+            partLL.style.backgroundColor = themeColors2[3];    // Mint
         }
 
         // Run the setup

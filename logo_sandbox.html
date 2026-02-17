@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Logo Animation Sandbox</title>
+    <title>Dynamic Canvas Logo Sandbox</title>
     <style>
         body {
-            background-color: #1a1a1a;
+            background-color: #050505; /* Made it darker so the Corona pops! */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,23 +16,21 @@
             font-family: sans-serif;
         }
 
-        /* The canvas takes the place of our old container */
         #logoCanvas {
             width: 500px;
             height: 500px;
-            /* A subtle glow behind the whole canvas to keep the glassmorphism vibe */
-            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
         }
         
         #loadingMsg {
             position: absolute;
+            font-size: 1.2rem;
+            color: #888;
         }
     </style>
 </head>
 <body>
 
     <div id="loadingMsg">Loading high-res pieces...</div>
-    
     <canvas id="logoCanvas" width="1000" height="1000" style="display: none;"></canvas>
 
     <script>
@@ -40,130 +38,165 @@
         const ctx = canvas.getContext('2d');
         const loadingMsg = document.getElementById('loadingMsg');
 
-        // --- THEME COLORS ---
-        const themeColors = {
-            outer: '#FFFFFF',
-            ul: '#FF3366', 
-            ur: '#33CCFF', 
-            lr: '#FFCC00', 
-            ll: '#00FF99'  
-        };
-
-        function getRandomRgbColorArray() {
-            const randomRgbValues = Array.from({ length: 3 }, () => Math.floor(Math.random() * 256));
-            return `rgb(${randomRgbValues.join(', ')})`;
-        }
-
-        const randomColors = {
-            outer: getRandomRgbColor();,
-            ul: getRandomRgbColor();,
-            ur: getRandomRgbColor();,
-            lr: getRandomRgbColor();,
-            ll: getRandomRgbColor();
-        }
-
-        // --- IMAGE LOADING & TINTING ENGINE ---
-        // This function colors your PNGs using canvas compositing instead of CSS masks
-        function tintImage(img, color) {
-            const tCanvas = document.createElement('canvas');
-            tCanvas.width = canvas.width;
-            tCanvas.height = canvas.height;
-            const tCtx = tCanvas.getContext('2d');
-            
-            // Draw original image (scaled to canvas)
-            tCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            // This magic blend mode only paints where the image already has pixels!
-            tCtx.globalCompositeOperation = 'source-in';
-            tCtx.fillStyle = color;
-            tCtx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            return tCanvas; // Returns a pre-colored canvas we can use like an image
-        }
+        // We use a hidden canvas to tint pieces on the fly incredibly fast
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = 1000;
+        offCanvas.height = 1000;
+        const offCtx = offCanvas.getContext('2d');
 
         const pieces = {};
 
-        // Helper to load an image
-        function loadImage(name, src, color) {
-            return new Promise((resolve) => {
+        // --- HSL COLOR MATH ---
+        // Generates a random color angle on the color wheel (0 to 360)
+        function getRandomHue() {
+            return Math.floor(Math.random() * 360);
+        }
+
+        // --- IMAGE LOADER WITH ERROR TRACKING ---
+        function loadImage(name, src) {
+            return new Promise((resolve, reject) => {
                 const img = new Image();
                 img.src = src;
+                
                 img.onload = () => {
                     pieces[name] = {
-                        image: tintImage(img, color), // Store the pre-colored version
-                        // Independent random state tracking for each piece
+                        image: img,
+                        
+                        // Color Morphing State
+                        startHue: getRandomHue(),
+                        endHue: getRandomHue(),
+                        colorProgress: 0,
+                        colorSpeed: (Math.random() * 0.003) + 0.001, // How fast the color changes
+                        
+                        // Fading State
                         opacity: Math.random(),
                         targetOpacity: Math.random(),
-                        speed: (Math.random() * 0.01) + 0.002 // Random fade speed
+                        fadeSpeed: (Math.random() * 0.015) + 0.005 
                     };
                     resolve();
+                };
+
+                img.onerror = () => {
+                    alert(`ERROR: Could not load "${src}". Check that the file name matches perfectly!`);
+                    reject();
                 };
             });
         }
 
+        // --- TINTING ENGINE ---
+        function drawTintedPiece(piece, isOuter) {
+            // 1. Clear the hidden stamping canvas
+            offCtx.clearRect(0, 0, 1000, 1000);
+            
+            // 2. Draw the raw PNG
+            offCtx.globalCompositeOperation = 'source-over';
+            offCtx.drawImage(piece.image, 0, 0, 1000, 1000);
+            
+            // 3. Calculate current color
+            // If it's the outer circle, we'll keep it white for contrast, but you can change this!
+            if (isOuter) {
+                offCtx.globalCompositeOperation = 'source-in';
+                offCtx.fillStyle = '#FFFFFF';
+                offCtx.fillRect(0, 0, 1000, 1000);
+            } else {
+                // Interpolate between the start and end Hue
+                let currentHue = piece.startHue + ((piece.endHue - piece.startHue) * piece.colorProgress);
+                
+                offCtx.globalCompositeOperation = 'source-in';
+                // 100% Saturation, 60% Lightness keeps the colors vibrant and neon-like
+                offCtx.fillStyle = `hsl(${currentHue}, 100%, 60%)`; 
+                offCtx.fillRect(0, 0, 1000, 1000);
+            }
+
+            // 4. Stamp the tinted result onto the main visible canvas
+            ctx.globalAlpha = piece.opacity;
+            ctx.drawImage(offCanvas, 0, 0);
+        }
+
+
         // --- THE ANIMATION KEEPER ---
+        let coronaPulseTime = 0;
+
         function startAnimation() {
-            // Hide loading text, show canvas
             loadingMsg.style.display = 'none';
             canvas.style.display = 'block';
 
             function loop() {
-                // 1. Clear the board for the next frame
+                // Clear the main board
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 2. Draw the outer circle steady at 100% opacity
-                ctx.globalAlpha = 1.0;
-                ctx.drawImage(pieces.outer.image, 0, 0);
+                // --- 1. DRAW THE CORONA (Backdrop) ---
+                coronaPulseTime += 0.03;
+                // Make the corona pulse in size
+                const coronaRadius = 420 + Math.sin(coronaPulseTime) * 30; 
+                
+                const gradient = ctx.createRadialGradient(500, 500, coronaRadius * 0.8, 500, 500, coronaRadius * 1.3);
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.4)'); // Bright center
+                gradient.addColorStop(0.3, 'rgba(100, 200, 255, 0.15)'); // Soft blueish mid-glow
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade to nothing
 
-                // 3. Update and draw the inner pieces independently
-                const color1 = getRandomRgbColor();
-                const color2 = getRandomRgbColor();
-                const color3 = getRandomRgbColor();
-                const color4 = getRandomRgbColor();
-                const color5 = getRandomRgbColor();
+                ctx.globalCompositeOperation = 'screen'; 
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 1000, 1000);
+                
+                // Reset blend mode for the logo pieces
+                ctx.globalCompositeOperation = 'source-over'; 
+
+                // --- 2. DRAW THE OUTER CIRCLE ---
+                pieces.outer.opacity = 1.0; // Keep outer solid
+                drawTintedPiece(pieces.outer, true);
+
+                // --- 3. ANIMATE & DRAW INNER PIECES ---
                 const innerParts = ['ul', 'ur', 'lr', 'll'];
                 
                 innerParts.forEach(partKey => {
                     let part = pieces[partKey];
 
-                    // Move current opacity toward the target opacity
+                    // UPDATE COLOR MORPH
+                    part.colorProgress += part.colorSpeed;
+                    if (part.colorProgress >= 1) {
+                        part.colorProgress = 0;
+                        part.startHue = part.endHue; // Old end becomes new start
+                        part.endHue = getRandomHue(); // Pick a new target
+                        part.colorSpeed = (Math.random() * 0.003) + 0.001;
+                    }
+
+                    // UPDATE FADE
                     if (part.opacity < part.targetOpacity) {
-                        part.opacity += part.speed;
-                        // part.color = getRandomRgbColor();
-                        if (part.opacity >= part.targetOpacity) part.opacity = part.targetOpacity; // Cap it
+                        part.opacity += part.fadeSpeed;
+                        if (part.opacity >= part.targetOpacity) part.opacity = part.targetOpacity;
                     } else if (part.opacity > part.targetOpacity) {
-                        part.opacity -= part.speed;
-                        if (part.opacity <= part.targetOpacity) part.opacity = part.targetOpacity; // Cap it
+                        part.opacity -= part.fadeSpeed;
+                        if (part.opacity <= part.targetOpacity) part.opacity = part.targetOpacity;
                     }
 
-                    // If it hit the target, generate a new random target and random speed!
                     if (part.opacity === part.targetOpacity) {
-                        part.targetOpacity = (Math.random() * 0.9) + 0.1; // Don't let it go completely invisible (min 0.1)
-                        part.speed = (Math.random() * 0.015) + 0.005; 
+                        part.targetOpacity = (Math.random() * 0.8) + 0.2; // Keep between 20% and 100% visible
+                        part.fadeSpeed = (Math.random() * 0.015) + 0.005; 
                     }
 
-                    // Apply the independent opacity and draw the piece
-                    ctx.globalAlpha = part.opacity;
-                    ctx.drawImage(part.image, 0, 0);
+                    // Draw the piece with updated color and opacity
+                    drawTintedPiece(part, false);
                 });
 
-                // 4. Tell the browser to run this loop again on the very next screen refresh
                 requestAnimationFrame(loop);
             }
 
-            // Kick off the loop
             loop();
         }
 
         // --- INITIALIZATION ---
-        // Load all images, then start the animation
         Promise.all([
-            loadImage('outer', 'logo-outer.png', themeColors.outer),
-            loadImage('ul', 'logo-ul.png', randomColors.ul),
-            loadImage('ur', 'logo-ur.png', randomColors.ur),
-            loadImage('lr', 'logo-lr.png', randomColors.lr),
-            loadImage('ll', 'logo-ll.png', randomColors.ll)
+            loadImage('outer', 'logo-outer.png'),
+            loadImage('ul', 'logo-ul.png'),
+            loadImage('ur', 'logo-ur.png'),
+            loadImage('lr', 'logo-lr.png'),
+            loadImage('ll', 'logo-ll.png')
         ]).then(() => {
             startAnimation();
+        }).catch(() => {
+            // Error is handled by the alert in the loadImage function
+            loadingMsg.innerText = "Error loading images. Check file names.";
         });
 
     </script>

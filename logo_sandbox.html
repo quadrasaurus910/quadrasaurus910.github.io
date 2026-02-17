@@ -3,134 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Animation Sandbox</title>
+    <title>Canvas Logo Animation Sandbox</title>
     <style>
         body {
-            background-color: #1a1a1a; /* Dark background to see the colors pop */
+            background-color: #1a1a1a;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            color: white;
+            font-family: sans-serif;
         }
 
-        /* This container holds all the pieces. We scaled it down from 2800 to 500 for your screen */
-        .logo-container {
-            position: relative;
-            width: 500px; 
+        /* The canvas takes the place of our old container */
+        #logoCanvas {
+            width: 500px;
             height: 500px;
-        }
-
-        /* This layers all the pieces perfectly on top of each other */
-        .logo-part {
-            position: absolute;
-            top: 0; 
-            left: 0;
-            width: 100%; 
-            height: 100%;
-            
-            /* CSS Masking: Uses your PNG transparency as a stencil */
-            -webkit-mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-            mask-size: contain;
-            mask-repeat: no-repeat;
-            mask-position: center;
-            transition: opacity 0.5s ease-in-out, filter 0.5s ease-in-out;
-        }
-
-        /* NEW: Our effect classes */
-        .dim {
-            opacity: 0.15; /* Makes the piece mostly transparent */
-            filter: drop-shadow(0 0 0px transparent);
-        }
-
-        .glow {
-            opacity: 1; /* Fully visible */
-            /* This drop-shadow creates the glow. It uses the piece's current background color automatically! */
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6)) brightness(1.2); 
+            /* A subtle glow behind the whole canvas to keep the glassmorphism vibe */
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
         }
         
-        .glow-steady {
-            /* A softer, permanent glow for the outer circle */
-            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        #loadingMsg {
+            position: absolute;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo-container">
-        <div class="logo-part" id="part-outer" style="-webkit-mask-image: url('logo-outer.png'); mask-image: url('logo-outer.png');"></div>
-        <div class="logo-part" id="part-ul" style="-webkit-mask-image: url('logo-ul.png'); mask-image: url('logo-ul.png');"></div>
-        <div class="logo-part" id="part-ur" style="-webkit-mask-image: url('logo-ur.png'); mask-image: url('logo-ur.png');"></div>
-        <div class="logo-part" id="part-lr" style="-webkit-mask-image: url('logo-lr.png'); mask-image: url('logo-lr.png');"></div>
-        <div class="logo-part" id="part-ll" style="-webkit-mask-image: url('logo-ll.png'); mask-image: url('logo-ll.png');"></div>
-    </div>
+    <div id="loadingMsg">Loading high-res pieces...</div>
+    
+    <canvas id="logoCanvas" width="1000" height="1000" style="display: none;"></canvas>
 
     <script>
-        // --- YOUR COLOR ARRAY ---
-        // You can add, remove, or change these hex codes anytime
-        const themeColors = [
-            '#FF3366', // Pink/Red
-            '#33CCFF', // Light Blue
-            '#FFCC00', // Yellow
-            '#00FF99', // Mint Green
-            '#FFFFFF'  // White
-        ];
+        const canvas = document.getElementById('logoCanvas');
+        const ctx = canvas.getContext('2d');
+        const loadingMsg = document.getElementById('loadingMsg');
 
-        const themeColors2 = [
-            '#32A89E',
-            '#7B32A8',
-            '#A83A32',
-            '#BAAF6A',
-            '#87A4AB'
-        ];
+        // --- THEME COLORS ---
+        const themeColors = {
+            outer: '#FFFFFF',
+            ul: '#FF3366', 
+            ur: '#33CCFF', 
+            lr: '#FFCC00', 
+            ll: '#00FF99'  
+        };
 
-        // Grab the elements from the HTML
-        const partOuter = document.getElementById('part-outer');
-        const partUL = document.getElementById('part-ul');
-        const partUR = document.getElementById('part-ur');
-        const partLR = document.getElementById('part-lr');
-        const partLL = document.getElementById('part-ll');
-
-        // Test Layout: Let's assign colors from your array to prove it works
-        function initializeColors() {
-            partOuter.style.backgroundColor = themeColors2[4]; // White
-            partUL.style.backgroundColor = themeColors2[0];    // Pink
-            partUR.style.backgroundColor = themeColors2[1];    // Blue
-            partLR.style.backgroundColor = themeColors2[2];    // Yellow
-            partLL.style.backgroundColor = themeColors2[3];    // Mint
+        function getRandomRgbColorArray() {
+            const randomRgbValues = Array.from({ length: 3 }, () => Math.floor(Math.random() * 256));
+            return `rgb(${randomRgbValues.join(', ')})`;
         }
 
-        // Run the setup
-        initializeColors();
+        const randomColors = {
+            outer: getRandomRgbColor();,
+            ul: getRandomRgbColor();,
+            ur: getRandomRgbColor();,
+            lr: getRandomRgbColor();,
+            ll: getRandomRgbColor();
+        }
 
-        const clockwisePath = [partUL, partUR, partLR, partLL];
-        let currentStep = 0;
+        // --- IMAGE LOADING & TINTING ENGINE ---
+        // This function colors your PNGs using canvas compositing instead of CSS masks
+        function tintImage(img, color) {
+            const tCanvas = document.createElement('canvas');
+            tCanvas.width = canvas.width;
+            tCanvas.height = canvas.height;
+            const tCtx = tCanvas.getContext('2d');
+            
+            // Draw original image (scaled to canvas)
+            tCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            // This magic blend mode only paints where the image already has pixels!
+            tCtx.globalCompositeOperation = 'source-in';
+            tCtx.fillStyle = color;
+            tCtx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            return tCanvas; // Returns a pre-colored canvas we can use like an image
+        }
 
-        function startClockwisePulse() {
-            // First, set all inner pieces to dim
-            clockwisePath.forEach(part => part.classList.add('dim'));
+        const pieces = {};
 
-            // Run this code every 800 milliseconds
-            setInterval(() => {
-                // 1. Find the piece that lit up last time and dim it
-                let prevStep = (currentStep === 0) ? 3 : currentStep - 1;
-                clockwisePath[prevStep].classList.remove('glow');
-                clockwisePath[prevStep].classList.add('dim');
+        // Helper to load an image
+        function loadImage(name, src, color) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = src;
+                img.onload = () => {
+                    pieces[name] = {
+                        image: tintImage(img, color), // Store the pre-colored version
+                        // Independent random state tracking for each piece
+                        opacity: Math.random(),
+                        targetOpacity: Math.random(),
+                        speed: (Math.random() * 0.01) + 0.002 // Random fade speed
+                    };
+                    resolve();
+                };
+            });
+        }
 
-                // 2. Take the current piece and make it glow!
-                clockwisePath[currentStep].classList.remove('dim');
-                clockwisePath[currentStep].classList.add('glow');
+        // --- THE ANIMATION KEEPER ---
+        function startAnimation() {
+            // Hide loading text, show canvas
+            loadingMsg.style.display = 'none';
+            canvas.style.display = 'block';
 
-                // 3. Move the step forward, looping back to 0 if we hit the end
-                currentStep = (currentStep + 1) % clockwisePath.length;
+            function loop() {
+                // 1. Clear the board for the next frame
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 2. Draw the outer circle steady at 100% opacity
+                ctx.globalAlpha = 1.0;
+                ctx.drawImage(pieces.outer.image, 0, 0);
+
+                // 3. Update and draw the inner pieces independently
+                const color1 = getRandomRgbColor();
+                const color2 = getRandomRgbColor();
+                const color3 = getRandomRgbColor();
+                const color4 = getRandomRgbColor();
+                const color5 = getRandomRgbColor();
+                const innerParts = ['ul', 'ur', 'lr', 'll'];
                 
-            }, 800); // Change this number to speed up or slow down the pulse
+                innerParts.forEach(partKey => {
+                    let part = pieces[partKey];
+
+                    // Move current opacity toward the target opacity
+                    if (part.opacity < part.targetOpacity) {
+                        part.opacity += part.speed;
+                        // part.color = getRandomRgbColor();
+                        if (part.opacity >= part.targetOpacity) part.opacity = part.targetOpacity; // Cap it
+                    } else if (part.opacity > part.targetOpacity) {
+                        part.opacity -= part.speed;
+                        if (part.opacity <= part.targetOpacity) part.opacity = part.targetOpacity; // Cap it
+                    }
+
+                    // If it hit the target, generate a new random target and random speed!
+                    if (part.opacity === part.targetOpacity) {
+                        part.targetOpacity = (Math.random() * 0.9) + 0.1; // Don't let it go completely invisible (min 0.1)
+                        part.speed = (Math.random() * 0.015) + 0.005; 
+                    }
+
+                    // Apply the independent opacity and draw the piece
+                    ctx.globalAlpha = part.opacity;
+                    ctx.drawImage(part.image, 0, 0);
+                });
+
+                // 4. Tell the browser to run this loop again on the very next screen refresh
+                requestAnimationFrame(loop);
+            }
+
+            // Kick off the loop
+            loop();
         }
 
-        // Start the animation!
-        startClockwisePulse();
+        // --- INITIALIZATION ---
+        // Load all images, then start the animation
+        Promise.all([
+            loadImage('outer', 'logo-outer.png', themeColors.outer),
+            loadImage('ul', 'logo-ul.png', randomColors.ul),
+            loadImage('ur', 'logo-ur.png', randomColors.ur),
+            loadImage('lr', 'logo-lr.png', randomColors.lr),
+            loadImage('ll', 'logo-ll.png', randomColors.ll)
+        ]).then(() => {
+            startAnimation();
+        });
+
     </script>
 </body>
 </html>

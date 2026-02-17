@@ -49,6 +49,11 @@
             ll: '#00FF99'  
         };
 
+        function getRandomRgbColorArray() {
+            const randomRgbValues = Array.from({ length: 3 }, () => Math.floor(Math.random() * 256));
+            return `rgb(${randomRgbValues.join(', ')})`;
+        }
+
         // --- IMAGE LOADING & TINTING ENGINE ---
         // This function colors your PNGs using canvas compositing instead of CSS masks
         function tintImage(img, color) {
@@ -102,6 +107,11 @@
                 ctx.drawImage(pieces.outer.image, 0, 0);
 
                 // 3. Update and draw the inner pieces independently
+                const color1 = getRandomRgbColor();
+                const color2 = getRandomRgbColor();
+                const color3 = getRandomRgbColor();
+                const color4 = getRandomRgbColor();
+                const color5 = getRandomRgbColor();
                 const innerParts = ['ul', 'ur', 'lr', 'll'];
                 
                 innerParts.forEach(partKey => {
@@ -110,6 +120,7 @@
                     // Move current opacity toward the target opacity
                     if (part.opacity < part.targetOpacity) {
                         part.opacity += part.speed;
+                        part.color = getRandomRgbColor();
                         if (part.opacity >= part.targetOpacity) part.opacity = part.targetOpacity; // Cap it
                     } else if (part.opacity > part.targetOpacity) {
                         part.opacity -= part.speed;

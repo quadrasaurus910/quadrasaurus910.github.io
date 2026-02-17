@@ -16,6 +16,8 @@ def process_image(file_path):
         img = Image.open(file_path).convert("RGBA")
         width, height = img.size
         pix = img.load()
+        totalZ = 0
+        totalO = 0
 
         print(f"Processing {width}x{height} image...")
         print("-" * 30)
@@ -36,11 +38,13 @@ def process_image(file_path):
                 
                 if is_opaque:
                     ones += 1
+                    totalO += 1
                 else:
                     zeros += 1
+                    totalZ+= 1
             
             # Print live data for each line
-            print(f"Row {y:03d}: {ones:4d} [1s] | {zeros:4d} [0s]")
+            # print(f"Row {y:03d}: {ones:4d} [1s] | {zeros:4d} [0s]")
             
             # Store the row as a string of 1s and 0s
             binary_rows.append("".join(row_data))
@@ -51,6 +55,7 @@ def process_image(file_path):
 
         print("-" * 30)
         print(f"Success! Binary map saved to: {output_path}")
+        print(f"Total ones: {totalO}, total zeros: {totalZ}, Total combined: {totalO + totalZ}  ")
 
     except Exception as e:
         print(f"An error occurred: {e}")

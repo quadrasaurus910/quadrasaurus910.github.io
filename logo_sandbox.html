@@ -54,6 +54,14 @@
             return `rgb(${randomRgbValues.join(', ')})`;
         }
 
+        const randomColors = {
+            outer: getRandomRgbColor();,
+            ul: getRandomRgbColor();,
+            ur: getRandomRgbColor();,
+            lr: getRandomRgbColor();,
+            ll: getRandomRgbColor();
+        }
+
         // --- IMAGE LOADING & TINTING ENGINE ---
         // This function colors your PNGs using canvas compositing instead of CSS masks
         function tintImage(img, color) {
@@ -150,10 +158,10 @@
         // Load all images, then start the animation
         Promise.all([
             loadImage('outer', 'logo-outer.png', themeColors.outer),
-            loadImage('ul', 'logo-ul.png', color1.ul),
-            loadImage('ur', 'logo-ur.png', themeColors.ur),
-            loadImage('lr', 'logo-lr.png', themeColors.lr),
-            loadImage('ll', 'logo-ll.png', themeColors.ll)
+            loadImage('ul', 'logo-ul.png', randomColors.ul),
+            loadImage('ur', 'logo-ur.png', randomColors.ur),
+            loadImage('lr', 'logo-lr.png', randomColors.lr),
+            loadImage('ll', 'logo-ll.png', randomColors.ll)
         ]).then(() => {
             startAnimation();
         });

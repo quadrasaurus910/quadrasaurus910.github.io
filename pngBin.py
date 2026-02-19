@@ -2,6 +2,8 @@ import sys
 import os
 from PIL import Image
 
+# run inside virtual enviroment: enter source .venv/bin/activate in terminal
+
 def process_image(file_path):
     # 1. Validate file and naming
     if not os.path.exists(file_path):

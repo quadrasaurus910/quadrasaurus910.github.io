@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pico Cosmic Relay</title>
     <style>
+        @keyframes pulse {
+            0% {
+                    transform: scale(1); /* Original size at the start */
+            }
+            50% {
+                    transform: scale(1.1); /* Slightly larger halfway through */
+            }
+            100% {
+                    transform: scale(1); /* Return to original size at the end */
+            }
+}
         /* --- Futuristic UI Base --- */
         body {
             background-color: #050510;
@@ -77,6 +88,7 @@
             text-shadow: 0 0 8px #fff;
             background-color: rgba(0, 255, 204, 0.7);
             transition: background-color 0.5s ease; 
+            animation: pulse 2s infinite;
         }
 
         .menu-item p {

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pico Cosmic Relay</title>
+    <style>
+        /* --- Futuristic UI Base --- */
+        body {
+            background-color: #050510;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        h1 { text-shadow: 0 0 10px #00ffcc; }
+        
+        /* --- The Invisible Trigger --- */
+        #secret-trigger {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            z-index: 100;
+            /* background: rgba(255,0,0,0.2); Uncomment to see the hit-box */
+        }
+
+        /* --- The Futuristic Menu Animation --- */
+        #cyber-menu {
+            position: absolute;
+            top: 20px;
+            right: 50px;
+            width: 0px;        /* Starts at 0 width */
+            height: 2px;       /* Starts as a thin line */
+            background-color: rgba(0, 30, 50, 0.9);
+            border-top: 2px solid #fff; /* The white dash */
+            overflow: hidden;
+            
+            /* The Magic: Width expands first, then Height expands after a 0.4s delay */
+            transition: width 0.4s ease-out, height 0.4s ease-out 0.4s, border-color 0.2s;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+        }
+
+        /* When the 'active' class is added via JavaScript */
+        #cyber-menu.active {
+            width: 250px;      /* Step 1: Expand right */
+            height: 300px;     /* Step 2: Grow down */
+            border: 1px solid #00ffcc;
+            border-top: 2px solid #fff;
+        }
+
+        /* Menu Items fade in AFTER the box is fully drawn (0.8s delay) */
+        .menu-content {
+            opacity: 0;
+            padding: 20px;
+            transition: opacity 0.3s ease-in 0.8s;
+        }
+        #cyber-menu.active .menu-content {
+            opacity: 1;
+        }
+
+        .menu-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #004444;
+            cursor: pointer;
+        }
+        .menu-item:hover { color: #fff; text-shadow: 0 0 8px #fff; }
+
+        /* --- Dashboard Layout --- */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 50px;
+        }
+        .panel {
+            border: 1px solid #004444;
+            background: rgba(0, 20, 20, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        /* Live Color Box */
+        #current-color {
+            width: 100%;
+            height: 100px;
+            background: #000;
+            border: 1px solid #555;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        /* Hex Viewer Text */
+        #hex-output {
+            font-size: 12px;
+            color: #aadddd;
+            word-wrap: break-word;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        button, input[type="file"] {
+            background: #002222;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            padding: 10px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover { background: #00ffcc; color: #000; }
+    </style>
+</head>
+<body>
+
+    <div id="secret-trigger"></div>
+
+    <div id="cyber-menu">
+        <div class="menu-content">
+            <h3 style="margin-top:0; color:#fff;">SYSTEM OVERRIDE</h3>
+            <div class="menu-item" id="opt-wave">Enable Wave Manipulation (DCT)</div>
+            <div class="menu-item" id="opt-block">Enable Oklab Blocking</div>
+            <div class="menu-item">Calibrate Output Stream</div>
+            <div class="menu-item">Close Menu</div>
+        </div>
+    </div>
+
+    <h1>Pico Data Streamer v1.0</h1>
+    <input type="file" id="image-upload" accept="image/jpeg, image/png">
+
+    <div class="dashboard">
+        <div class="panel">
+            <h3>Memory Analysis</h3>
+            <p>File Signature: <span id="file-sig">Waiting...</span></p>
+            <p>Detected Type: <strong id="file-type" style="color:#fff;">None</strong></p>
+            <hr style="border-color:#004444;">
+            <h4>Raw Hex Stream (First 64 Bytes)</h4>
+            <div id="hex-output">00 00 00 00...</div>
+        </div>
+
+        <div class="panel">
+            <h3>Live Telemetry</h3>
+            <p>RGB Payload: <span id="rgb-val">[0, 0, 0]</span></p>
+            <p>Oklab Target: <span id="oklab-val">(0.00, 0.00, 0.00)</span></p>
+            <div id="current-color"></div>
+            
+            <canvas id="image-canvas" style="display:none;"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Menu Animation Logic ---
+        const trigger = document.getElementById('secret-trigger');
+        const menu = document.getElementById('cyber-menu');
+        
+        // Toggle menu on hidden region click
+        trigger.addEventListener('click', () => {
+            menu.classList.toggle('active');
+        });
+
+        // Close menu if clicking the "Close Menu" item
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems[3].addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // --- 2. Memory / Binary Parsing Logic ---
+        const fileInput = document.getElementById('image-upload');
+        const sigDisplay = document.getElementById('file-sig');
+        const typeDisplay = document.getElementById('file-type');
+        const hexOutput = document.getElementById('hex-output');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Use FileReader to grab the RAW binary memory
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const arrayBuffer = event.target.result;
+                const dataView = new DataView(arrayBuffer);
+                
+                // Read the first 4 bytes to check the magic signature
+                let signature = "";
+                for (let i = 0; i < 4; i++) {
+                    // Convert byte to hex, pad with 0 if needed, and make uppercase
+                    signature += dataView.getUint8(i).toString(16).padStart(2, '0').toUpperCase() + " ";
+                }
+                
+                sigDisplay.textContent = signature;
+
+                // Identify File Type based on standard Hex Signatures
+                if (signature.startsWith("FF D8 FF")) {
+                    typeDisplay.textContent = "JPEG (DCT Wave Compression)";
+                    typeDisplay.style.color = "#ffaa00";
+                    // Here we would normally unlock the DCT manipulation menu options
+                } else if (signature.startsWith("89 50 4E 47")) {
+                    typeDisplay.textContent = "PNG (DEFLATE Compression)";
+                    typeDisplay.style.color = "#00aaff";
+                } else {
+                    typeDisplay.textContent = "UNKNOWN FORMAT";
+                    typeDisplay.style.color = "#ff0000";
+                }
+
+                // Display the first 64 bytes in the Hex Viewer
+                let hexDump = "";
+                const maxBytes = Math.min(64, dataView.byteLength);
+                for (let i = 0; i < maxBytes; i++) {
+                    hexDump += dataView.getUint8(i).toString(16).padStart(2, '0').toUpperCase() + " ";
+                }
+                hexOutput.textContent = hexDump + "...";
+                
+                // Trigger the canvas image processor
+                processImageForLED(file);
+            };
+
+            // This reads the file into memory as raw bytes
+            reader.readAsArrayBuffer(file); 
+        });
+
+        // --- 3. Image Processing & Simulation Bridge ---
+        function processImageForLED(file) {
+            const canvas = document.getElementById('image-canvas');
+            const ctx = canvas.getContext('2d');
+            const colorBox = document.getElementById('current-color');
+            const rgbText = document.getElementById('rgb-val');
+            
+            // Create an image object to let the browser handle the heavy decompression
+            const img = new Image();
+            img.onload = function() {
+                // Resize to a small grid (e.g., 32x32) to create our color map
+                canvas.width = 32;
+                canvas.height = 32;
+                ctx.drawImage(img, 0, 0, 32, 32);
+                
+                // Get the raw RGBA pixel array from the downscaled image
+                const imageData = ctx.getImageData(0, 0, 32, 32).data;
+                
+                // Simulation: Loop through the first few pixels to show dynamic data
+                let pixelIndex = 0;
+                
+                // This interval simulates the streaming process to the Pico
+                const streamSim = setInterval(() => {
+                    if (pixelIndex >= 100) { 
+                        clearInterval(streamSim); // Stop after 100 pixels for the demo
+                        return; 
+                    }
+                    
+                    // imageData is a 1D array: [R, G, B, A, R, G, B, A...]
+                    // We multiply by 4 to jump to the next pixel
+                    const r = imageData[pixelIndex * 4];
+                    const g = imageData[pixelIndex * 4 + 1];
+                    const b = imageData[pixelIndex * 4 + 2];
+                    
+                    // Update UI
+                    rgbText.textContent = `[${r}, ${g}, ${b}]`;
+                    colorBox.style.background = `rgb(${r}, ${g}, ${b})`;
+                    
+                    // In the real version, we would send this over WebSocket here:
+                    // websocket.send(new Uint8Array([r, g, b]));
+                    
+                    pixelIndex++;
+                }, 100); // Update every 100ms
+            };
+            
+            // Read the file again, this time as a Data URL to feed the Image object
+            const urlReader = new FileReader();
+            urlReader.onload = function(e) { img.src = e.target.result; }
+            urlReader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>

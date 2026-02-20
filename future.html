@@ -14,7 +14,9 @@
             padding: 20px;
             overflow-x: hidden;
         }
-        h1 { text-shadow: 0 0 10px #00ffcc; }
+        h1 { 
+            text-shadow: 0 0 10px #00ffcc; 
+        }
         
         /* --- The Invisible Trigger --- */
         #secret-trigger {
@@ -67,7 +69,11 @@
             border-bottom: 1px solid #004444;
             cursor: pointer;
         }
-        .menu-item:hover { color: #fff; text-shadow: 0 0 8px #fff; }
+        .menu-item:hover,
+        .menu-item.active {
+            color: #fff; 
+            text-shadow: 0 0 8px #fff; 
+        }
 
         /* --- Dashboard Layout --- */
         .dashboard {
@@ -124,6 +130,7 @@
             <div class="menu-item" id="opt-block">Enable Oklab Blocking</div>
             <div class="menu-item">Calibrate Output Stream</div>
             <div class="menu-item">Close Menu</div>
+            <div class="menu-item">within 1 arcmin of position (20h32m18.33s 41d23m10.6s Equatorial J2000</div>
         </div>
     </div>
 

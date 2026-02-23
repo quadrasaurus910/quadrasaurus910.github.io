@@ -168,6 +168,10 @@ ul li::marker {
   color: var(--accent-color);
 }
 
+ul li {
+    color: white;
+}
+
 /* ====================================
    Desktop Sidebar (Fixed & Positioned)
    ==================================== */

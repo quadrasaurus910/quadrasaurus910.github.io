@@ -159,6 +159,10 @@ body.sidebar-open #sidebarToggleBtn .close-icon { display: block; }
 }
 .toggle-btn:hover { background: rgba(97, 218, 251, 0.1); }
 
+ul {
+    list-style-type: upper-roman;
+}
+
 /* ====================================
    Desktop Sidebar (Fixed & Positioned)
    ==================================== */

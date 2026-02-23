@@ -161,6 +161,7 @@ body.sidebar-open #sidebarToggleBtn .close-icon { display: block; }
 
 ul {
     list-style-type: upper-roman;
+    color: var(--accent-color);
 }
 
 ul li::marker {

@@ -292,6 +292,14 @@
                     
                     // In the real version, we would send this over WebSocket here:
                     // websocket.send(new Uint8Array([r, g, b]));
+                    // Send the RGB values to the Pico W via an HTTP POST
+                    // IMPORTANT: Replace the IP address below with your Pico's actual IP!
+                    const picoIP = "192.168.1.13"; 
+
+                    fetch(`http://${picoIP}/?data=RGB:${r},${g},${b}`, {
+                        method: 'GET',
+                        mode: 'no-cors' // Bypasses strict browser security for local hardware
+                    }).catch(err => console.log("Stream error:", err));
                     
                     pixelIndex++;
                 }, 100); // Update every 100ms

@@ -182,6 +182,53 @@
     </div>
 
     <script>
+        // --- COLOR SCIENCE & MATH ENGINE ---
+
+// 1. Convert standard Screen RGB (0-255) to Linear RGB (0.0 - 1.0)
+function sRGB_to_Linear(val) {
+    let v = val / 255.0;
+    return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+}
+
+// 2. Convert Linear RGB to Oklab
+function linearRGB_to_Oklab(r, g, b) {
+    // First convert to XYZ color space
+    let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+    let m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+    let s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+
+    let l_ = Math.cbrt(l);
+    let m_ = Math.cbrt(m);
+    let s_ = Math.cbrt(s);
+
+    return {
+        L: 0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * s_,
+        a: 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_,
+        b: 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_
+    };
+}
+
+// 3. Convert Oklab back to Linear RGB
+function Oklab_to_LinearRGB(L, a, b) {
+    let l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+    let m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+    let s_ = L - 0.0894841775 * a - 1.2914855480 * b;
+
+    let l = l_ * l_ * l_;
+    let m = m_ * m_ * m_;
+    let s = s_ * s_ * s_;
+
+    let r = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+    let g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+    let b_val = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+
+    // Clamp values between 0.0 and 1.0 to prevent weird hardware flashes
+    return {
+        r: Math.max(0, Math.min(1, r)),
+        g: Math.max(0, Math.min(1, g)),
+        b: Math.max(0, Math.min(1, b_val))
+    };
+}
         // --- 1. Menu Animation Logic ---
         const trigger = document.getElementById('secret-trigger');
         const menu = document.getElementById('cyber-menu');
@@ -262,47 +309,69 @@
             // Create an image object to let the browser handle the heavy decompression
             const img = new Image();
             img.onload = function() {
-                // Resize to a small grid (e.g., 32x32) to create our color map
-                canvas.width = 32;
-                canvas.height = 32;
-                ctx.drawImage(img, 0, 0, 32, 32);
+                // Change these for higher resolution!
+                const gridWidth = 64;
+                const gridHeight = 64;
+                canvas.width = gridWidth;
+                canvas.height = gridHeight;
+                ctx.drawImage(img, 0, 0, gridWidth, gridHeight);
                 
-                // Get the raw RGBA pixel array from the downscaled image
-                const imageData = ctx.getImageData(0, 0, 32, 32).data;
-                
-                // Simulation: Loop through the first few pixels to show dynamic data
+                const imageData = ctx.getImageData(0, 0, gridWidth, gridHeight).data;
+                const totalPixels = gridWidth * gridHeight;
                 let pixelIndex = 0;
                 
-                // This interval simulates the streaming process to the Pico
+                // Hardware Brightness Control (0.0 to 1.0)
+                // Set to 0.5 to cut physical LED brightness in half while keeping colors pure
+                const MASTER_BRIGHTNESS = 0.6; 
+                
                 const streamSim = setInterval(() => {
-                    if (pixelIndex >= 100) { 
-                        clearInterval(streamSim); // Stop after 100 pixels for the demo
+                    if (pixelIndex >= totalPixels) { 
+                        clearInterval(streamSim); 
                         return; 
                     }
                     
-                    // imageData is a 1D array: [R, G, B, A, R, G, B, A...]
-                    // We multiply by 4 to jump to the next pixel
-                    const r = imageData[pixelIndex * 4];
-                    const g = imageData[pixelIndex * 4 + 1];
-                    const b = imageData[pixelIndex * 4 + 2];
+                    // 1. Get raw sRGB from canvas
+                    const sRGB_r = imageData[pixelIndex * 4];
+                    const sRGB_g = imageData[pixelIndex * 4 + 1];
+                    const sRGB_b = imageData[pixelIndex * 4 + 2];
                     
-                    // Update UI
-                    rgbText.textContent = `[${r}, ${g}, ${b}]`;
-                    colorBox.style.background = `rgb(${r}, ${g}, ${b})`;
+                    // 2. Convert to Linear RGB
+                    const lin_r = sRGB_to_Linear(sRGB_r);
+                    const lin_g = sRGB_to_Linear(sRGB_g);
+                    const lin_b = sRGB_to_Linear(sRGB_b);
                     
-                    // In the real version, we would send this over WebSocket here:
-                    // websocket.send(new Uint8Array([r, g, b]));
-                    // Send the RGB values to the Pico W via an HTTP POST
-                    // IMPORTANT: Replace the IP address below with your Pico's actual IP!
-                    const picoIP = "192.168.1.13"; 
-
-                    fetch(`http://${picoIP}/?data=RGB:${r},${g},${b}`, {
+                    // 3. Convert to Oklab for perceptual manipulation
+                    let lab = linearRGB_to_Oklab(lin_r, lin_g, lin_b);
+                    
+                    // 4. Apply Brightness Correction to the L (Lightness) channel
+                    lab.L = lab.L * MASTER_BRIGHTNESS;
+                    
+                    // 5. Convert back to Linear RGB for the hardware
+                    const hw_rgb = Oklab_to_LinearRGB(lab.L, lab.a, lab.b);
+                    
+                    // 6. Scale 0.0-1.0 to 0-255 integers for the Pico
+                    const final_R = Math.round(hw_rgb.r * 255);
+                    const final_G = Math.round(hw_rgb.g * 255);
+                    const final_B = Math.round(hw_rgb.b * 255);
+                    
+                    // Update the UI
+                    document.getElementById('oklab-val').textContent = 
+                        `(${lab.L.toFixed(2)}, ${lab.a.toFixed(2)}, ${lab.b.toFixed(2)})`;
+                    
+                    document.getElementById('rgb-val').textContent = 
+                        `[${final_R}, ${final_G}, ${final_B}]`;
+                        
+                    colorBox.style.background = `rgb(${sRGB_r}, ${sRGB_g}, ${sRGB_b})`; // Show screen color in UI
+                    
+                    // 7. FIRE TO PICO!
+                    const picoIP = "192.168.X.X"; // <--- PUT YOUR PICO IP HERE
+                    fetch(`http://${picoIP}/?data=RGB:${final_R},${final_G},${final_B}`, {
                         method: 'GET',
-                        mode: 'no-cors' // Bypasses strict browser security for local hardware
-                    }).catch(err => console.log("Stream error:", err));
+                        mode: 'no-cors' 
+                    }).catch(err => {}); // Silently catch errors so it doesn't spam the console
                     
                     pixelIndex++;
-                }, 100); // Update every 100ms
+                }, 100); // 100ms = 10 frames per second. Drop to 33 for 30fps!
             };
             
             // Read the file again, this time as a Data URL to feed the Image object

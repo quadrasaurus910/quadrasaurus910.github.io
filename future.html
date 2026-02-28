@@ -364,7 +364,7 @@ function Oklab_to_LinearRGB(L, a, b) {
                     colorBox.style.background = `rgb(${sRGB_r}, ${sRGB_g}, ${sRGB_b})`; // Show screen color in UI
                     
                     // 7. FIRE TO PICO!
-                    const picoIP = "192.168.X.X"; // <--- PUT YOUR PICO IP HERE
+                    const picoIP = "192.168..13"; // <--- PUT YOUR PICO IP HERE
                     fetch(`http://${picoIP}/?data=RGB:${final_R},${final_G},${final_B}`, {
                         method: 'GET',
                         mode: 'no-cors' 

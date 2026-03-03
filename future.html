@@ -60,9 +60,11 @@
         /* When the 'active' class is added via JavaScript */
         #cyber-menu.active {
             width: 250px;      /* Step 1: Expand right */
-            height: 400px;     /* Step 2: Grow down */
+            height: 600px;     /* Step 2: Grow down */
+            max-height: 80%;
+            overflow-y: scroll;
             border: 1px solid #00ffcc;
-            border-top: 2px solid #fff;
+            border-top: 2px solid #00ffcc; /* Keep the top dash visible */
         }
 
         /* Menu Items fade in AFTER the box is fully drawn (0.8s delay) */
@@ -71,6 +73,7 @@
             padding: 20px;
             transition: opacity 0.3s ease-in 0.8s;
         }
+
         #cyber-menu.active .menu-content {
             opacity: 1;
         }
@@ -82,6 +85,12 @@
             background-color: rgba(0, 255, 204, 0.0);
             transition: background-color 0.5s ease; 
         }
+
+        .menu-item a {
+            color: #00ffcc;
+            text-decoration: none;
+        }
+
         .menu-item:hover,
         .menu-item.active {
             color: #fff; 
@@ -89,6 +98,12 @@
             background-color: rgba(0, 255, 204, 0.7);
             transition: background-color 0.5s ease; 
             animation: pulse 2s infinite;
+        }
+
+        .menu-item a:hover,
+        .menu-item a.active {
+            color: #fff; 
+            text-shadow: 0 0 8px #fff;
         }
 
         .menu-item p {

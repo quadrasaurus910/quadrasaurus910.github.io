@@ -1,6 +1,7 @@
 import sys
 import os
 from PIL import Image
+import pillow
 
 # run inside virtual enviroment: enter source .venv/bin/activate in terminal
 

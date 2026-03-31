@@ -340,6 +340,9 @@
                 var thisAnny2 = new Date(annyStr).getTime();
                 ad1.innerHTML = "thisAnny2";
                 console.log("test");
+                date_formula = jsDate.getTime() == newDate.getTime();
+                date_formula2 = (jsDate.getTime() == oldDate.getTime());
+                adp.innerHTML = date_formula;
                 if (jsDate.getTime() == newDate.getTime() || (jsDate.getTime() == oldDate.getTime())) {
                     dateDiv.style.display = 'none';
                     countdownDiv.style.display = 'block';

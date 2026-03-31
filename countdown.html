@@ -205,7 +205,7 @@
             </div>
         </div>
         <div id="ad">
-            <p>testP</p>
+            <p id="adp" name="adp">testP</p>
             <div id="ad1">test</div>
         </div>
         <!--<button data-page="page1">Page 1</button>
@@ -235,6 +235,7 @@
         const cdc1 = document.querySelector('.cdc1');
         const ad = document.querySelector('#ad');
         const ad1 = document.querySelector('#ad1');
+        const adp = document.querySelector('#adp');
 
         function ad0() {
             window.location.href = '/anniversary25.html';
@@ -324,7 +325,7 @@
                 dateT = document.querySelector('#date').value;
                 testP = document.querySelector('#testP');
                 testP2 = document.querySelector('#testP2');
-                newDate = new Date("August 9, 2025 20:00:00 GMT-0400");
+                newDate = new Date("August 9, 2026 20:00:00 GMT-0400");
                 oldDate = new Date("August 9, 2005 20:00:00 GMT-0400");
                 /*copy = new Date();
                 setTime(newDate.getTime());*/
@@ -357,7 +358,7 @@
                     })
                     countdownDiv.style.animation = 'trans3b 3s 1';
 
-                    var countDownDate = new Date("Aug 10, 2025 00:00:00"/*"July 17, 2024 8:19:00"*/).getTime();
+                    var countDownDate = new Date("Aug 10, 2026 00:00:00"/*"July 17, 2024 8:19:00"*/).getTime();
                     var countDownDate2 = thisAnny2;
 
                     // Update the count down every 1 second

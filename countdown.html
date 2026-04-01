@@ -250,6 +250,18 @@
             ad1.innerHTML = 'TIME EXPIRED';*/
         };
 
+        function checkAndUpdateDate(targetDate) {
+            const now = new Date();
+            let status = "before";
+
+            // Check if the current time has passed the target date
+            if (now > targetDate) {
+                status = "after";
+                // Update the year to the following year
+                targetDate.setFullYear(targetDate.getFullYear() + 1); 
+            }
+        }
+
         // Set the date we're counting down to
         /*var countDownDate = new Date("August 10, 2025 00:00:00").getTime();​
         // Update the count down every 1 second
@@ -327,6 +339,10 @@
                 testP2 = document.querySelector('#testP2');
                 newDate = new Date("August 9, 2026 20:00:00 GMT-0400");
                 oldDate = new Date("August 9, 2005 20:00:00 GMT-0400");
+                testDate = new Date("April 1, 2026 20:00:00 GMT-0400");
+                checkAndUpdateDate(newDate);
+                console.log(newDate);
+                console.log(testDate);
                 /*copy = new Date();
                 setTime(newDate.getTime());*/
                 /*testP.innerHTML = newDate;*/

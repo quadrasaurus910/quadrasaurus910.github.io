@@ -207,6 +207,7 @@
         <div id="ad">
             <p id="adp" name="adp">testP</p>
             <div id="ad1">test</div>
+            <div id="ad2">test2</div>
         </div>
         <!--<button data-page="page1">Page 1</button>
         <button data-page="page2">Page 2</button>
@@ -235,6 +236,7 @@
         const cdc1 = document.querySelector('.cdc1');
         const ad = document.querySelector('#ad');
         const ad1 = document.querySelector('#ad1');
+        const ad2 = document.querySelector('#ad2');
         const adp = document.querySelector('#adp');
 
         function ad0() {
@@ -355,6 +357,7 @@
                 var annyStr = 'August 10, ' + yearStr + ' 00:00:00';
                 var thisAnny2 = new Date(annyStr).getTime();
                 ad1.innerHTML = "thisAnny2";
+                ad2.innerHTML = jsDate;
                 console.log("test");
                 date_formula = jsDate.getTime() == newDate.getTime();
                 date_formula2 = (jsDate.getTime() == oldDate.getTime());

@@ -206,6 +206,7 @@
         </div>
         <div id="ad">
             <p id="adp" name="adp">testP</p>
+            <p id="adp2" name="adp2">testP2</p>
             <div id="ad1">test</div>
             <div id="ad2">test2</div>
         </div>
@@ -238,6 +239,7 @@
         const ad1 = document.querySelector('#ad1');
         const ad2 = document.querySelector('#ad2');
         const adp = document.querySelector('#adp');
+        const adp2 = document.querySelector('#adp2');
 
         function ad0() {
             window.location.href = '/anniversary25.html';
@@ -357,11 +359,11 @@
                 var annyStr = 'August 10, ' + yearStr + ' 00:00:00';
                 var thisAnny2 = new Date(annyStr).getTime();
                 ad1.innerHTML = "thisAnny2";
-                ad2.innerHTML = jsDate;
                 console.log("test");
                 date_formula = jsDate.getTime() == newDate.getTime();
                 date_formula2 = (jsDate.getTime() == oldDate.getTime());
                 adp.innerHTML = date_formula;
+                adp2.innerHTML = jsDate;
                 if (jsDate.getTime() == newDate.getTime() || (jsDate.getTime() == oldDate.getTime())) {
                     dateDiv.style.display = 'none';
                     countdownDiv.style.display = 'block';

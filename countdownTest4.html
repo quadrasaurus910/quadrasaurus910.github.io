@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Countdown</title>
+        <style>
+            @keyframes slide {
+                from { width: 0px; }
+                to { width: 400px; }
+            }
+            @keyframes trans1 {
+                0% { background-color: black; }
+                50% { background-color: #DD87C3; }
+                100% { background-color: white; }
+            }
+            @keyframes trans2 {
+                0% { background-color: white; }
+                50% { background-color: black; }
+                100% { background-image: url('IMG_0351.jpeg'); }
+            }
+            @keyframes trans1b {
+                0% { opacity: 0%; }
+                100% { opacity: 0%; }
+            }
+            @keyframes trans2b {
+                0% { transform: scale(1); opacity: 1; }
+                50% { color: white; }
+                100% { transform: scale(50); opacity: 0; }
+            }
+            @keyframes trans3 {
+                from { width: 80%; }
+                to { width: 0%; }
+            }
+            @keyframes trans3b {
+                from { width: 0%; }
+                to { width: 80%; }
+            }
+
+            div, #testP, #testP2 {
+                display: none;
+            }
+
+            #dateDiv {
+                text-align: center;
+                margin: 100px 0% 0% 0%;
+            }
+
+            #dateText {
+                font-size: 24pt;
+            }
+
+            .text1 {
+                font-size: 24pt;
+                color: #DD87C3;
+                position: relative;
+                width: 0px;
+                text-align: left;
+                overflow: hidden;
+                white-space: nowrap;
+                height: 40px;
+            }
+
+            #countdownDiv {
+                text-align: center;
+                border: 2px solid white;
+                border-radius: 6px;
+                margin: 30% auto auto auto;
+                width: 0%;
+                max-width: 500px;
+                overflow: hidden;
+            }
+
+            .cdc1 {
+                text-align: center;
+                margin: 0% 0% 0% 0%;
+                color: white;
+                height: 50px;
+                font-family: Garamond, serif;
+                white-space: nowrap;
+            }
+            .countDivClass {
+                font-size: 26pt;
+                color: white;
+                border-top: 0.5px solid white;
+                margin: 0pt 0pt 0pt 0pt;
+                padding: 0px 0px 20px 0px;
+                height: 60px;
+            }
+
+            #textT {
+                display: none;
+            }
+            #countdown {
+                padding: 5px 0px 0px 0px;
+                font-size: 24pt;
+            }
+            #dateBtn {
+                width: 220px;
+                height: 100px;
+                background-color: rgba(0,0,0,0);
+                color: pink;
+                border: 3px solid pink;
+                border-radius: 10px;
+                font-size: 26pt;
+            }
+            #dateBtn:hover,
+            #dateBtn:focus {
+                background-color: rgba(238,180,214,1);
+            }
+            body {
+                background-size: 100vh;
+                overflow: hidden;
+            }
+            #ad {
+                display: block;
+            }
+            #cdHead {
+                height: 25%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <p class="text1" id="text1">Hello, Brittany!</p>
+        <div id="dateDiv" data-page="page0">
+            <p id="dateText">Please enter our anniversary date.</p>
+            <input type="date" id="date" name="date" autofocus>
+            <br>
+            <input id="textT" name="textT" type="text">
+            <br>
+            <button id="dateBtn" name="dateBtn" data-page="countdownDiv">Submit</button>
+            <p id="testP"></p>
+            <p id="testP2"></p>
+        </div>
+        <div id="countdownDiv">
+            <div id="cdHead"></div>
+            <div class="cdc1">
+                <p id="countdown"></p>
+            </div>
+            <div class="countDivClass">
+                <p>until</p>
+            </div>
+            <div class="countDivClass">
+                <p>Anniversary</p>
+            </div>
+        </div>
+        <div id="ad">
+            <p id="adp" name="adp">testP</p>
+            <p id="adp2" name="adp2">testP2</p>
+            <div id="ad1">test</div>
+            <div id="ad2">test2</div>
+        </div>
+
+        <script>
+            const text1 = document.querySelector('#text1');
+            const dateDiv = document.querySelector('#dateDiv');
+            const countdownDiv = document.querySelector('#countdownDiv');
+            const dateBtn = document.querySelector('#dateBtn');
+            const body = document.body;
+            const countDivClass = document.querySelectorAll('.countDivClass');
+            const cdc1 = document.querySelector('.cdc1');
+
+            function ad0() {
+                window.location.href = '/anniversary25.html';
+                countdownDiv.style.display = 'none';
+            };
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initial Animations
+                body.style.backgroundColor = 'black';
+
+                text1.addEventListener('animationend', () => {
+                    text1.style.display = 'none';
+                    dateDiv.style.display = 'block';
+                    body.addEventListener('animationend', () => {
+                        body.style.backgroundColor = 'white';
+                    }, { once: true })
+                    body.style.animation = 'trans1 2s 1 forwards';
+                    dateDiv.style.animation = 'trans1b 1s 1 forwards';
+                });
+                text1.style.animation = 'slide 4s 1 forwards';
+
+                // Button Click Logic
+                dateBtn.addEventListener('click', function() {
+                    const dateInputVal = document.querySelector('#date').value; 
+                    
+                    if (!dateInputVal) {
+                        alert("Please enter a date.");
+                        return;
+                    }
+
+                    // Extract values cleanly from the YYYY-MM-DD string
+                    const [inputYear, inputMonth, inputDay] = dateInputVal.split('-');
+                    const isAug10 = (inputMonth === '08' && inputDay === '10');
+                    const inputYearInt = parseInt(inputYear, 10);
+
+                    // Determine current time context
+                    const now = new Date();
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); 
+                    const currentYear = today.getFullYear();
+                    const thisYearAnniversary = new Date(currentYear, 7, 10); // 7 = August (0-indexed)
+
+                    let targetYear;
+                    
+                    // Determine if the target is this year or next year
+                    if (today.getTime() === thisYearAnniversary.getTime()) {
+                        targetYear = currentYear; // Today IS the anniversary
+                    } else if (today < thisYearAnniversary) {
+                        targetYear = currentYear; // Hasn't happened yet this year
+                    } else {
+                        targetYear = currentYear + 1; // Already passed, look to next year
+                    }
+
+                    // The 3 Conditions
+                    const isFirstAnniversary = (inputYearInt === 2005 && isAug10);
+                    const isNextAnniversary = (inputYearInt === targetYear && isAug10);
+
+                    if (isFirstAnniversary || isNextAnniversary) {
+                        
+                        // Valid Date - trigger UI transitions
+                        dateDiv.style.display = 'none';
+                        countdownDiv.style.display = 'block';
+                        cdc1.style.display = 'block';
+                        countDivClass.forEach(cdc => {
+                            cdc.style.display = 'block';
+                        });
+
+                        body.addEventListener('animationend', () => {
+                            body.style.backgroundImage = "url('IMG_0351.jpeg')";
+                        }, { once: true });
+                        body.style.animation = 'trans2 2s 1 forwards';
+
+                        countdownDiv.addEventListener('animationend', () => {
+                            countdownDiv.style.width = '80%';
+                        }, { once: true });
+                        countdownDiv.style.animation = 'trans3b 3s 1 forwards';
+
+                        // Set perpetual countdown target
+                        const countDownTargetTime = new Date(targetYear, 7, 10, 0, 0, 0).getTime();
+
+                        // Immediate populate to prevent 1-second delay flash
+                        const initialDist = countDownTargetTime - new Date().getTime();
+                        if (initialDist > 0) {
+                            const d = Math.floor(initialDist / (1000 * 60 * 60 * 24));
+                            const h = Math.floor((initialDist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const m = Math.floor((initialDist % (1000 * 60 * 60)) / (1000 * 60));
+                            const s = Math.floor((initialDist % (1000 * 60)) / 1000);
+                            document.getElementById("countdown").innerHTML = d + "d " + h + "h " + m + "m " + s + "s ";
+                        }
+
+                        // Perpetual countdown timer
+                        const x = setInterval(function() {
+                            const currentTime = new Date().getTime();
+                            const distance = countDownTargetTime - currentTime;
+
+                            if (distance <= 0) {
+                                // It is August 10th - End timer and trigger redirect
+                                clearInterval(x);
+                                document.getElementById("countdown").innerHTML = '0d 0h 0m 0s';
+                                countdownDiv.style.color = 'rgba(0, 0, 0, 0)';
+                                
+                                countdownDiv.addEventListener('animationend', ad0, { once: true });
+                                countdownDiv.style.animation = 'trans3 3s 1 forwards';
+                            } else {
+                                // Update timer
+                                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                                document.getElementById("countdown").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                            }
+                        }, 1000);
+                    } else {
+                        alert("Hey, that's not our anniversary!");
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

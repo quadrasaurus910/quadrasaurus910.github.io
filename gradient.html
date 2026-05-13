@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keplerian SVG Gradient Explorer</title>
+    <style>
+        /* Mobile-First Responsive Variables & Reset */
+        :root {
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent: #bb86fc;
+            --button-bg: #333;
+            --button-hover: #444;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 1rem;
+            line-height: 1.6;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Responsive Preview Container */
+        .preview-container {
+            position: static; /* Let it scroll naturally on mobile */
+        }
+
+        svg {
+            width: 100%;
+            height: 250px; /* Shorter on mobile to save vertical space */
+            border-radius: var(--border-radius);
+            border: 2px solid #333;
+            background: #000;
+        }
+
+        .control-group {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .control-header h3 {
+            margin: 0;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            accent-color: var(--accent);
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            padding: 0.6rem;
+            background: var(--button-bg);
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            min-width: fit-content;
+        }
+
+        button:hover {
+            background: var(--button-hover);
+        }
+
+        button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .icon-btn {
+            flex: 0 0 auto;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Stack on mobile */
+            gap: 1rem;
+        }
+
+        .data-readout {
+            font-family: monospace;
+            background: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #4ade80;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        /* Tablet and Desktop Breakpoints */
+        @media (min-width: 600px) {
+            .color-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .preview-container {
+                position: sticky;
+                top: 1rem;
+            }
+            svg {
+                height: 350px; /* Restore taller height for large screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Keplerian SVG Gradient</h1>
+    
+    <div class="container">
+        <!-- Live Preview Panel -->
+        <div class="panel preview-container">
+            <h2>Live Preview</h2>
+            <svg>
+                <defs>
+                    <linearGradient id="spaceGradient" gradientUnits="userSpaceOnUse" spreadMethod="pad" x1="0%" y1="50%" x2="100%" y2="50%">
+                        <stop id="stop1" offset="0%" stop-color="#ff0055" />
+                        <stop id="stop2" offset="50%" stop-color="#aa00ff" />
+                        <stop id="stop3" offset="100%" stop-color="#00eeff" />
+                    </linearGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#spaceGradient)" />
+            </svg>
+            
+            <h3 style="margin-top: 1rem; font-size: 1rem;">Current SVG Attributes</h3>
+            <div class="data-readout" id="codeReadout"></div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel">
+            <div class="control-header">
+                <h2>Controls</h2>
+                <button id="randAllBtn" class="icon-btn" style="background: var(--accent); color: black; border: none;">🎲 Randomize All</button>
+            </div>
+            
+            <!-- Kepler Math Controls -->
+            <div class="control-group">
+                <div class="control-header">
+                    <h3 style="color: #4ade80;">Kepler Orbit Transform</h3>
+                    <button id="randOrbitBtn" class="icon-btn">🎲</button>
+                </div>
+                
+                <label>Semi-major Axis (a): <span id="a-val">50</span></label>
+                <input type="range" id="semiMajor" min="10" max="100" value="50">
+                
+                <label>Time / Manual Orbit (t): <span id="t-val">0</span></label>
+                <input type="range" id="time" min="0" max="1000" value="0">
+
+                <div class="button-group" style="margin-top: 0.5rem;">
+                    <button id="playBtn">▶ Auto Orbit</button>
+                </div>
+            </div>
+
+            <!-- Stop Colors & Offsets -->
+            <div class="control-group">
+                <div class="control-header">
+                    <h3>Gradient Stops</h3>
+                    <button id="randColorBtn" class="icon-btn">🎲 Colors</button>
+                </div>
+                
+                <div class="color-grid">
+                    <div>
+                        <label>Stop 1 Color</label>
+                        <input type="color" id="c1" value="#ff0055">
+                        <label>Offset 1: <span id="o1-val">0%</span></label>
+                        <input type="range" id="o1" min="0" max="100" value="0">
+                    </div>
+                    <div>
+                        <label>Stop 3 Color</label>
+                        <input type="color" id="c3" value="#00eeff">
+                        <label>Offset 3: <span id="o3-val">100%</span></label>
+                        <input type="range" id="o3" min="0" max="100" value="100">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1rem;">
+                    <label>Stop 2 (Middle) Color</label>
+                    <input type="color" id="c2" value="#aa00ff">
+                    <label>Offset 2: <span id="o2-val">50%</span></label>
+                    <input type="range" id="o2" min="0" max="100" value="50">
+                </div>
+            </div>
+
+            <!-- Spread Method -->
+            <div class="control-group">
+                <h3>spreadMethod</h3>
+                <p style="font-size: 0.8rem; margin-bottom: 0.5rem; color: #aaa;">Defines what happens if the gradient starts or ends inside the bounds of the object.</p>
+                <div class="button-group" id="spreadGroup">
+                    <button class="active" data-val="pad">Pad</button>
+                    <button data-val="reflect">Reflect</button>
+                    <button data-val="repeat">Repeat</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const gradient = document.getElementById('spaceGradient');
+        const s1 = document.getElementById('stop1');
+        const s2 = document.getElementById('stop2');
+        const s3 = document.getElementById('stop3');
+        const readout = document.getElementById('codeReadout');
+        
+        // Inputs
+        const semiMajorInput = document.getElementById('semiMajor');
+        const timeInput = document.getElementById('time');
+        const playBtn = document.getElementById('playBtn');
+
+        // State
+        let isPlaying = false;
+        let currentTime = 0;
+        let animationId;
+        let spreadMethod = 'pad';
+
+        // Update display values
+        const updateVal = (id, val, suffix = '') => {
+            document.getElementById(`${id}-val`).innerText = `${val}${suffix}`;
+        };
+
+        // Update Colors & Offsets
+        const updateStops = () => {
+            const colors = ['c1', 'c2', 'c3'].map(id => document.getElementById(id).value);
+            const offsets = ['o1', 'o2', 'o3'].map(id => document.getElementById(id).value);
+
+            s1.setAttribute('stop-color', colors[0]);
+            s1.setAttribute('offset', `${offsets[0]}%`);
+            updateVal('o1', offsets[0], '%');
+
+            s2.setAttribute('stop-color', colors[1]);
+            s2.setAttribute('offset', `${offsets[1]}%`);
+            updateVal('o2', offsets[1], '%');
+
+            s3.setAttribute('stop-color', colors[2]);
+            s3.setAttribute('offset', `${offsets[2]}%`);
+            updateVal('o3', offsets[2], '%');
+            
+            updateReadout();
+        };
+
+        // Kepler Math Logic applied to gradient vector
+        const applyKeplerTransform = (t, a) => {
+            const period = Math.pow(Math.max(a, 1), 1.5); 
+            const omega = (2 * Math.PI) / period;
+            const theta = omega * (t / 5); 
+
+            const x1 = 50 - a * Math.cos(theta);
+            const y1 = 50 - a * Math.sin(theta);
+            const x2 = 50 + a * Math.cos(theta);
+            const y2 = 50 + a * Math.sin(theta);
+
+            gradient.setAttribute('x1', `${x1.toFixed(2)}%`);
+            gradient.setAttribute('y1', `${y1.toFixed(2)}%`);
+            gradient.setAttribute('x2', `${x2.toFixed(2)}%`);
+            gradient.setAttribute('y2', `${y2.toFixed(2)}%`);
+
+            updateVal('a', a);
+            updateVal('t', Math.floor(t));
+            updateReadout();
+        };
+
+        const updateReadout = () => {
+            readout.textContent = `<linearGradient id="spaceGradient" 
+    x1="${gradient.getAttribute('x1')}" y1="${gradient.getAttribute('y1')}" 
+    x2="${gradient.getAttribute('x2')}" y2="${gradient.getAttribute('y2')}"
+    spreadMethod="${spreadMethod}">
+    <stop offset="${s1.getAttribute('offset')}" stop-color="${s1.getAttribute('stop-color')}"/>
+    <stop offset="${s2.getAttribute('offset')}" stop-color="${s2.getAttribute('stop-color')}"/>
+    <stop offset="${s3.getAttribute('offset')}" stop-color="${s3.getAttribute('stop-color')}"/>
+</linearGradient>`;
+        };
+
+        // Animation Loop
+        const animate = () => {
+            if (isPlaying) {
+                currentTime += 1;
+                timeInput.value = currentTime % 1000;
+                applyKeplerTransform(currentTime, parseFloat(semiMajorInput.value));
+                animationId = requestAnimationFrame(animate);
+            }
+        };
+
+        // Randomization Helpers
+        const getRandomHex = () => `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
+        
+        const randomizeOrbit = () => {
+            semiMajorInput.value = Math.floor(Math.random() * 90) + 10;
+            timeInput.value = Math.floor(Math.random() * 1000);
+            currentTime = parseFloat(timeInput.value);
+            applyKeplerTransform(currentTime, parseFloat(semiMajorInput.value));
+        };
+
+        const randomizeColorsAndOffsets = () => {
+            document.getElementById('c1').value = getRandomHex();
+            document.getElementById('c2').value = getRandomHex();
+            document.getElementById('c3').value = getRandomHex();
+
+            // Sort offsets so the gradient flows logically from stop 1 to 3
+            const randomOffsets = [
+                Math.floor(Math.random() * 101),
+                Math.floor(Math.random() * 101),
+                Math.floor(Math.random() * 101)
+            ].sort((a, b) => a - b);
+
+            document.getElementById('o1').value = randomOffsets[0];
+            document.getElementById('o2').value = randomOffsets[1];
+            document.getElementById('o3').value = randomOffsets[2];
+            
+            updateStops();
+        };
+
+        // Event Listeners
+        ['c1', 'c2', 'c3', 'o1', 'o2', 'o3'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateStops);
+        });
+
+        semiMajorInput.addEventListener('input', (e) => {
+            applyKeplerTransform(parseFloat(timeInput.value), parseFloat(e.target.value));
+        });
+
+        timeInput.addEventListener('input', (e) => {
+            if(isPlaying) {
+                isPlaying = false;
+                playBtn.textContent = '▶ Auto Orbit';
+                playBtn.classList.remove('active');
+            }
+            currentTime = parseFloat(e.target.value);
+            applyKeplerTransform(currentTime, parseFloat(semiMajorInput.value));
+        });
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playBtn.textContent = isPlaying ? '⏸ Pause Orbit' : '▶ Auto Orbit';
+            playBtn.classList.toggle('active');
+            if (isPlaying) animate();
+        });
+
+        document.getElementById('spreadGroup').addEventListener('click', (e) => {
+            if(e.target.tagName === 'BUTTON') {
+                document.querySelectorAll('#spreadGroup button').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                spreadMethod = e.target.getAttribute('data-val');
+                gradient.setAttribute('spreadMethod', spreadMethod);
+                updateReadout();
+            }
+        });
+
+        // Randomize Buttons Listeners
+        document.getElementById('randOrbitBtn').addEventListener('click', randomizeOrbit);
+        document.getElementById('randColorBtn').addEventListener('click', randomizeColorsAndOffsets);
+        document.getElementById('randAllBtn').addEventListener('click', () => {
+            randomizeOrbit();
+            randomizeColorsAndOffsets();
+        });
+
+        // Initialize
+        applyKeplerTransform(parseFloat(timeInput.value), parseFloat(semiMajorInput.value));
+        updateStops();
+
+    </script>
+</body>
+</html>

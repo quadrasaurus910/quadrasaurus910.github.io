@@ -339,6 +339,155 @@
     <rect x="0" y="550" width="800" height="50" fill="#05a418" />
 </svg>
 
+<style>
+    body { margin: 0; background: #05080a; overflow: hidden; }
+    /* The Magic: Applying the SVG filter to a high-performance Canvas */
+    canvas {
+        filter: url('#gooey-plasma');
+    }
+</style>
+
+<!-- The SVG Filter Definition (Invisible but active) -->
+<svg style="position: absolute; width: 0; height: 0;">
+    <defs>
+        <linearGradient id="spaceGradient" x1="55.70%" y1="6.37%" x2="44.30%" y2="93.63%">
+            <stop offset="29%" stop-color="#9fe6cf"/>
+            <stop offset="31%" stop-color="#84eb9e"/>
+            <stop offset="70%" stop-color="#05a418"/>
+        </linearGradient>
+
+        <filter id="gooey-plasma">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <!-- High contrast matrix creates the surface tension / melting effect -->
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" />
+        </filter>
+    </defs>
+</svg>
+
+<canvas id="plasmaCanvas"></canvas>
+
+<script>
+const canvas = document.getElementById('plasmaCanvas');
+const ctx = canvas.getContext('2d');
+let particles2 = [];
+
+const COLORS = {
+    surface: "#05a418",
+    mid: "#84eb9e",
+    high: "#9fe6cf",
+    radical: "#ffffff" // Radicals glow white/mint
+};
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+class Particle {
+    constructor(isRadical = false) {
+        this.init(isRadical);
+    }
+
+    init(isRadical) {
+        this.isRadical = isRadical;
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + 50; // Start below the surface
+        this.r = isRadical ? Math.random() * 5 + 2 : Math.random() * 25 + 10;
+        
+        // Physics
+        this.vx = (Math.random() - 0.5) * (isRadical ? 1 : 4);
+        this.vy = isRadical ? -Math.random() * 8 - 4 : -Math.random() * 12 - 5;
+        this.gravity = isRadical ? 0 : 0.15; // Radicals ignore gravity
+        
+        this.energy = Math.random();
+        this.life = 1;
+        this.fizz = [];
+    }
+
+    update() {
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // "Magnetic" wobble for non-radicals
+        if (!this.isRadical) {
+            this.vx += Math.sin(this.y * 0.02) * 0.1;
+            // Surface tension: particles shrink as they "dry out" in the atmosphere
+            this.life -= 0.005;
+        }
+
+        // Off-gassing (Fizzy pulses)
+        if (this.y < canvas.height * 0.6 && Math.random() > 0.8) {
+            this.fizz.push({
+                x: this.x, 
+                y: this.y, 
+                r: this.r * 0.5, 
+                l: 1 
+            });
+        }
+
+        // Recycle
+        if (this.y > canvas.height + 100 || this.life <= 0 || this.x < -100 || this.x > canvas.width + 100) {
+            this.init(Math.random() > 0.9); // 10% chance to respawn as radical
+        }
+    }
+
+    draw() {
+        // Draw the main glob
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r * this.life, 0, Math.PI * 2);
+        
+        // Color shifting based on altitude and energy
+        const alt = this.y / canvas.height;
+        if (this.isRadical) {
+            ctx.fillStyle = COLORS.radical;
+        } else {
+            ctx.fillStyle = alt < 0.4 ? COLORS.high : (alt < 0.7 ? COLORS.mid : COLORS.surface);
+        }
+        ctx.fill();
+
+        // Draw fizz (off-gassing)
+        this.fizz.forEach((f, i) => {
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.r * f.l, 0, Math.PI * 2);
+            ctx.fillStyle = COLORS.mid;
+            ctx.fill();
+            f.y -= 1; // Fizz rises faster
+            f.l -= 0.05;
+            if (f.l <= 0) this.fizz.splice(i, 1);
+        });
+    }
+}
+
+// Initial Population
+for (let i = 0; i < 40; i++) {
+    particles2.push(new Particle(i < 5));
+}
+
+function animate() {
+    // Clear canvas with a slight trail effect
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw the "Surface" core
+    ctx.beginPath();
+    ctx.rect(0, canvas.height - 40, canvas.width, 100);
+    ctx.fillStyle = COLORS.surface;
+    ctx.fill();
+
+    particles2.forEach(p => {
+        p.update();
+        p.draw();
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+
 <script>
     const world = document.getElementById('particle-world');
     const particles = [];

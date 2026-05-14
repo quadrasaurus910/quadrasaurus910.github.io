@@ -302,6 +302,113 @@
     </g>
 </svg>
 
+<svg width="800" height="600" viewBox="0 0 800 600" style="background: #05080a;">
+    <defs>
+        <!-- Your Original Gradient -->
+        <linearGradient id="spaceGradient" x1="55.70%" y1="6.37%" x2="44.30%" y2="93.63%">
+            <stop offset="29%" stop-color="#9fe6cf"/>
+            <stop offset="31%" stop-color="#84eb9e"/>
+            <stop offset="70%" stop-color="#05a418"/>
+        </linearGradient>
+
+        <!-- Advanced Plasma Filter: Goo + Haze -->
+        <filter id="plasmaFilter" x="-50%" y="-50%" width="200%" height="200%">
+            <!-- 1. The Haze/Atmosphere effect -->
+            <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise">
+                <animate attributeName="baseFrequency" values="0.015;0.02;0.015" dur="10s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" result="distortedHaze" />
+            
+            <!-- 2. The Gooey Surface Tension -->
+            <feGaussianBlur in="distortedHaze" stdDeviation="8" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10" result="goo" />
+            
+            <!-- 3. Blend the pulses and the core -->
+            <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+        </filter>
+    </defs>
+
+    <!-- The Atmospheric Glow Layer -->
+    <rect width="800" height="600" fill="url(#spaceGradient)" opacity="0.05" filter="url(#plasmaFilter)" />
+
+    <!-- Active Particle System -->
+    <g filter="url(#plasmaFilter)" id="particle-world"></g>
+    
+    <!-- Solid Surface -->
+    <rect x="0" y="550" width="800" height="50" fill="#05a418" />
+</svg>
+
+<script>
+    const world = document.getElementById('particle-world');
+    const particles = [];
+    const PARTICLE_COUNT = 25;
+
+    class Glob {
+        constructor() {
+            this.el = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            world.appendChild(this.el);
+            this.init();
+        }
+
+        init() {
+            this.x = Math.random() * 800;
+            this.y = 550;
+            this.r = Math.random() * 20 + 10;
+            this.vx = (Math.random() - 0.5) * 4;
+            this.vy = -Math.random() * 12 - 5; // Launch speed
+            this.energy = Math.random(); 
+            this.isEscaping = this.vy < -14; // High energy particles break free
+            this.life = 1;
+        }
+
+        update() {
+            // 1. Magnetic Field Simulation (Horizontal drift based on vertical speed)
+            const magStrength = 0.05;
+            this.vx += Math.sin(this.y * 0.01) * magStrength;
+
+            // 2. Gravity vs Escape Velocity
+            const gravity = this.isEscaping ? 0.05 : 0.25;
+            this.vy += gravity;
+
+            // 3. Movement
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // 4. "Fizzy" Pulsing Logic
+            // Pulse size and opacity based on sine of time + energy
+            const pulse = Math.sin(Date.now() * 0.01 * this.energy) * 2;
+            const currentR = Math.max(1, (this.r + pulse) * this.life);
+            
+            // 5. Dynamic Color/Atmosphere logic
+            // Particles get "hotter" (lighter) as they go higher/faster
+            const altitudeRatio = Math.max(0, (550 - this.y) / 550);
+            this.life -= this.isEscaping ? 0.005 : 0.01;
+
+            this.el.setAttribute('cx', this.x);
+            this.el.setAttribute('cy', this.y);
+            this.el.setAttribute('r', currentR);
+            this.el.setAttribute('fill', altitudeRatio > 0.5 ? '#9fe6cf' : '#05a418');
+            this.el.setAttribute('opacity', this.life);
+
+            // 6. Recycling
+            if (this.life <= 0 || this.y > 560) {
+                this.init();
+            }
+        }
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new Glob());
+    }
+
+    function frame() {
+        particles.forEach(p => p.update());
+        requestAnimationFrame(frame);
+    }
+    frame();
+</script>
+
+<!--
 <script>
     const container = document.getElementById('particle-container');
     const particles = [];
@@ -352,7 +459,7 @@
 
     animate();
 </script>
-
+-->
 
     <script>
         // DOM Elements

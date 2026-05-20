@@ -25,6 +25,30 @@
             display: grid;
             grid-template-columns: 1fr 380px;
             overflow: hidden;
+            /* Subtly fade in the whole body */
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* --- Boot Sequence Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bootUpFocus {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); filter: blur(10px); }
+            50% { opacity: 1; filter: blur(2px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        @keyframes slideInCompile {
+            0% { opacity: 0; transform: translateX(40px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes flickerOn {
+            0%, 10%, 20%, 30%, 100% { opacity: 1; }
+            5%, 15%, 25% { opacity: 0.3; }
         }
 
         /* --- Preview Area (Main) --- */
@@ -33,6 +57,9 @@
             flex-direction: column;
             padding: 1rem;
             border-right: 1px solid var(--border);
+            /* Apply boot sequence */
+            opacity: 0;
+            animation: bootUpFocus 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
         }
 
         header {
@@ -42,7 +69,11 @@
             margin-bottom: 1rem;
         }
 
-        h1 { font-size: 1.2rem; color: var(--accent); }
+        h1 { 
+            font-size: 1.2rem; 
+            color: var(--accent); 
+            animation: flickerOn 1.5s ease-in-out;
+        }
 
         #svg-container {
             flex-grow: 1;
@@ -54,6 +85,7 @@
             justify-content: center;
             overflow: hidden;
             position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
         }
 
         svg {
@@ -61,6 +93,15 @@
             height: 90%;
             max-width: 800px;
             max-height: 800px;
+            z-index: 2; /* Keep planet above starfield */
+        }
+
+        /* Background Starfield inside SVG container */
+        .starfield {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            opacity: 0.6;
         }
 
         /* --- Controls Area (Sidebar) --- */
@@ -71,14 +112,18 @@
             gap: 1.5rem;
             overflow-y: auto;
             background-color: var(--panel-bg);
+            /* Slide in the controls like a side-panel compiling */
+            opacity: 0;
+            animation: slideInCompile 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
         }
 
-        h2 { font-size: 1rem; color: var(--green); margin-bottom: 0.5rem; }
+        h2 { font-size: 1rem; color: var(--green); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;}
 
         .control-group {
             border: 1px solid var(--border);
             padding: 1rem;
             border-radius: var(--border-radius);
+            background: rgba(0,0,0,0.2);
         }
 
         .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; gap: 0.5rem; }
@@ -101,28 +146,43 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.85rem;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            font-weight: bold;
         }
-        button:hover { background-color: var(--accent-hover); }
-        button.secondary { background-color: #303040; }
-        button.secondary:hover { background-color: #404050; }
-        button.active { background-color: var(--green); }
+        button:hover { background-color: var(--accent-hover); box-shadow: 0 0 10px rgba(127, 90, 240, 0.4); }
+        button.secondary { background-color: #303040; color: #e0e0f0; font-weight: normal; }
+        button.secondary:hover { background-color: #404050; box-shadow: none; }
+        button.active { background-color: var(--green); color: #000; box-shadow: 0 0 10px rgba(44, 182, 125, 0.4); }
 
         .toggle-btn {
             width: 50px; height: 24px; background: #303040; border-radius: 12px;
             position: relative; cursor: pointer; transition: background 0.3s;
         }
-        .toggle-btn.on { background: var(--green); }
+        .toggle-btn.on { background: var(--green); box-shadow: 0 0 8px rgba(44, 182, 125, 0.3); }
         .toggle-btn::after {
             content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
             background: white; border-radius: 50%; transition: left 0.3s;
         }
         .toggle-btn.on::after { left: 26px; }
 
-        #code-out {
+        /* Snippet Output */
+        .code-container {
+            position: relative;
             margin-top: auto;
+        }
+        
+        #copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            background: #303040;
+        }
+
+        #code-out {
             background: #050509;
-            padding: 0.75rem;
+            padding: 1.5rem 0.75rem 0.75rem;
             border-radius: 4px;
             font-family: monospace;
             font-size: 0.75rem;
@@ -134,7 +194,7 @@
         }
 
         /* Fullscreen handling */
-        :-webkit-full-screen #svg-container { width: 100vw; height: 100vh; max-width: none; max-height: none; }
+        :-webkit-full-screen #svg-container { width: 100vw; height: 100vh; max-width: none; max-height: none; border-radius: 0; }
         :-webkit-full-screen svg { width: 80vh; height: 80vh; }
         :-webkit-full-screen #controls-section { display: none; }
     </style>
@@ -143,10 +203,24 @@
 
     <section id="preview-section">
         <header>
-            <h1>Planetary System Simulator</h1>
+            <h1>System Node Initialization</h1>
             <button id="fullscreen-btn" class="secondary">⛶ Full Screen</button>
         </header>
         <div id="svg-container">
+            <!-- Background Starfield Pattern -->
+            <svg class="starfield" width="100%" height="100%">
+                <defs>
+                    <pattern id="stars" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                        <circle fill="#ffffff" cx="10" cy="10" r="1.5" opacity="0.8"></circle>
+                        <circle fill="#ffffff" cx="45" cy="80" r="1" opacity="0.5"></circle>
+                        <circle fill="#ffffff" cx="80" cy="30" r="2" opacity="0.9"></circle>
+                        <circle fill="#ffffff" cx="25" cy="60" r="0.8" opacity="0.4"></circle>
+                        <circle fill="#ffffff" cx="90" cy="90" r="1.2" opacity="0.6"></circle>
+                    </pattern>
+                </defs>
+                <rect x="0" y="0" width="100%" height="100%" fill="url(#stars)"></rect>
+            </svg>
+
             <svg id="system-svg" viewBox="0 0 100 100">
                 <defs>
                     <!-- Core Radial Gradient representing the system -->
@@ -165,7 +239,18 @@
 
     <aside id="controls-section">
         <div class="row">
-            <button id="randomize-all" style="width: 100%;">🎲 Randomize All Now</button>
+            <button id="randomize-all" style="width: 100%;">🎲 Manual Randomize</button>
+        </div>
+
+        <div class="control-group">
+            <h2>Auto-Pilot (Randomizer)</h2>
+            <div class="row">
+                <button class="timer-btn secondary active" data-time="0">OFF</button>
+                <button class="timer-btn secondary" data-time="5">5s</button>
+                <button class="timer-btn secondary" data-time="20">20s</button>
+                <input type="number" id="timer-custom" min="1" placeholder="Sec" style="width:50px;">
+            </div>
+            <button id="auto-play-toggle" style="width: 100%; margin-top: 0.5rem;" class="secondary">▶ Start Auto-Random</button>
         </div>
 
         <div class="control-group">
@@ -220,23 +305,10 @@
             </div>
         </div>
 
-        <div class="control-group">
-            <h2>Randomizer Timer</h2>
-            <div class="row">
-                <button class="timer-btnsecondary active" data-time="0">OFF</button>
-                <button class="timer-btn secondary" data-time="5">5s</button>
-                <button class="timer-btn secondary" data-time="20">20s</button>
-            </div>
-            <div class="row" style="margin-top: 0.5rem;">
-                <label>Custom (sec)</label>
-                <div class="row" style="margin:0;">
-                    <input type="number" id="timer-custom" min="1" placeholder="Sec">
-                    <button id="timer-custom-set">Set</button>
-                </div>
-            </div>
+        <div class="code-container">
+            <button id="copy-btn" class="secondary">Copy Code</button>
+            <pre id="code-out"></pre>
         </div>
-
-        <pre id="code-out"></pre>
     </aside>
 
     <script>
@@ -254,28 +326,28 @@
         let currentTime = 0;
         let baseA = 30;
         let currentA = 30;
-        let randomTimerInterval = null;
         let loopId;
+        
+        // Auto-Random Variables
+        let autoRandomInterval = null;
+        let autoRandomTime = 0; // 0 means off
+        let isAutoRandomActive = false;
 
         // --- Core Update Function ---
         const updateSystem = () => {
-            // Get Color Values
             const colorSurf = document.getElementById('color-surface').value;
             const colorAtmos = document.getElementById('color-atmos').value;
             const colorMed = document.getElementById('color-medium').value;
 
-            // Get Offset Values
             const offAtmosAt = parseInt(document.getElementById('offset-atmos').value);
             const offMediumAt = parseInt(document.getElementById('offset-medium').value);
 
-            // 1. Update Colors
             s_surf.setAttribute('stop-color', colorSurf);
-            s_atm_i.setAttribute('stop-color', colorAtmos); // Atmos starts bright
-            s_atm_o.setAttribute('stop-color', colorAtmos); // Atmos fades out
+            s_atm_i.setAttribute('stop-color', colorAtmos); 
+            s_atm_o.setAttribute('stop-color', colorAtmos); 
             s_med.setAttribute('stop-color', colorMed);
 
-            // 2. Update Basic Offsets (Atmos Thickness)
-            const atmosStart = 5; // Fixed small core
+            const atmosStart = 5; 
             const atmosEnd = atmosStart + offAtmosAt;
             s_atm_i.setAttribute('offset', `${atmosStart}%`);
             s_atm_o.setAttribute('offset', `${atmosEnd}%`);
@@ -284,16 +356,12 @@
             document.getElementById('off-atm-val').innerText = `${offAtmosAt}%`;
             document.getElementById('off-med-val').innerText = `${offMediumAt}%`;
 
-            // 3. Apply Keplerian Transform to Gradient Focus (fx, fy)
-            // Time drivers orbital angle
             const timeFactor = parseInt(document.getElementById('t-slider').value);
-            // Axis drivers orbital speed (Kepler 3rd: T^2 ~ a^3)
             const semiAxis = parseInt(document.getElementById('a-slider').value);
             
             const angularVelocity = 1 / Math.pow(semiAxis, 1.5);
-            const theta = timeFactor * angularVelocity * 10; // Scaled for visual effect
+            const theta = timeFactor * angularVelocity * 10; 
 
-            // Focus point 'orbits' the center (50,50)
             const fx = 50 + (semiAxis * Math.cos(theta));
             const fy = 50 + (semiAxis * Math.sin(theta));
 
@@ -326,8 +394,7 @@
             }
             if (isAnimatingA) {
                 const aSlider = document.getElementById('a-slider');
-                // Pulsate Semi-major axis over time
-                const pulse = Math.sin(Date.now() / 1000) * 10; // +/- 10
+                const pulse = Math.sin(Date.now() / 1000) * 10; 
                 aSlider.value = Math.max(5, Math.min(50, baseA + pulse));
                 changed = true;
             }
@@ -340,36 +407,32 @@
         const getRandomHex = () => `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
         
         const randomizeAll = () => {
-            // Colors
             document.getElementById('color-surface').value = getRandomHex();
             document.getElementById('color-atmos').value = getRandomHex();
             document.getElementById('color-medium').value = getRandomHex();
             
-            // Kepler Inputs (Time is usually dynamic, so we set base Axis)
-            baseA = Math.floor(Math.random() * 40) + 10; // 10-50
+            baseA = Math.floor(Math.random() * 40) + 10; 
             document.getElementById('a-slider').value = baseA;
 
-            // Offsets
-            document.getElementById('offset-atmos').value = Math.floor(Math.random() * 30) + 10; // 10-40
-            document.getElementById('offset-medium').value = Math.floor(Math.random() * 30) + 70; // 70-100
+            document.getElementById('offset-atmos').value = Math.floor(Math.random() * 30) + 10; 
+            document.getElementById('offset-medium').value = Math.floor(Math.random() * 30) + 70; 
 
             updateSystem();
         };
 
-        const setRandomTimer = (seconds) => {
-            if (randomTimerInterval) clearInterval(randomTimerInterval);
-            if (seconds > 0) {
-                randomizeAll(); // Run once immediately
-                randomTimerInterval = setInterval(randomizeAll, seconds * 1000);
+        // --- Auto Play Toggle Logic ---
+        const applyAutoRandomTime = () => {
+            if (autoRandomInterval) clearInterval(autoRandomInterval);
+            if (isAutoRandomActive && autoRandomTime > 0) {
+                randomizeAll(); // Trigger immediately on start
+                autoRandomInterval = setInterval(randomizeAll, autoRandomTime * 1000);
             }
         };
 
         // --- Event Listeners ---
-        // Setup input listeners for realtime updates
         const inputs = ['t-slider', 'a-slider', 'color-surface', 'color-atmos', 'color-medium', 'offset-atmos', 'offset-medium'];
         inputs.forEach(id => document.getElementById(id).addEventListener('input', updateSystem));
 
-        // Kepler Toggles
         document.getElementById('play-t').addEventListener('click', (e) => {
             isPlayingT = !isPlayingT;
             e.target.innerText = isPlayingT ? '⏸' : '▶';
@@ -378,27 +441,59 @@
 
         document.getElementById('animate-a').addEventListener('click', (e) => {
             isAnimatingA = !isAnimatingA;
-            baseA = parseInt(document.getElementById('a-slider').value); // Set base value on activate
+            baseA = parseInt(document.getElementById('a-slider').value); 
             e.target.classList.toggle('on');
         });
 
-        // Randomizer buttons
         document.getElementById('randomize-all').addEventListener('click', randomizeAll);
 
+        // Timer Selection Listeners
         document.querySelectorAll('.timer-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
-                setRandomTimer(parseInt(e.target.dataset.time));
+                autoRandomTime = parseInt(e.target.dataset.time);
+                if(isAutoRandomActive) applyAutoRandomTime();
             });
         });
 
-        document.getElementById('timer-custom-set').addEventListener('click', () => {
-            const val = parseInt(document.getElementById('timer-custom').value);
+        document.getElementById('timer-custom').addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
             if (val > 0) {
                 document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
-                setRandomTimer(val);
+                autoRandomTime = val;
+                if(isAutoRandomActive) applyAutoRandomTime();
             }
+        });
+
+        // Master Auto-Play Toggle
+        document.getElementById('auto-play-toggle').addEventListener('click', (e) => {
+            if (autoRandomTime === 0) {
+                alert("Please select a time interval first (e.g., 5s, 20s, or Custom).");
+                return;
+            }
+            
+            isAutoRandomActive = !isAutoRandomActive;
+            
+            if (isAutoRandomActive) {
+                e.target.innerText = '⏸ Stop Auto-Random';
+                e.target.classList.add('active');
+                e.target.classList.remove('secondary');
+            } else {
+                e.target.innerText = '▶ Start Auto-Random';
+                e.target.classList.remove('active');
+                e.target.classList.add('secondary');
+            }
+            
+            applyAutoRandomTime();
+        });
+
+        // Copy Button
+        document.getElementById('copy-btn').addEventListener('click', (e) => {
+            navigator.clipboard.writeText(codeOut.textContent).then(() => {
+                e.target.innerText = 'Copied!';
+                setTimeout(() => e.target.innerText = 'Copy Code', 2000);
+            });
         });
 
         // Fullscreen
@@ -413,7 +508,7 @@
 
         // Initialization
         updateSystem();
-        animationLoop(); // Start the loop (it only updates if toggles are on)
+        animationLoop(); 
 
     </script>
 </body>

@@ -289,6 +289,8 @@
         const semiMajorInput = document.getElementById('semiMajor');
         const timeInput = document.getElementById('time');
         const playBtn = document.getElementById('playBtn');
+        const autoplayBtn = document.getElementById('autoplayBtn');
+        var autoplayBoolean = false;
 
         // State
         let isPlaying = false;
@@ -350,7 +352,7 @@
     <stop offset="${s1.getAttribute('offset')}" stop-color="${s1.getAttribute('stop-color')}"/>
     <stop offset="${s2.getAttribute('offset')}" stop-color="${s2.getAttribute('stop-color')}"/>
     <stop offset="${s3.getAttribute('offset')}" stop-color="${s3.getAttribute('stop-color')}"/>
-</linearGradient>`;
+    </linearGradient>`;
         };
 
         // Animation Loop
@@ -434,6 +436,10 @@
         document.getElementById('randAllBtn').addEventListener('click', () => {
             randomizeOrbit();
             randomizeColorsAndOffsets();
+        });
+        document.getElementById('autoplayBtn').addEventListener('click', () => {
+            autoplayBoolean = !autoplayBoolean;
+            document.getElementById('autoplayBtn').textContent = autoplayBoolean ? '⏸ Pause Autoplay' : '▶ Start Autoplay';
         });
 
         // Initialize

@@ -438,6 +438,15 @@
             randomizeColorsAndOffsets();
         });
         document.getElementById('autoplayBtn').addEventListener('click', () => {
+            if (autoplayBoolean == true) {
+                autoplayTimer = setInterval(() => {
+                    randomizeOrbit();
+                    randomizeColorsAndOffsets();
+                },1000);
+                while (autoplayBoolean == true) {
+
+                }
+            };
             autoplayBoolean = !autoplayBoolean;
             document.getElementById('autoplayBtn').textContent = autoplayBoolean ? '⏸ Pause Autoplay' : '▶ Start Autoplay';
         });

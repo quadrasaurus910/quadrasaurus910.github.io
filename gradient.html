@@ -438,14 +438,19 @@
             randomizeColorsAndOffsets();
         });
         document.getElementById('autoplayBtn').addEventListener('click', () => {
-            if (autoplayBoolean == true) {
+            if (autoplayBoolean == false) {
+                var count = 5;
                 autoplayTimer = setInterval(() => {
-                    randomizeOrbit();
-                    randomizeColorsAndOffsets();
+                    if (count > 0) {
+                        count--;
+                    }
+                    else if (count == 0) {
+                        // clearInterval(autoplayTimer);
+                        randomizeOrbit();
+                        randomizeColorsAndOffsets();
+                    }
                 },1000);
-                while (autoplayBoolean == true) {
-
-                }
+            
             };
             autoplayBoolean = !autoplayBoolean;
             document.getElementById('autoplayBtn').textContent = autoplayBoolean ? '⏸ Pause Autoplay' : '▶ Start Autoplay';

@@ -4,14 +4,35 @@
     <head>
         <title>Countdown</title>
         <style>
+            @keyframes slide {
+                from {
+                    width: 0px;
+                }
+
+                to {
+                    width: 400px;
+                }
+            }
+
+            .text1 {
+                font-size: 24pt;
+                color: #DD87C3;
+                position: relative;
+                width: 0px;
+                text-align: left;
+                overflow: hidden;
+                white-space: nowrap;
+                height: 40px;
+            }
         </style>
     </head>
     <body>
-
+        <p class="text1" id="text1">Hello, Brittany!</p>
     </body>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            body.style.backgroundColor = 'black';
         });
     </script>
 

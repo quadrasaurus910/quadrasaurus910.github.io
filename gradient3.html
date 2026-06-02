@@ -179,6 +179,15 @@
             overflow-x: auto;
         }
 
+        .modern-trapezoid {
+            width: 200px;
+            height: 100px;
+            background: #9b59b6;
+            /* Combines specific border math with a bevel shape fallback */
+            border-radius: 40px / 100% 0% 100% 0%; 
+            corner-shape: bevel; 
+        }
+
         /* Tablet and Desktop Breakpoints */
         @media (min-width: 600px) {
             .color-grid {
@@ -208,7 +217,7 @@
         <!-- Live Preview Panel -->
         <div class="panel preview-container">
             <h2>Live Preview</h2>
-            <button id="fullscreenBtn" name="fullscreenBtn">Fullscreen</button>
+            <button class="modern-trapezoid" id="fullscreenBtn" name="fullscreenBtn">Fullscreen</button>
             <svg>
                 <defs>
                     <linearGradient id="spaceGradient" gradientUnits="userSpaceOnUse" spreadMethod="pad" x1="0%" y1="50%" x2="100%" y2="50%">

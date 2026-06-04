@@ -104,6 +104,20 @@
             #dateText {
                 font-size: 24pt;
             }
+
+            #dateBtn {
+                width: 220px;
+                height: 100px;
+                background-color: rgba(0,0,0,0);
+                color: pink;
+                border: 3px solid pink;
+                border-radius: 10px;
+                font-size: 26pt;
+            }
+            #dateBtn:hover,
+            #dateBtn:focus {
+                background-color: rgba(238,180,214,1);
+            }
         </style>
     </head>
     <body>
@@ -121,8 +135,10 @@
     </body>
 
     <script>
+        const body = document.body;
         const text1 = document.querySelector('#text1');
         const dateDiv = document.querySelector('#dateDiv');
+        const dateBtn = document.querySelector('#dateBtn');
 
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.backgroundColor = 'black';

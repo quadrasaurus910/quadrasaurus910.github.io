@@ -118,19 +118,51 @@
             #dateBtn:focus {
                 background-color: rgba(238,180,214,1);
             }
+
+            .cdc1 {
+                text-align: center;
+                margin: 0% 0% 0% 0%;
+                color: white;
+                height: 50px;
+                /*padding: 5px 5px 5px 5px;
+                font-family: 'Brush Script MT', cursive;
+                border: 1px solid green;*/
+                font-family: Garamond, serif;
+                white-space: nowrap;
+            }
+            .countDivClass {
+                font-size: 26pt;
+                color: white;
+                border-top: 0.5px solid white;
+                margin: 0pt 0pt 0pt 0pt;
+                padding: 0px 0px 20px 0px;
+                height: 60px;
+            }            
         </style>
     </head>
     <body>
         <p class="text1" id="text1">Hello, Brittany!</p>
-         <div id="dateDiv" data-page="page0">
+        <div id="dateDiv" data-page="page0">
             <p id="dateText">Please enter our anniversary date.</p>
             <input type="date" id="date" name="date" autofocus>
             <br>
-            <input id="textT" name="textT" type="text">
+            
             <br>
             <button id="dateBtn" name="dateBtn" data-page="countdownDiv">Submit</button>
             <p id="testP"></p>
             <p id="testP2"></p>
+        </div>
+        <div id="countdownDiv">
+            <div id="cdHead"></div>
+            <div class="cdc1">
+                <p id="countdown"></p>
+            </div>
+            <div class="countDivClass">
+                <p>until</p>
+            </div>
+            <div class="countDivClass">
+                <p>Anniversary</p>
+            </div>
         </div>
     </body>
 

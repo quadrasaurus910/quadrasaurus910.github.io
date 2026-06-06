@@ -171,6 +171,7 @@
         const text1 = document.querySelector('#text1');
         const dateDiv = document.querySelector('#dateDiv');
         const dateBtn = document.querySelector('#dateBtn');
+        const testP = document.querySelector('#testP');
         const countdownDiv = document.querySelector('#countdownDiv');
         const countDivClass = document.querySelectorAll('.countDivClass');
         const cdc1 = document.querySelector('.cdc1');
@@ -191,6 +192,8 @@
             text1.style.animation = 'slide 4s 1';
 
             dateBtn.addEventListener('click', function() {
+                dateT = document.querySelector('#date').value;
+                testP.innerHTML = dateT;
             });
 
         });

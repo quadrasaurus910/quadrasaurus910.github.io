@@ -194,12 +194,13 @@
             dateBtn.addEventListener('click', function() {
                 dateT = document.querySelector('#date').value;
                 jsd2 = new Date();
+                temp1 = Temperal.instance()
                 if (!dateT) {
                         alert("Please enter a date.");
                         return;
                     }
 
-                testP.innerHTML = jsd2;
+                testP.innerHTML = temp1;
             });
 
         });

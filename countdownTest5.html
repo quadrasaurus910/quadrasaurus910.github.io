@@ -193,13 +193,13 @@
 
             dateBtn.addEventListener('click', function() {
                 dateT = document.querySelector('#date').value;
-
+                jsd2 = new Date();
                 if (!dateT) {
                         alert("Please enter a date.");
                         return;
                     }
 
-                testP.innerHTML = dateT;
+                testP.innerHTML = jsd2;
             });
 
         });

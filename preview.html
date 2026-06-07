@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Unicorn Watercolor Overlay</title>
+<style>
+    html, body {
+        margin: 0;
+        overflow: hidden;
+        background: #f8f7f5;
+        height: 100%;
+        font-family: Georgia, serif;
+    }
+
+    #scene {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at top left, rgba(180,220,255,0.18), transparent 35%),
+            radial-gradient(circle at bottom right, rgba(255,180,230,0.14), transparent 30%),
+            #f8f7f5;
+    }
+
+    #portrait {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        opacity: 0.96;
+        filter: saturate(1.08) contrast(1.02);
+        z-index: 1;
+    }
+
+    canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    .quote {
+        position: absolute;
+        left: 50%;
+        bottom: 6%;
+        transform: translateX(-50%);
+        color: rgba(70, 55, 88, 0.75);
+        font-size: clamp(1rem, 2vw, 2rem);
+        letter-spacing: 0.08em;
+        text-align: center;
+        z-index: 5;
+        mix-blend-mode: multiply;
+        animation: breathe 7s ease-in-out infinite;
+        text-shadow: 0 0 10px rgba(255,255,255,0.6);
+        white-space: nowrap;
+    }
+
+    .quote span {
+        display: inline-block;
+        animation: drift 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes breathe {
+        0% { opacity: 0.55; transform: translateX(-50%) translateY(0px);}
+        50% { opacity: 0.95; transform: translateX(-50%) translateY(-4px);}
+        100% { opacity: 0.55; transform: translateX(-50%) translateY(0px);}
+    }
+
+    @keyframes drift {
+        from { transform: translateX(-3px) rotate(-1deg);}
+        to   { transform: translateX(3px) rotate(1deg);}
+    }
+
+    .vignette {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at center,
+            transparent 45%,
+            rgba(255,255,255,0.16) 70%,
+            rgba(210,200,230,0.25) 100%);
+        z-index: 4;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+<div id="scene">
+    <img id="portrait" src="IMG_1124.jpeg" alt="Watercolor Portrait"/>
+
+    <canvas id="overlay"></canvas>
+
+    <div class="quote">
+        <span>“The most beautiful eyes mine have ever met.”</span>
+    </div>
+
+    <div class="vignette"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('overlay');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const palette = [
+    'rgba(134, 206, 255,',
+    'rgba(194, 155, 255,',
+    'rgba(247, 181, 235,',
+    'rgba(118, 189, 255,',
+    'rgba(158, 125, 210,',
+    'rgba(167, 227, 255,',
+    'rgba(119, 90, 160,',
+    'rgba(148, 83, 126,'
+];
+
+function rand(min,max){
+    return Math.random() * (max-min) + min;
+}
+
+class Strand {
+    constructor(){
+        this.reset();
+    }
+
+    reset(){
+        this.x = rand(-100, canvas.width + 100);
+        this.y = rand(0, canvas.height);
+        this.length = rand(250, 700);
+        this.amplitude = rand(12, 70);
+        this.speed = rand(0.0005, 0.0025);
+        this.thickness = rand(1.2, 5);
+        this.phase = rand(0, Math.PI * 2);
+        this.opacity = rand(0.06, 0.28);
+        this.color = palette[Math.floor(rand(0, palette.length))];
+        this.curvature = rand(0.5, 2.6);
+    }
+
+    draw(time){
+        ctx.beginPath();
+
+        for(let i = 0; i < this.length; i += 8){
+            let sway = Math.sin((i * 0.01 * this.curvature) + time * this.speed + this.phase) * this.amplitude;
+
+            let drift = Math.cos((i * 0.006) + time * this.speed * 0.7) * (this.amplitude * 0.35);
+
+            let px = this.x + sway;
+            let py = this.y + i + drift;
+
+            if(i === 0){
+                ctx.moveTo(px, py);
+            } else {
+                ctx.lineTo(px, py);
+            }
+        }
+
+        ctx.strokeStyle = this.color + this.opacity + ')';
+        ctx.lineWidth = this.thickness;
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = this.color + (this.opacity * 0.8) + ')';
+        ctx.stroke();
+
+        this.drawFlourishes(time);
+    }
+
+    drawFlourishes(time){
+        let count = Math.floor(rand(1,4));
+
+        for(let i = 0; i < count; i++){
+            let fy = this.y + rand(40, this.length - 40);
+            let fx = this.x + Math.sin(time * this.speed + fy) * this.amplitude;
+
+            ctx.beginPath();
+
+            let radius = rand(8, 28);
+            let turns = rand(1.5, 3.5);
+
+            for(let a = 0; a < Math.PI * 2 * turns; a += 0.1){
+                let r = radius * (a / (Math.PI * 2 * turns));
+                let x = fx + Math.cos(a + time * this.speed) * r;
+                let y = fy + Math.sin(a + time * this.speed) * r * 0.6;
+
+                if(a === 0) ctx.moveTo(x,y);
+                else ctx.lineTo(x,y);
+            }
+
+            ctx.strokeStyle = this.color + (this.opacity * 0.7) + ')';
+            ctx.lineWidth = rand(0.5,2);
+            ctx.stroke();
+        }
+    }
+}
+
+class Splotch {
+    constructor(){
+        this.reset();
+    }
+
+    reset(){
+        this.x = rand(0, canvas.width);
+        this.y = rand(0, canvas.height);
+        this.radius = rand(20, 90);
+        this.color = palette[Math.floor(rand(0, palette.length))];
+        this.opacity = rand(0.03, 0.12);
+        this.life = rand(3000, 9000);
+        this.birth = performance.now();
+        this.drip = Math.random() > 0.55;
+    }
+
+    draw(time){
+        let age = time - this.birth;
+        let fade = 1 - (age / this.life);
+
+        if(fade <= 0){
+            this.reset();
+            return;
+        }
+
+        let gradient = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, this.radius
+        );
+
+        gradient.addColorStop(0, this.color + (this.opacity * fade) + ')');
+        gradient.addColorStop(1, this.color + '0)');
+
+        ctx.beginPath();
+        ctx.fillStyle = gradient;
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        if(this.drip){
+            ctx.beginPath();
+
+            let dripLength = rand(30, 140);
+
+            ctx.moveTo(this.x, this.y + this.radius * 0.3);
+
+            for(let i = 0; i < dripLength; i += 10){
+                let dx = Math.sin(i * 0.09 + time * 0.001) * rand(2,8);
+                ctx.lineTo(this.x + dx, this.y + this.radius * 0.3 + i);
+            }
+
+            ctx.strokeStyle = this.color + (this.opacity * fade * 0.7) + ')';
+            ctx.lineWidth = rand(1,4);
+            ctx.stroke();
+        }
+    }
+}
+
+const strands = [];
+const splotches = [];
+
+for(let i = 0; i < 26; i++){
+    strands.push(new Strand());
+}
+
+for(let i = 0; i < 18; i++){
+    splotches.push(new Splotch());
+}
+
+function animate(time){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    splotches.forEach(s => s.draw(time));
+    strands.forEach(s => s.draw(time));
+
+    requestAnimationFrame(animate);
+}
+
+animate(performance.now());
+</script>
+</body>
+</html>

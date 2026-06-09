@@ -182,6 +182,35 @@
         const TIMEZONE_OFFSET = '-04:00'; // EDT is always UTC-4 on August 10th
         let countdownInterval;
 
+        function startCountdown(targetTime) {
+            // Clear any existing intervals just to be safe
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            // Run the loop every second
+            countdownInterval = setInterval(() => {
+                const distance = targetTime - Date.now();
+
+                // Check if the timer has hit zero (Midnight ET on August 10th)
+                 if (distance <= 0) {
+                    clearInterval(countdownInterval);
+            
+                    // TODO: Trigger your "Happy Anniversary" UI/Redirect here
+                    console.log("Happy Anniversary!");
+                    return;
+                }
+
+                // Calculate time units
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // TODO: Output these variables to your HTML elements here
+                console.log(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+
+            }, 1000);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.backgroundColor = 'black';
 
@@ -224,7 +253,7 @@
                 // Success! Get the timestamp for the target countdown date
                 const targetCountdownTime = new Date(`${targetYear}-${TARGET_MONTH}-${TARGET_DAY}T00:00:00${TIMEZONE_OFFSET}`).getTime();
         
-                // startCountdown(targetCountdownTime);
+                startCountdown(targetCountdownTime);
         
                 // TODO: Trigger your UI transition/animation to show the countdown here
                 console.log("Date matches! Starting countdown...");

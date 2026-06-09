@@ -80,6 +80,15 @@
                 }
             }
 
+            @keyframes fadeOut {
+                from {
+                    opacity: 100%;
+                }
+                to {
+                    opacity: 0%;
+                }
+            }
+
             div {
                 display: none;
             }
@@ -185,6 +194,8 @@
         function startCountdown(targetTime) {
             // Clear any existing intervals just to be safe
             if (countdownInterval) clearInterval(countdownInterval);
+
+            dateDiv.style.animation = 'fadeOut 2s 1';
 
             // Run the loop every second
             countdownInterval = setInterval(() => {

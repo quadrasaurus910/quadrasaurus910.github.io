@@ -194,8 +194,10 @@
         function startCountdown(targetTime) {
             // Clear any existing intervals just to be safe
             if (countdownInterval) clearInterval(countdownInterval);
-
-            dateDiv.style.animation = 'fadeOut 2s 1';
+            dateDiv.addEventListener('animationend', () => {
+                dateDiv.style.display = 'none';
+            })
+            dateDiv.style.animation = 'fadeOut 1s 1';
 
             // Run the loop every second
             countdownInterval = setInterval(() => {

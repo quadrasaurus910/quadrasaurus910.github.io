@@ -176,6 +176,11 @@
         const countdownDiv = document.querySelector('#countdownDiv');
         const countDivClass = document.querySelectorAll('.countDivClass');
         const cdc1 = document.querySelector('.cdc1');
+        const FIRST_ANNIVERSARY = '2005-08-10'; // Standard YYYY-MM-DD format
+        const TARGET_MONTH = '08';
+        const TARGET_DAY = '10';
+        const TIMEZONE_OFFSET = '-04:00'; // EDT is always UTC-4 on August 10th
+        let countdownInterval;
 
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.backgroundColor = 'black';
@@ -189,6 +194,46 @@
                 body.style.animation = 'trans1 2s 1';
                 dateDiv.style.animation = 'trans1b 1s 1';
             });
+
+            function handleDateSubmission(inputDate) {
+                const now = Date.now();
+    
+                // 1. Determine the current year specifically in Eastern Time
+                const currentYearFormatter = new Intl.DateTimeFormat('en-US', { 
+                    timeZone: 'America/New_York', 
+                    year: 'numeric' 
+                });
+                const currentETYear = parseInt(currentYearFormatter.format(now), 10);
+
+                // 2. Determine the exact timestamp for this year's anniversary (Midnight ET)
+                const thisYearAnniversaryStr = `${currentETYear}-${TARGET_MONTH}-${TARGET_DAY}T00:00:00${TIMEZONE_OFFSET}`;
+                const thisYearAnniversaryTime = new Date(thisYearAnniversaryStr).getTime();
+
+                // 3. Figure out if we are targeting THIS year or NEXT year
+                let targetYear = currentETYear;
+                if (now >= thisYearAnniversaryTime) {
+                // It has passed (or is currently) August 10th of this year. Target next year.
+                targetYear = currentETYear + 1;
+                }
+
+                // 4. Construct the acceptable "next" anniversary date string
+                const nextAnniversary = `${targetYear}-${TARGET_MONTH}-${TARGET_DAY}`;
+
+                // 5. Check if the input matches either the first or the upcoming anniversary
+                if (inputDate === FIRST_ANNIVERSARY || inputDate === nextAnniversary) {
+                // Success! Get the timestamp for the target countdown date
+                const targetCountdownTime = new Date(`${targetYear}-${TARGET_MONTH}-${TARGET_DAY}T00:00:00${TIMEZONE_OFFSET}`).getTime();
+        
+                // startCountdown(targetCountdownTime);
+        
+                // TODO: Trigger your UI transition/animation to show the countdown here
+                console.log("Date matches! Starting countdown...");
+        
+                } else {
+                // TODO: Trigger your "wrong date" UI/alert here
+                console.log("Incorrect date.");
+                }
+            }
 
             text1.style.animation = 'slide 4s 1';
 
@@ -204,6 +249,7 @@
 
                 testP.innerHTML = temp1;
                 testP2.innerHTML = jsd2;
+                handleDateSubmission(dateT);
             });
 
         });

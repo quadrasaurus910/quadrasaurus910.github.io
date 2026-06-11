@@ -199,7 +199,11 @@
             })
             dateDiv.style.animation = 'fadeOut 1s 1';
             // new Promise(r => setTimeout(r, 1000));
-            body.style.animation = 'trans1 2s 1';
+            // body.style.animation = 'trans1 2s 1';
+            
+            body.addEventListener('animationend', () => {
+                body.style.backgroundImage = 'url(IMG_0351.jpeg)';
+            })
             body.style.animation = 'trans2 2s 1';
 
             // Run the loop every second

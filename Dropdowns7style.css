@@ -132,6 +132,7 @@ body.sidebar-open #sidebarToggleBtn .close-icon { display: block; }
     padding: 0 20px;
     position: relative;
     transition: opacity 0.2s;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .is-open-card .preview-hint { height: 0; opacity: 0; padding: 0; }

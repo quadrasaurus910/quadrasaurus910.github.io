@@ -321,16 +321,15 @@
             text1.style.animation = 'slide 4s 1';
 
             dateBtn.addEventListener('click', function() {
-                dateT = document.querySelector('#date').value;
-                jsd2 = new Date();
-                temp1 = Temporal.Now.instant();
+                let dateT = document.querySelector('#date').value;
+                let jsd2 = new Date();
                 oldDate = new Date("August 9, 2005 20:00:00 GMT-0400");
                 if (!dateT) {
                         alert("Please enter a date.");
                         return;
                     }
 
-                testP.innerHTML = temp1;
+                // testP.innerHTML = temp1;
                 testP2.innerHTML = jsd2;
                 handleDateSubmission(dateT);
             })

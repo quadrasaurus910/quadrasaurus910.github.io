@@ -242,6 +242,8 @@
             if (countdownInterval) clearInterval(countdownInterval);
             dateDiv.addEventListener('animationend', () => {
                 dateDiv.style.display = 'none';
+                countdownDiv.style.display = 'block';
+                cdc1.style.display = 'block';
             })
             dateDiv.style.animation = 'fadeOut 1s 1';
             // new Promise(r => setTimeout(r, 1000));
@@ -251,6 +253,11 @@
                 body.style.backgroundImage = 'url(IMG_0351.jpeg)';
             })
             body.style.animation = 'trans2 2s 1';
+
+            countdownDiv.addEventListener('animationend', () => {
+                countdownDiv.style.width = '80%';
+            })
+            countdownDiv.style.animation = 'trans3b 3s 1';
 
             // Run the loop every second
             countdownInterval = setInterval(() => {
@@ -342,7 +349,7 @@
                     }
 
                 // testP.innerHTML = temp1;
-                testP2.innerHTML = jsd2;
+                // testP2.innerHTML = jsd2;
                 handleDateSubmission(dateT);
             })
 

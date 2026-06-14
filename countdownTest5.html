@@ -326,7 +326,7 @@
                 if (inputDate === FIRST_ANNIVERSARY || inputDate === nextAnniversary) {
                 // Success! Get the timestamp for the target countdown date
                 const targetCountdownTime = new Date(`${targetYear}-${TARGET_MONTH}-${TARGET_DAY}T00:00:00${TIMEZONE_OFFSET}`).getTime();
-        
+                console.log(targetCountdownTime);
                 startCountdown(targetCountdownTime);
         
                 // TODO: Trigger your UI transition/animation to show the countdown here

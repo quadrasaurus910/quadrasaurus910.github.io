@@ -244,6 +244,9 @@
                 dateDiv.style.display = 'none';
                 countdownDiv.style.display = 'block';
                 cdc1.style.display = 'block';
+                countDivClass.forEach(cdc => {
+                    cdc.style.display = 'block';
+                })
             })
             dateDiv.style.animation = 'fadeOut 1s 1';
             // new Promise(r => setTimeout(r, 1000));

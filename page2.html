@@ -10,6 +10,19 @@
         <!-- https://api.jquery.com/ -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <style>
+
+            @keyframes bgFade {
+                0% {
+                    background-color: #000;
+                }
+                50% {
+                    background-color: #fff;
+                }
+                100% {
+                    background-color: #000;
+                }
+            }
+
             body {
                 background-color: #000;
             }
@@ -39,6 +52,7 @@
 
             #div4 {
                 color: white;
+                animation: bgFade 5s infinite;
             }
         </style>
     </head>

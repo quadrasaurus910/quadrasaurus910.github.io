@@ -46,13 +46,20 @@
                 font-size: 18pt;
             }
 
+            #thumbnailWrapper {
+                height: 250px;
+                width: 250px;
+                animation: bgFade 5s infinite;
+            }
+
             #thumbnail {
                 width: 200px;
             }
 
             #div4 {
                 color: white;
-                animation: bgFade 5s infinite;
+                border-top: 2px solid white;
+                margin: 20px 0px 0px 0px;
             }
         </style>
     </head>
@@ -94,7 +101,9 @@
                 animation, and a broader range of applications.
             </p>
             <br>
-            <img id="thumbnail" name="thumbnail" src="/logo-complete.png">
+            <div id="thumbnailWrapper" name="thumbnailWrapper">
+                <img id="thumbnail" name="thumbnail" src="/logo-complete.png">
+            </div>
         </div>
     </body>
 <script>

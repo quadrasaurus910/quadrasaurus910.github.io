@@ -23,6 +23,15 @@
                 }
             }
 
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
             body {
                 background-color: #000;
             }
@@ -62,6 +71,10 @@
             .thumbnail {
                 width: 200px;
                 margin: 25px;
+            }
+
+            #thumbnail2 {
+                animation: spin 3s infinite;
             }
 
             #div4 {

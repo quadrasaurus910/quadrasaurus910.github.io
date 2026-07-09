@@ -107,6 +107,12 @@
             .mask1 {
                 -webkit-mask-image: url('/logo-complete.png');
                 mask-image: url('/logo-complete.png');
+                -webkit-mask-size: contain;
+                mask-size: contain;         /* Fits the mask inside the element */
+                -webkit-mask-repeat: no-repeat;
+                mask-repeat: no-repeat;     /* Prevents the mask from tiling */
+                -webkit-mask-position: center;
+                mask-position: center;     /* Centers the mask */
             }
         </style>
     </head>

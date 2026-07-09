@@ -89,6 +89,10 @@
                 width: fit-content;
             }
 
+            #thumbnailWrapper3 {
+                background-color: green;
+            }
+
             #div4 {
                 color: white;
                 border-top: 2px solid white;
@@ -98,6 +102,11 @@
             #logoCanvas {
                 width: 200px;
                 height: 200px;
+            }
+
+            .mask1 {
+                -webkit-mask-image: url('/logo-complete.png');
+                mask-image: url('/logo-complete.png8');
             }
         </style>
     </head>
@@ -148,7 +157,7 @@
                     <img class="thumbnail" id="thumbnail2" name="thumbnail2" src="/logo-complete.png">
                 </div>
                 <div class="column thumbnailWrappers" id="thumbnailWrapper3" name="thumbnailWrapper3">
-                    <img class="thumbnail" id="thumbnail3" name="thumbnail3" src="/logo-complete.png">
+                    <img class="thumbnail mask1" id="thumbnail3" name="thumbnail3" src="/logo-complete.png">
                 </div>
             </div>
             <div class="row" id="sliderLogoWrapper" name="sliderLogoWrapper">

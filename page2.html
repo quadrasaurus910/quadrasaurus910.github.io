@@ -94,6 +94,11 @@
                 border-top: 2px solid white;
                 margin: 20px 0px 0px 0px;
             }
+
+            #logoCanvas {
+                width: 200px;
+                height: 200px;
+            }
         </style>
     </head>
     <body class="container-fluid" id="p2body">
@@ -146,6 +151,9 @@
                     <img class="thumbnail" id="thumbnail3" name="thumbnail3" src="/logo-complete.png">
                 </div>
             </div>
+            <div class="row" id="sliderLogoWrapper" name="sliderLogoWrapper">
+                <canvas id="logoCanvas" name="logoCanvas"></canvas>
+            </div>
         </div>
     </body>
 <script>
@@ -170,5 +178,8 @@
                         }
                     }
                 }
+
+    const canvas = document.getElementById('logoCanvas');
+    const ctx = canvas.getContext('2d');
 </script>
 </html>

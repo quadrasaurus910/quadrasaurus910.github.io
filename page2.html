@@ -202,9 +202,11 @@
 
     const canvas = document.getElementById('logoCanvas');
     const ctx = canvas.getContext('2d');
+    const tnw3 = document.querySelector('#thumbnailWrapper3');
     setInterval(() => {
         const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
         document.documentElement.style.setProperty('--dynamic-color', randomColor)
+        tnw3.style.setProperty('transition', 'background-color 1s ease');
     }, 1000);
 </script>
 </html>

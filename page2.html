@@ -202,7 +202,9 @@
 
     const canvas = document.getElementById('logoCanvas');
     const ctx = canvas.getContext('2d');
-    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-    document.documentElement.style.setProperty('--dynamic-color', randomColor)
+    setInterval(() => {
+        const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+        document.documentElement.style.setProperty('--dynamic-color', randomColor)
+    }, 1000);
 </script>
 </html>

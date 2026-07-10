@@ -40,6 +40,10 @@
                 }
             }
 
+            :root {
+                --dynamic-color: green;
+            }
+
             body {
                 background-color: #000;
             }
@@ -90,7 +94,7 @@
             }
 
             #thumbnailWrapper3 {
-                background-color: hsl(random(0deg, 360deg) 100% 50%);
+                background-color: var(--dynamic-color);
             }
 
             #div4 {
@@ -197,5 +201,7 @@
 
     const canvas = document.getElementById('logoCanvas');
     const ctx = canvas.getContext('2d');
+    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+    document.documentElement.style.setProperty('--dynamic-color', randomColor)
 </script>
 </html>

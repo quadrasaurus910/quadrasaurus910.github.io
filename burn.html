@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Upscale Film Burn Reveal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* 
+         * The Container: 
+         * Constrains both images to the exact same size.
+         * The background color acts as a fallback while images load.
+         */
+        .effect-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            max-width: 100%;
+            background-color: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* Layer 1: The AI Upscaled Rendering (Bottom) */
+        #imgB {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        /* Layer 2: The Canvas (Top) - This holds the Original Photo and the effect */
+        #burnCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #e65100;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-info">
+        <h2>Film Burn Reveal Test</h2>
+        <p>Click the image or the button to trigger the film melt effect.</p>
+    </div>
+
+    <div class="effect-container">
+        <!-- The Bottom Layer (Revealed) -->
+        <img id="imgB" src="photoSet1b.png" alt="High Def Render" onerror="this.style.display='none'">
+        
+        <!-- The Top Layer (Destroyed) -->
+        <canvas id="burnCanvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <button id="triggerBtn">Trigger Burn Effect</button>
+        <button id="resetBtn" style="background-color: #555; margin-left: 10px;">Reset</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('burnCanvas');
+        const ctx = canvas.getContext('2d');
+        const triggerBtn = document.getElementById('triggerBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // State variables
+        let isBurning = false;
+        let animationId = null;
+        let spots = [];
+
+        // Load the Original (Vintage) Image onto the canvas
+        const imgA = new Image();
+        imgA.src = 'photoSet1a.png';
+        
+        // Setup canvas size once the image loads
+        imgA.onload = () => {
+            // Set canvas resolution to match container for crispness
+            canvas.width = 800; 
+            canvas.height = 600;
+            drawInitialState();
+        };
+
+        // Fallback if image fails to load (useful for initial testing without files)
+        imgA.onerror = () => {
+            canvas.width = 800;
+            canvas.height = 600;
+            ctx.fillStyle = '#8b5a2b'; // Vintage brown color
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('photoSet1a.png not found.', canvas.width/2, canvas.height/2);
+            ctx.fillText('Using fallback solid color.', canvas.width/2, canvas.height/2 + 35);
+        };
+
+        function drawInitialState() {
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // Draw image. If missing, the onerror handler keeps the canvas colored.
+            if (imgA.complete && imgA.naturalWidth !== 0) {
+                // Object-fit cover logic for canvas
+                const hRatio = canvas.width / imgA.width;
+                const vRatio = canvas.height / imgA.height;
+                const ratio  = Math.max(hRatio, vRatio);
+                const centerShift_x = (canvas.width - imgA.width * ratio) / 2;
+                const centerShift_y = (canvas.height - imgA.height * ratio) / 2;  
+                
+                ctx.clearRect(0,0, canvas.width, canvas.height);
+                ctx.drawImage(imgA, 0, 0, imgA.width, imgA.height,
+                              centerShift_x, centerShift_y, imgA.width * ratio, imgA.height * ratio);
+            }
+        }
+
+        // --- The Burn Spot Class ---
+        class BurnSpot {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 1;
+                // Ensure it grows large enough to cover the screen
+                this.maxRadius = Math.max(canvas.width, canvas.height) * 1.5;
+                
+                // Random expansion speed
+                this.speed = Math.random() * 2 + 1.5; 
+                
+                // Array of random offsets to create organic bubbling edges
+                this.noiseOffsets = Array.from({length: 30}, () => Math.random() * Math.PI * 2);
+            }
+
+            update() {
+                this.radius += this.speed;
+                this.speed *= 1.05; // Accelerate as it melts
+            }
+
+            // Creates a jagged, bubbling path rather than a perfect circle
+            createWobblyPath(ctx, baseRadius, intensity) {
+                ctx.beginPath();
+                const segments = this.noiseOffsets.length;
+                for (let i = 0; i < segments; i++) {
+                    const angle = (i / segments) * Math.PI * 2;
+                    // Use radius size to dictate how fast it bubbles
+                    const noise = Math.sin(this.noiseOffsets[i] + (this.radius * 0.05)) * (baseRadius * intensity);
+                    
+                    let r = baseRadius + noise;
+                    if (r < 0) r = 0;
+
+                    const px = this.x + Math.cos(angle) * r;
+                    const py = this.y + Math.sin(angle) * r;
+
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+            }
+
+            drawGlow(ctx) {
+                // The glowing hot edges of the burning film
+                const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+                grad.addColorStop(0.5, 'white'); // Intense heat center
+                grad.addColorStop(0.7, 'rgba(255, 200, 0, 1)'); // Yellow
+                grad.addColorStop(0.9, 'rgba(255, 50, 0, 0.8)'); // Fiery Orange
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade out
+
+                ctx.fillStyle = grad;
+                // Draw glow slightly larger and very wobbly
+                this.createWobblyPath(ctx, this.radius, 0.15);
+                ctx.fill();
+            }
+
+            drawHole(ctx) {
+                // The completely melted interior revealing the image underneath
+                ctx.fillStyle = 'black'; 
+                
+                // The hole lags behind the glow radius slightly
+                let holeRadius = this.radius * 0.8;
+                if (holeRadius < 0) holeRadius = 0;
+
+                // Draw hole, slightly less wobbly than the glow edge
+                this.createWobblyPath(ctx, holeRadius, 0.1);
+                ctx.fill();
+            }
+        }
+
+        // --- Animation Loop ---
+        function animate() {
+            if (!isBurning) return;
+
+            // 1. Redraw the original photo to wipe the previous frame
+            drawInitialState();
+
+            // 2. Draw the fiery glows using 'lighter' so they blow out the exposure
+            ctx.globalCompositeOperation = 'lighter';
+            spots.forEach(spot => spot.drawGlow(ctx));
+
+            // 3. Cut out the centers using 'destination-out' to act as a window to imgB
+            ctx.globalCompositeOperation = 'destination-out';
+            spots.forEach(spot => spot.drawHole(ctx));
+
+            // Update all spots
+            spots.forEach(spot => spot.update());
+
+            // Check if transition is complete
+            const isComplete = spots.every(spot => spot.radius > spot.maxRadius);
+            
+            if (!isComplete) {
+                animationId = requestAnimationFrame(animate);
+            } else {
+                isBurning = false;
+                // Final cleanup: just clear canvas to ensure 100% visibility of bottom image
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function startBurn() {
+            if (isBurning) return;
+            isBurning = true;
+            spots = [];
+
+            // Generate 3 to 6 random starting points
+            const numSpots = Math.floor(Math.random() * 4) + 3;
+            for(let i = 0; i < numSpots; i++) {
+                spots.push(new BurnSpot(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height
+                ));
+            }
+
+            animate();
+        }
+
+        function resetCanvas() {
+            cancelAnimationFrame(animationId);
+            isBurning = false;
+            spots = [];
+            drawInitialState();
+        }
+
+        // Event Listeners
+        canvas.addEventListener('click', startBurn);
+        triggerBtn.addEventListener('click', startBurn);
+        resetBtn.addEventListener('click', resetCanvas);
+
+    </script>
+</body>
+</html>

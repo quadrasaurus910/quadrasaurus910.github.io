@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Wedding Canvas</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505; 
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // ==========================================
+        // TUNING VARIABLES
+        // ==========================================
+        const IMAGE_ROTATION_SPEED = 0.0015;  // Speed of the main image rotation
+        const ORB_COUNT = 25;                 // Number of flares
+        const MAX_ORB_OPACITY = 0.85;         // Peak transparency
+        // ==========================================
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.src = 'photoSet1b.png';
+
+        let palette = [];
+        let orbs = [];
+        let imageRotationAngle = 0;
+        let centerX, centerY;
+
+        img.onload = () => {
+            resizeCanvas();
+            extractPalette();
+            generateOrbs();
+            requestAnimationFrame(animate);
+        };
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            centerX = canvas.width / 2;
+            centerY = canvas.height / 2;
+        }
+
+        function extractPalette() {
+            const offScreenCanvas = document.createElement('canvas');
+            const offCtx = offScreenCanvas.getContext('2d');
+            offScreenCanvas.width = 100; 
+            offScreenCanvas.height = 100;
+            offCtx.drawImage(img, 0, 0, 100, 100);
+            
+            const imageData = offCtx.getImageData(0, 0, 100, 100).data;
+            
+            for (let i = 0; i < imageData.length; i += 16) { 
+                let r = imageData[i];
+                let g = imageData[i+1];
+                let b = imageData[i+2];
+                let brightness = (r + g + b) / 3;
+                
+                if (brightness > 130) { 
+                    palette.push({r, g, b});
+                }
+            }
+
+            if (palette.length === 0) {
+                palette = [
+                    {r: 255, g: 215, b: 100},
+                    {r: 255, g: 170, b: 50},
+                    {r: 255, g: 230, b: 150}
+                ];
+            }
+        }
+
+        function generateOrbs() {
+            orbs = [];
+            
+            // Calculate a maximum distance that allows orbs to go well beyond the screen edges
+            const maxDistance = Math.max(canvas.width, canvas.height) * 0.8;
+
+            for (let i = 0; i < ORB_COUNT; i++) {
+                let colorIndex = Math.floor(Math.random() * palette.length);
+                let color = palette[colorIndex];
+                
+                orbs.push({
+                    color: color,
+                    baseRadius: Math.random() * 20 + 10, // Base size before distance scaling
+                    distance: Math.random() * maxDistance, // Unconstrained distance
+                    angle: Math.random() * Math.PI * 2, // Independent clock-hand position
+                    angularVelocity: (Math.random() - 0.5) * 0.005, // Independent speed and direction
+                    
+                    // Variables for calculating brief lifespan
+                    cycleOffset: Math.random() * Math.PI * 2,
+                    cycleSpeed: (Math.random() * 0.001) + 0.0005 
+                });
+            }
+        }
+
+        function animate(timestamp) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw Rotating Image
+            imageRotationAngle += IMAGE_ROTATION_SPEED;
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(imageRotationAngle);
+            
+            // Constrain image height exactly to window height
+            let scale = canvas.height / img.height;
+            let drawWidth = img.width * scale;
+            let drawHeight = canvas.height;
+            
+            ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+            ctx.restore();
+
+            // 2. Draw Independent Dynamic Lens Flares (Orbs)
+            ctx.globalCompositeOperation = 'screen'; 
+
+            orbs.forEach(orb => {
+                // Update independent clock-hand position
+                orb.angle += orb.angularVelocity;
+                
+                let x = centerX + Math.cos(orb.angle) * orb.distance;
+                let y = centerY + Math.sin(orb.angle) * orb.distance;
+
+                // Create size illusion: drastically scale up radius the further it is from the center
+                let distanceRatio = orb.distance / (canvas.width / 2);
+                let dynamicRadius = orb.baseRadius * (1 + (distanceRatio * 4)); 
+
+                // Create brief visibility window using a high-power sine wave
+                // This ensures it stays invisible most of the time and sharply peaks
+                let visibilityCurve = Math.max(0, Math.sin(timestamp * orb.cycleSpeed + orb.cycleOffset));
+                let alpha = Math.pow(visibilityCurve, 20) * MAX_ORB_OPACITY; 
+
+                // Only render if it's currently in its visible lifecycle phase
+                if (alpha > 0.02) {
+                    ctx.beginPath();
+                    
+                    let offsetX = x - dynamicRadius * 0.35;
+                    let offsetY = y - dynamicRadius * 0.35;
+                    
+                    let grad = ctx.createRadialGradient(offsetX, offsetY, dynamicRadius * 0.1, x, y, dynamicRadius);
+                    
+                    grad.addColorStop(0, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, 0)`);
+                    grad.addColorStop(0.6, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${alpha * 0.3})`);
+                    grad.addColorStop(0.9, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${alpha})`);
+                    grad.addColorStop(1, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, 0)`);
+
+                    ctx.fillStyle = grad;
+                    ctx.arc(x, y, dynamicRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+
+            ctx.globalCompositeOperation = 'source-over';
+            requestAnimationFrame(animate);
+        }
+    </script>
+</body>
+</html>

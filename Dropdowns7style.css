@@ -173,6 +173,11 @@ ul li {
     color: white;
 }
 
+.timestamp {
+    float: right;
+    color: var(--accent-color);
+}
+
 /* ====================================
    Desktop Sidebar (Fixed & Positioned)
    ==================================== */
@@ -216,9 +221,22 @@ body.sidebar-open #mobileSidebarOverlay { display: block; opacity: 1; }
 
 body.sidebar-open #dropdownContent { transform: translateX(0); }
 
-#dropdownList { list-style: none; padding: 0; }
-.dropdownItem { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); opacity: 0; }
-.dropdownHeader { font-weight: bold; color: var(--accent-color); border-bottom: 2px solid var(--accent-color); }
+#dropdownList { 
+    list-style: none; 
+    padding: 0; 
+}
+
+.dropdownItem { 
+    padding: 15px 0; 
+    border-bottom: 1px solid rgba(255,255,255,0.1); 
+    opacity: 0; 
+}
+
+.dropdownHeader { 
+    font-weight: bold; 
+    color: var(--accent-color); 
+    border-bottom: 2px solid var(--accent-color); 
+}
 
 @keyframes fadeInSlideIn {
     from { opacity: 0; transform: translateX(-20px); }

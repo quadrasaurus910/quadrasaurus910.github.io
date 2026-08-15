@@ -208,6 +208,21 @@
                 height: 350px; 
             }
         }
+        /* Fullscreen handling */
+        :-webkit-full-screen #svg-container { 
+            width: 100vw; 
+            height: 100vh; 
+            max-width: none; 
+            max-height: none; 
+            border-radius: 0; 
+        }
+        :-webkit-full-screen svg { 
+            width: 80vh; 
+            height: 80vh; 
+        }
+        :-webkit-full-screen #controls-section { 
+            display: none; 
+        }
     </style>
 </head>
 <body>

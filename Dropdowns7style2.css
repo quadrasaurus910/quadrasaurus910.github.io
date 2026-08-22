@@ -1,0 +1,382 @@
+/* ====================================Variables & Basic Resets==================================== */
+:root {
+    --header-height: 60px;
+    --sidebar-width-medium: 250px;
+    --sidebar-width-large: 300px;
+    --transition-duration: 0.3s;
+    --primary-bg: #282c34;
+    --secondary-bg: #3c4048;
+    --text-color: #f0f0f0;
+    --accent-color: #61dafb;
+    --translucent-bg: rgba(40, 44, 52, 0.75);
+    --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* STREAMING_CHUNK:Basic styles and body setup... */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--primary-bg);
+    overflow-x: hidden;
+}
+
+a {
+    color: #B2E0E7;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#backgroundI {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.4);
+}
+
+/* ====================================Header & Navigation==================================== /
+/ STREAMING_CHUNK:Header and Navigation styling... */
+#mainHeader {
+    background-color: var(--secondary-bg);
+    height: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    position: fixed;
+    /* Sticky top top: 0; */
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1001;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+#siteTitle {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+#sidebarToggleBtn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+#sidebarToggleBtn .close-icon {
+    display: none;
+}
+
+body.sidebar-open #sidebarToggleBtn .menu-icon {
+    display: none;
+}
+
+body.sidebar-open #sidebarToggleBtn .close-icon {
+    display: block;
+}
+
+/* ====================================Content & Container Layout==================================== /
+/ STREAMING_CHUNK:Content container and block styling... */
+#container {
+    display: flex;
+    margin-top: var(--header-height);
+    /* Offset for fixed header */
+    min-height: calc(100vh - var(--header-height));
+}
+
+#content {
+    flex-grow: 1;
+    padding: 20px;
+    transition: margin var(--transition-duration) var(--transition-curve);
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Block Styling */
+#block1,
+#block2,
+#block3,
+.block {
+    margin-bottom: 25px;
+    background-color: var(--translucent-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    /* For expansion logic */
+}
+
+#block1,
+#block3,
+.block {
+    padding: 20px;
+}
+
+#block1a,
+.blockTitle {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--accent-color);
+    box-sizing: border-box;
+}
+
+.blockTitleSpan {
+    float: right;
+    font-size: 0.8em;
+    padding: 0px 10px 0px 0px;
+}
+
+/* ====================================Modern Minimalist Expansion (Block 2)==================================== /
+/ STREAMING_CHUNK:Expansion block logic styling... */
+.intro-section {
+    padding: 20px 20px 0 20px;
+    font-weight: bold;
+}
+
+.expand-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    /* Secret to animating auto-height */
+    transition: grid-template-rows var(--transition-duration) var(--transition-curve);
+}
+
+.is-open-wrapper {
+    grid-template-rows: 1fr;
+}
+
+.content-inner {
+    overflow: hidden;
+}
+
+.expanded-body {
+    padding: 0 20px 20px 20px;
+}
+
+.preview-hint {
+    height: 45px;
+    overflow: hidden;
+    padding: 0 20px;
+    position: relative;
+    transition: opacity 0.2s;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.is-open-card .preview-hint {
+    height: 0;
+    opacity: 0;
+    padding: 0;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#buttonWrapper {
+    padding: 10px 20px 20px;
+    text-align: right;
+}
+
+.toggle-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.toggle-btn:hover {
+    background: rgba(97, 218, 251, 0.1);
+}
+
+/* STREAMING_CHUNK:List items and timestamps... */
+ul {
+    list-style-type: upper-roman;
+    color: var(--accent-color);
+}
+
+ul li::marker {
+    color: var(--accent-color);
+}
+
+ul li {
+    color: white;
+}
+
+.timestamp {
+    float: right;
+    color: var(--accent-color);
+    font-weight: 600;
+    padding: 0px 20px 0px 0px;
+}
+
+/* ====================================Desktop Sidebar (Fixed & Positioned)==================================== /
+/ STREAMING_CHUNK:Desktop persistent sidebar... */
+#desktopSidebar {
+    position: fixed;
+    top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+    background-color: var(--secondary-bg);
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    /* Mobile hidden */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#sideBarList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sideBarListTitle {
+    padding: 20px;
+    font-weight: bold;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.sideBarListItem {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ====================================Mobile Overlay Menu==================================== /
+/ STREAMING_CHUNK:Mobile slide-out overlay menu... */
+#mobileSidebarOverlay {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: 100%;
+    height: calc(100vh - var(--header-height));
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1005;
+    display: none;
+    /* Triggered by JS */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+body.sidebar-open #mobileSidebarOverlay {
+    display: block;
+    opacity: 1;
+}
+
+#dropdownContent {
+    background-color: var(--secondary-bg);
+    width: 280px;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    transform: translateX(-100%);
+    transition: transform 0.3s var(--transition-curve);
+}
+
+body.sidebar-open #dropdownContent {
+    transform: translateX(0);
+}
+
+#dropdownList {
+    list-style: none;
+    padding: 0;
+}
+
+.dropdownItem {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+}
+
+.dropdownHeader {
+    font-weight: bold;
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
+}
+
+@keyframes fadeInSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ====================================Responsive Breakpoints==================================== /
+/ STREAMING_CHUNK:Responsive rules fixing the tablet glitch... /
+/ Medium (Tablets/iPad Portrait - 600px to 768px) */
+@media (min-width: 600px) {
+    /* Intentionally keeping the #desktopSidebar hidden here so tablets correctly relysolely on the mobile hamburger menu. This prevents the duplicate menu glitch. */
+}
+
+/* Large (Desktop/iPad Landscape - 769px+) */
+@media (min-width: 769px) {
+    #sidebarToggleBtn {
+        display: none;
+    }
+
+    /* Hide hamburger */
+    #mobileSidebarOverlay {
+        display: none !important;
+    }
+
+    /* Force hide mobile overlay if resized while open */
+    #desktopSidebar {
+        display: block;
+        right: auto;
+        left: 0;
+        /* Sidebar on LEFT for desktop */
+        width: var(--sidebar-width-large);
+    }
+
+    #content {
+        margin-left: var(--sidebar-width-large);
+        margin-right: 0;
+    }
+
+    body.sidebar-open {
+        overflow: auto;
+    }
+
+    /* Ensure scroll is back */
+}

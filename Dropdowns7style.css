@@ -249,20 +249,27 @@ body.sidebar-open #dropdownContent { transform: translateX(0); }
    Responsive Breakpoints
    ==================================== */
 
-/* Medium (Tablets/iPad Portrait - 600px to 768px) 
+/* Medium (Tablets/iPad Portrait - 600px to 768px) */
 @media (min-width: 600px) {
     #desktopSidebar { 
         display: block; 
-        right: 0; /* Sidebar on RIGHT for tablet 
+        left: 0; /* Sidebar on RIGHT for tablet */
         width: var(--sidebar-width-medium); 
     }
-    #content { margin-right: var(--sidebar-width-medium); margin-left: 0; }
-    #sidebarToggleBtn { display: flex; } /* Toggle for Mobile Overlay remains 
-} */
+    #content { 
+        margin-right: var(--sidebar-width-medium); 
+        margin-left: 0; 
+    }
+    #sidebarToggleBtn { 
+        display: none; /* flex; */
+    } /* Toggle for Mobile Overlay remains */
+}
 
 /* Large (Desktop/iPad Landscape - 769px+) */
 @media (min-width: 769px) {
-    #sidebarToggleBtn { display: none; } /* Hide hamburger */
+    #sidebarToggleBtn { 
+        display: none; 
+    } /* Hide hamburger */
     #desktopSidebar { 
         right: auto; 
         left: 0; /* Sidebar on LEFT for desktop */

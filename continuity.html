@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuous Texture & Notched Corner</title>
+    <style>
+        /* Base page styling for contrast */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        /* ==========================================
+           CONCEPT 1: CONTINUOUS IMAGE TEXTURE
+           ========================================== */
+        
+        .texture-wrapper {
+            /* REPLACE this URL with your local mineral image */
+            background-image: url('IMG_0351.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Optional: keeps texture fixed even when scrolling */
+            
+            /* The Magic: Clips the container's background to the text */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; 
+            
+            /* A little styling for the typography */
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .texture-wrapper h1 {
+            font-size: 5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .texture-wrapper h2 {
+            font-size: 2.5rem;
+            margin: -10px 0 0 0;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+
+        /* ==========================================
+           CONCEPT 2: NOTCHED CORNER + FLOATING TRIANGLE
+           ========================================== */
+        
+        /* The parent div showing the background color you want to expose */
+        .parent-bg {
+            background-color: #1e1e24; /* Dark grey exposed background */
+            padding: 60px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* The wrapper holding the notch and the floating piece */
+        .notch-module {
+            position: relative; /* Crucial for positioning the floating triangle */
+        }
+
+        .notched-content {
+            /* REPLACE this with your second local image or keep the solid color */
+            background: linear-gradient(135deg, #2c3e50, #3498db); 
+            padding: 40px;
+            min-height: 200px;
+            
+            /* 
+               The clip-path polygon creates the shape. 
+               calc(100% - 50px) guarantees the cut is EXACTLY 50px, 
+               preventing all skewing on resize. 
+            */
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 50px), 
+                calc(100% - 50px) 100%, 
+                0 100%
+            );
+        }
+
+        .floating-triangle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            
+            /* Make the triangle slightly smaller than the 50px cut to create a gap */
+            width: 40px; 
+            height: 40px;
+            
+            /* You can make this a solid color, or use the same texture background here! */
+            background-color: #e74c3c; 
+            
+            /* Cuts this square into a bottom-right facing triangle */
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+            
+            /* Shift it slightly away from the corner to establish the parallel gap */
+            transform: translate(-5px, -5px);
+            
+            /* Optional: subtle transition for hover effects */
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Fun interactive hover effect on the floating triangle */
+        .notch-module:hover .floating-triangle {
+            transform: translate(-10px, -10px);
+            background-color: #f1c40f;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Concept 1: Continuous Texture -->
+    <div class="texture-wrapper">
+        <h1>Mineral</h1>
+        <h2>Veining Design</h2>
+        <p style="font-size: 1.2rem; font-weight: bold; margin-top: 20px;">
+            Even standard paragraph text inside this wrapper will seamlessly pick up the exact same texture coordinates as the headers above it.
+        </p>
+    </div>
+
+    <!-- Concept 2: Notched Corner -->
+    <div class="parent-bg">
+        <div class="notch-module">
+            <!-- The main element with the corner cut out -->
+            <div class="notched-content">
+                <h2 style="margin-top: 0;">Responsive Notch</h2>
+                <p>Resize your browser window. Because we used <code>calc(100% - 50px)</code>, the corner cut will never stretch, skew, or distort regardless of the view width or height.</p>
+            </div>
+            
+            <!-- The separated floating piece -->
+            <div class="floating-triangle"></div>
+        </div>
+    </div>
+
+</body>
+</html>

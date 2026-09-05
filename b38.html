@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>38th Birthday - Layout Prototyper</title>
+    <style>
+        :root {
+            --color-4: #e85d04;
+            --color-9: #dc2f02;
+            --color-25: #9d0208;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            max-width: 900px;
+            margin: 0 auto 5rem auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Glassmorphism Controls */
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        input[type="range"] {
+            accent-color: #ffba08;
+            cursor: pointer;
+        }
+
+        input[type="color"] {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            background: none;
+        }
+        
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; }
+
+        /* Hexagon Container */
+        #hex-viewport {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .hexagon {
+            position: absolute;
+            background: #ffba08;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(0,0,0,0.4);
+            font-weight: bold;
+            font-size: 0.9rem;
+            transform: translate(-50%, -50%); /* Centers the div exactly on coordinates */
+        }
+
+        /* Prime Squares Grid */
+        #prime-viewport {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-template-rows: auto auto;
+            gap: 3rem;
+            align-items: end;
+            justify-items: start;
+        }
+
+        .prime-grid {
+            display: grid;
+            transition: gap 0.15s ease;
+        }
+
+        .square {
+            width: var(--unit-size, 30px);
+            height: var(--unit-size, 30px);
+            border-radius: 4px;
+            transition: all 0.15s ease;
+            opacity: 0.85;
+        }
+        
+        .square:hover { opacity: 1; transform: scale(1.05); }
+
+        .title-block {
+            align-self: center;
+            justify-self: center;
+            text-align: center;
+        }
+
+        .title-block h1 {
+            font-size: 4rem;
+            margin: 0;
+            background: -webkit-linear-gradient(#ffba08, #dc2f02);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: MAGIC HEXAGON -->
+    <div class="section">
+        <h2>The Magic Hexagon (19 Era Fragments)</h2>
+        <div class="controls">
+            <div class="control-group">
+                <label>Hexagon Radius</label>
+                <input type="range" id="hex-radius" min="20" max="80" value="50">
+            </div>
+            <div class="control-group">
+                <label>Spacing Multiplier</label>
+                <input type="range" id="hex-spacing" min="100" max="150" value="105">
+            </div>
+        </div>
+        <div id="hex-viewport"></div>
+    </div>
+
+    <!-- SECTION 2: PRIME SQUARES -->
+    <div class="section">
+        <h2>Prime Squares Quadrants (4 + 9 + 25)</h2>
+        <div class="controls">
+            <div class="control-group">
+                <label>Unit Scale</label>
+                <input type="range" id="prime-unit" min="15" max="60" value="30">
+            </div>
+            <div class="control-group">
+                <label>Grid Gap</label>
+                <input type="range" id="prime-gap" min="1" max="20" value="4">
+            </div>
+            <div class="control-group">
+                <label>2² Color</label>
+                <input type="color" id="color-4" value="#e85d04">
+            </div>
+            <div class="control-group">
+                <label>3² Color</label>
+                <input type="color" id="color-9" value="#dc2f02">
+            </div>
+            <div class="control-group">
+                <label>5² Color</label>
+                <input type="color" id="color-25" value="#9d0208">
+            </div>
+        </div>
+
+        <div id="prime-viewport">
+            <!-- Q1: 4 Grid -->
+            <div class="prime-grid" id="grid-4" style="grid-template-columns: repeat(2, 1fr);"></div>
+            <!-- Q2: 9 Grid -->
+            <div class="prime-grid" id="grid-9" style="grid-template-columns: repeat(3, 1fr);"></div>
+            <!-- Q3: 25 Grid -->
+            <div class="prime-grid" id="grid-25" style="grid-template-columns: repeat(5, 1fr);"></div>
+            <!-- Q4: Focal Point -->
+            <div class="title-block">
+                <h1>38</h1>
+                <label>Years</label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /** --- MAGIC HEXAGON LOGIC --- **/
+        // Coordinates for the 19 hexagons in a normal order-3 magic hexagon [col, row]
+        const hexCoordinates = [
+            [-1, -2], [0, -2], [1, -2],
+            [-1.5, -1], [-0.5, -1], [0.5, -1], [1.5, -1],
+            [-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0],
+            [-1.5, 1], [-0.5, 1], [0.5, 1], [1.5, 1],
+            [-1, 2], [0, 2], [1, 2]
+        ];
+
+        const hexViewport = document.getElementById('hex-viewport');
+        const radiusSlider = document.getElementById('hex-radius');
+        const spacingSlider = document.getElementById('hex-spacing');
+
+        // Initialize hex divs
+        hexCoordinates.forEach((_, i) => {
+            const hex = document.createElement('div');
+            hex.className = 'hexagon';
+            hex.id = `hex-${i}`;
+            hex.textContent = i + 1; // Number them for reference
+            hexViewport.appendChild(hex);
+        });
+
+        function drawHexagons() {
+            const radius = parseInt(radiusSlider.value);
+            const spacingFactor = parseInt(spacingSlider.value) / 100;
+            
+            const w = Math.sqrt(3) * radius;
+            const h = 2 * radius;
+            
+            // Get center of viewport
+            const cx = hexViewport.clientWidth / 2;
+            const cy = hexViewport.clientHeight / 2;
+
+            const hexElements = document.querySelectorAll('.hexagon');
+            
+            hexCoordinates.forEach((coord, i) => {
+                const col = coord[0];
+                const row = coord[1];
+                
+                // Calculate position with spacing
+                const x = cx + col * w * spacingFactor;
+                const y = cy + row * (h * 0.75) * spacingFactor;
+                
+                const hex = hexElements[i];
+                hex.style.width = `${w}px`;
+                hex.style.height = `${h}px`;
+                hex.style.left = `${x}px`;
+                hex.style.top = `${y}px`;
+            });
+        }
+
+        // Event listeners & resize observer for Hexagons
+        radiusSlider.addEventListener('input', drawHexagons);
+        spacingSlider.addEventListener('input', drawHexagons);
+        new ResizeObserver(drawHexagons).observe(hexViewport);
+
+
+        /** --- PRIME SQUARES LOGIC --- **/
+        const grid4 = document.getElementById('grid-4');
+        const grid9 = document.getElementById('grid-9');
+        const grid25 = document.getElementById('grid-25');
+        
+        const unitSlider = document.getElementById('prime-unit');
+        const gapSlider = document.getElementById('prime-gap');
+        const color4 = document.getElementById('color-4');
+        const color9 = document.getElementById('color-9');
+        const color25 = document.getElementById('color-25');
+
+        // Populate grids
+        function createSquares(container, count, colorVar) {
+            for (let i = 0; i < count; i++) {
+                const sq = document.createElement('div');
+                sq.className = 'square';
+                sq.style.backgroundColor = `var(${colorVar})`;
+                container.appendChild(sq);
+            }
+        }
+
+        createSquares(grid4, 4, '--color-4');
+        createSquares(grid9, 9, '--color-9');
+        createSquares(grid25, 25, '--color-25');
+
+        function updatePrimes() {
+            const unit = unitSlider.value + 'px';
+            const gap = gapSlider.value + 'px';
+            
+            document.documentElement.style.setProperty('--unit-size', unit);
+            document.documentElement.style.setProperty('--color-4', color4.value);
+            document.documentElement.style.setProperty('--color-9', color9.value);
+            document.documentElement.style.setProperty('--color-25', color25.value);
+            
+            grid4.style.gap = gap;
+            grid9.style.gap = gap;
+            grid25.style.gap = gap;
+        }
+
+        unitSlider.addEventListener('input', updatePrimes);
+        gapSlider.addEventListener('input', updatePrimes);
+        color4.addEventListener('input', updatePrimes);
+        color9.addEventListener('input', updatePrimes);
+        color25.addEventListener('input', updatePrimes);
+
+        // Initial setup
+        setTimeout(() => {
+            drawHexagons();
+            updatePrimes();
+        }, 50);
+    </script>
+</body>
+</html>

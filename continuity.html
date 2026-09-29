@@ -53,6 +53,19 @@
             text-transform: uppercase;
         }
 
+        #top-tab {
+            position: relative;
+            border: 2px 2px 0 2px solid #ffffff;
+            border-radius: 8px 8px 0 0;
+            width: 30%;
+        }
+
+        #main-tab {
+            position: relative;
+            border: 2px solid #ffffff;
+            border-radius: 0 8px 8px 8px;
+        }
+
         /* ==========================================
            CONCEPT 2: NOTCHED CORNER + FLOATING TRIANGLE
            ========================================== */
@@ -130,6 +143,17 @@
         <p style="font-size: 1.2rem; font-weight: bold; margin-top: 20px;">
             Even standard paragraph text inside this wrapper will seamlessly pick up the exact same texture coordinates as the headers above it.
         </p>
+    </div>
+
+    <div id="texture-wrapper2">
+        <div id="top-tab">
+            <div id="top-tab-text">Continuous Texture</div>
+        </div>
+        <div id="main-tab">
+            <div id="main-tab-content">
+                <p>This is the main content area for the continuous texture section.</p>
+            </div>
+        </div>
     </div>
 
     <!-- Concept 2: Notched Corner -->

@@ -55,7 +55,7 @@
 
         #top-tab {
             position: relative;
-            border: 2px solid #ffffff;
+            /*border: 2px solid #ffffff;*/
             border-bottom: none;
             border-radius: 8px 8px 0px 0px;
             width: 30%;
@@ -71,6 +71,12 @@
             border: 2px solid #ffffff;
             border-radius: 0 8px 8px 8px;
             z-index: 1;
+        }
+
+        .tab {
+            border: 2px solid transparent;
+            background: linear-gradient(black, black) padding-box, url('IMG_0351.jpeg') border-box;
+            background-attachment: fixed;
         }
 
         /* ==========================================
@@ -153,10 +159,10 @@
     </div>
 
     <div id="texture-wrapper2">
-        <div id="top-tab">
+        <div class="tab" id="top-tab">
             <div id="top-tab-text">Continuous Texture</div>
         </div>
-        <div id="main-tab">
+        <div class="tab" id="main-tab">
             <div id="main-tab-content">
                 <p>This is the main content area for the continuous texture section.</p>
             </div>

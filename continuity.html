@@ -84,12 +84,22 @@
             z-index: 1;
         }
 
+        /* tab classes */
         .tab {
             border: 2px solid transparent;
             background: linear-gradient(#121212, #121212) padding-box, url('IMG_0351.jpeg') border-box;
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
+        }
+
+        .top-tab {
+            border-bottom: none;
+            border-radius: 8px 8px 0px 0px;
+        }
+
+        .main-tab {
+            border-radius: 0 8px 8px 8px;
         }
 
         /* ==========================================
@@ -182,6 +192,9 @@
         </div>
     </div>
 
+    <div id="cardGrid">
+    </div>
+
     <!-- Concept 2: Notched Corner -->
     <div class="parent-bg">
         <div class="notch-module">
@@ -197,4 +210,28 @@
     </div>
 
 </body>
+<script>
+    const cardGrid = document.getElementById('cardGrid');
+    const cardNames = ['Card 1', 'Card 2', 'Card 3', 'Card 4', 'Card 5', 'Card 6'];
+    for (let i = 0; i < cardNames.length; i++) {
+        const card = document.createElement('div');
+        const topTab = document.createElement('span');
+        const mainTab = document.createElement('div');
+        topTab.className = 'top-tab';
+        mainTab.className = 'main-tab';
+        card.className = 'tab';
+        card.style.margin = '10px';
+        card.style.padding = '20px';
+        card.style.borderRadius = '8px';
+        card.style.background = 'linear-gradient(#121212, #121212) padding-box, url("IMG_0351.jpeg") border-box';
+        card.style.backgroundAttachment = 'fixed';
+        card.style.backgroundSize = 'cover';
+        card.style.backgroundPosition = 'center';
+        topTab.innerHTML = `<h4>${cardNames[i]} Tab</h4>`;
+        mainTab.innerHTML = `<p>Main content for ${cardNames[i]}.</p>`;
+        card.appendChild(topTab);
+        card.appendChild(mainTab);
+        cardGrid.appendChild(card);
+    }
+</script>
 </html>

@@ -102,6 +102,14 @@
             border-radius: 0 8px 8px 8px;
         }
 
+        .card-grid {
+            display: grid;
+            /* Creates responsive columns that won't shrink below 300px */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
         /* ==========================================
            CONCEPT 2: NOTCHED CORNER + FLOATING TRIANGLE
            ========================================== */

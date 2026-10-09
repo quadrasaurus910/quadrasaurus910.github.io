@@ -225,9 +225,9 @@
         const card = document.createElement('div');
         const topTab = document.createElement('span');
         const mainTab = document.createElement('div');
-        topTab.className = 'top-tab';
-        mainTab.className = 'main-tab';
-        card.className = 'tab';
+        topTab.classList.add('top-tab', 'tab');
+        mainTab.classList.add('main-tab', 'tab');
+        // card.className = 'tab';
         card.style.margin = '10px';
         card.style.padding = '20px';
         card.style.borderRadius = '8px';

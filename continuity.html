@@ -227,7 +227,7 @@
 
     <div class="card-grid" id="cardGrid">
         <div class="texture-wrapper" id="gridTitle">
-            <h3>SD CARD STATUSES</h3>
+            <h2>SD CARD STATUSES</h2>
         </div>
     </div>
 
@@ -284,7 +284,7 @@
         card.classList.add('card');
         topTab.classList.add('top-tab', 'tab');
         mainTab.classList.add('main-tab', 'tab');
-        topTab.innerHTML = `<h4>${sdCardNames[i]} Tab</h4>`;
+        topTab.innerHTML = `<h4>${sdCardNames[i]}</h4>`;
         mainTab.innerHTML = `<p>Status: ${sdCards[sdCardNames[i]].status}</p>`;
         card.appendChild(topTab);
         card.appendChild(mainTab);

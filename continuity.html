@@ -118,8 +118,21 @@
             padding: 20px;
         }
 
+        #gridTitle {
+            grid-column: 1 / -1; /* Span all columns */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
         .card {
             position: relative;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background: linear-gradient(#121212, #121212) padding-box, url('IMG_0351.jpeg') border-box;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
         }
 
         /* ==========================================
@@ -213,6 +226,9 @@
     </div>
 
     <div class="card-grid" id="cardGrid">
+        <div class="texture-wrapper" id="gridTitle">
+            <h3>SD CARD STATUSES</h3>
+        </div>
     </div>
 
     <!-- Concept 2: Notched Corner -->
@@ -239,7 +255,9 @@
         'ubuntu': {'name': 'ubuntu', 'status': 'corrupted'},
         'batocera': {'name': 'batocera', 'status': 'unchecked'}
     };
-    for (let i = 0; i < cardNames.length; i++) {
+    const sdCardNames = Object.keys(sdCards);
+    const sdCardsLen = Object.keys(sdCards).length;
+    /* for (let i = 0; i < cardNames.length; i++) {
         const card = document.createElement('div');
         const topTab = document.createElement('div');
         const mainTab = document.createElement('div');
@@ -255,6 +273,19 @@
         card.style.backgroundPosition = 'center';
         topTab.innerHTML = `<h4>${cardNames[i]} Tab</h4>`;
         mainTab.innerHTML = `<p>Main content for ${cardNames[i]}.</p>`;
+        card.appendChild(topTab);
+        card.appendChild(mainTab);
+        cardGrid.appendChild(card);
+    } */
+   for (let i = 0; i < sdCardsLen; i++) {
+        const card = document.createElement('div');
+        const topTab = document.createElement('div');
+        const mainTab = document.createElement('div');
+        card.classList.add('card');
+        topTab.classList.add('top-tab', 'tab');
+        mainTab.classList.add('main-tab', 'tab');
+        topTab.innerHTML = `<h4>${sdCardNames[i]} Tab</h4>`;
+        mainTab.innerHTML = `<p>Status: ${sdCards[sdCardNames[i]].status}</p>`;
         card.appendChild(topTab);
         card.appendChild(mainTab);
         cardGrid.appendChild(card);

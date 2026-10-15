@@ -341,12 +341,13 @@
                 dateT = document.querySelector('#date').value;
                 testP = document.querySelector('#testP');
                 testP2 = document.querySelector('#testP2');
-                newDate = new Date("August 9, 2026 20:00:00 GMT-0400");
+                newDate = new Date("August 9, 2027 20:00:00 GMT-0400");
                 oldDate = new Date("August 9, 2005 20:00:00 GMT-0400");
                 testDate = new Date("April 1, 2026 20:00:00 GMT-0400");
-                checkAndUpdateDate(newDate);
-                console.log(newDate);
-                console.log(testDate);
+                dateCheck = checkAndUpdateDate(newDate);
+                console.log(`Date check: ${dateCheck}`);
+                console.log(`newDate: ${newDate}`);
+                console.log(`testDate: ${testDate}`);
                 /*copy = new Date();
                 setTime(newDate.getTime());*/
                 /*testP.innerHTML = newDate;*/

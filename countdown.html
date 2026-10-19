@@ -344,11 +344,13 @@
                 testP2 = document.querySelector('#testP2');
                 newDate = new Date("August 9, 2027 20:00:00 GMT-0400");
                 oldDate = new Date("August 9, 2005 20:00:00 GMT-0400");
-                testDate = new Date("April 1, 2026 20:00:00 GMT-0400");
+                testDate = new Date("August 9, 2026 20:00:00 GMT-0400");
                 dateCheck = checkAndUpdateDate(newDate);
+                updatedDate = checkAndUpdateDate(newDate);
                 console.log(`Date check: ${dateCheck}`);
                 console.log(`newDate: ${newDate}`);
                 console.log(`testDate: ${testDate}`);
+                console.log(`updatedDate: ${updatedDate}`);
                 /*copy = new Date();
                 setTime(newDate.getTime());*/
                 /*testP.innerHTML = newDate;*/
@@ -361,7 +363,8 @@
                 var annyStr = 'August 10, ' + yearStr + ' 00:00:00';
                 var thisAnny2 = new Date(annyStr).getTime();
                 ad1.innerHTML = "thisAnny2";
-                console.log("test");
+                console.log(`thisAnny: ${thisAnny}`);
+                console.log(`thisAnny2: ${thisAnny2}`);
                 date_formula = jsDate.getTime() == newDate.getTime();
                 date_formula2 = (jsDate.getTime() == oldDate.getTime());
                 adp.innerHTML = date_formula;

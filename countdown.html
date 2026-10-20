@@ -358,7 +358,7 @@
                 testP2.innerHTML = jsDate;
                 jsd2 = new Date();
                 thisYear = jsd2.getFullYear();
-                thisAnny = new Date(thisYear, 9, 10);
+                thisAnny = new Date(thisYear, 7, 10);
                 var yearStr = thisYear.toString();
                 var annyStr = 'August 10, ' + yearStr + ' 00:00:00';
                 console.log(`thisAnny: ${thisAnny}`);
@@ -385,7 +385,6 @@
                     countdownDiv.style.animation = 'trans3b 3s 1';
 
                     var countDownDate = new Date("Aug 10, 2027 00:00:00"/*"July 17, 2024 8:19:00"*/).getTime();
-                    var countDownDate2 = thisAnny2;
 
                     // Update the count down every 1 second
                     var x = setInterval(function() {

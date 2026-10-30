@@ -1,0 +1,91 @@
+/* 1. Register custom properties so CSS knows how to interpolate/animate them */
+@property --grad-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --accent-color-1 {
+  syntax: '<color>';
+  initial-value: rgba(120, 119, 198, 0.35);
+  inherits: false;
+}
+
+@property --accent-color-2 {
+  syntax: '<color>';
+  initial-value: rgba(255, 119, 198, 0.25);
+  inherits: false;
+}
+
+/* 2. Main translucent container */
+.translucent-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05); /* Translucent base */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 2.5rem;
+  overflow: hidden;
+  color: #ffffff;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* 3. Background accent layer (Sits underneath via z-index and absolute positioning) */
+.translucent-card::before {
+  content: '';
+  position: absolute;
+  inset: -50%; /* Expanded so the dancing blur doesn't clip at edges */
+  z-index: 0;
+  pointer-events: none; /* Ensures mouse clicks pass right through */
+  
+  background: conic-gradient(
+    from var(--grad-angle),
+    var(--accent-color-1) 0deg,
+    var(--accent-color-2) 120deg,
+    rgba(56, 189, 248, 0.2) 240deg,
+    var(--accent-color-1) 360deg
+  );
+  
+  filter: blur(50px); /* Creates the soft, organic "dancing" glow */
+  animation: danceAndFade 14s ease infinite alternate;
+
+  /* 4. Warn the CSS/Browser about what properties are being animated for hardware optimization */
+  will-change: --grad-angle, --accent-color-1, --accent-color-2, transform;
+}
+
+/* 5. Keep paragraph elements safely layered on top */
+.translucent-card p {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* 6. Keyframes controlling the random-like shifts in angle, color, and position */
+@keyframes danceAndFade {
+  0% {
+    --grad-angle: 0deg;
+    --accent-color-1: rgba(120, 119, 198, 0.4);
+    --accent-color-2: rgba(255, 119, 198, 0.3);
+    transform: translate(-10%, -10%) rotate(0deg) scale(1);
+  }
+  33% {
+    --grad-angle: 135deg;
+    --accent-color-1: rgba(79, 70, 229, 0.3);
+    --accent-color-2: rgba(56, 189, 248, 0.45);
+    transform: translate(10%, -5%) rotate(45deg) scale(1.1);
+  }
+  66% {
+    --grad-angle: 225deg;
+    --accent-color-1: rgba(236, 72, 153, 0.25);
+    --accent-color-2: rgba(168, 85, 247, 0.35);
+    transform: translate(-5%, 10%) rotate(135deg) scale(0.95);
+  }
+  100% {
+    --grad-angle: 360deg;
+    --accent-color-1: rgba(59, 130, 246, 0.4);
+    --accent-color-2: rgba(234, 179, 8, 0.2);
+    transform: translate(5%, 5%) rotate(210deg) scale(1.05);
+  }
+}

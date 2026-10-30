@@ -40,15 +40,15 @@
 /* 2. Translucent container using deep dark green/sage tones from your palette */
 .translucent-card {
   position: relative;
-  background: rgba(19, 57, 44, 0.25); /* #13392C with translucency */
+  /*background: rgba(19, 57, 44, 0.25); *//* #13392C with translucency */
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(160, 191, 171, 0.2); /* #A0BFAB Light Sage border */
-  border-radius: 24px;
+  /* border: 1px solid rgba(160, 191, 171, 0.2);  #A0BFAB Light Sage border 
+  border-radius: 24px;*/
   padding: 3rem;
   overflow: hidden;
-  color: #ffffff;
-  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.4);
+  /* color: #ffffff;
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.4); */
 }
 
 /* 3. Background accent layer configured for massive, faint areas */

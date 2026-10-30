@@ -1,0 +1,117 @@
+/* 1. Register custom properties for angles, percentage stops, and colors so they animate smoothly */
+@property --grad-angle {
+  syntax: '<angle>';
+  initial-value: 30deg;
+  inherits: false;
+}
+
+@property --stop-1 {
+  syntax: '<percentage>';
+  initial-value: 15%;
+  inherits: false;
+}
+
+@property --stop-2 {
+  syntax: '<percentage>';
+  initial-value: 50%;
+  inherits: false;
+}
+
+@property --stop-3 {
+  syntax: '<percentage>';
+  initial-value: 85%;
+  inherits: false;
+}
+
+@property --nebula-color-1 {
+  syntax: '<color>';
+  /* Infrared Teal (#2B8AA5) with high transparency */
+  initial-value: rgba(43, 138, 165, 0.1);
+  inherits: false;
+}
+
+@property --nebula-color-2 {
+  syntax: '<color>';
+  /* Infrared Dusty Mauve (#C5869E) with high transparency */
+  initial-value: rgba(197, 134, 158, 0.08);
+  inherits: false;
+}
+
+/* 2. Translucent container using deep dark green/sage tones from your palette */
+.translucent-card {
+  position: relative;
+  background: rgba(19, 57, 44, 0.25); /* #13392C with translucency */
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(160, 191, 171, 0.2); /* #A0BFAB Light Sage border */
+  border-radius: 24px;
+  padding: 3rem;
+  overflow: hidden;
+  color: #ffffff;
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* 3. Background accent layer configured for massive, faint areas */
+.translucent-card::before {
+  content: '';
+  position: absolute;
+  inset: -100%; /* Deeply expanded so giant blurred areas don't clip at edges */
+  z-index: 0;
+  pointer-events: none;
+  
+  /* Linear gradient using animatable percentage stops to control transparent vs colored areas */
+  background: linear-gradient(
+    var(--grad-angle),
+    transparent 0%,
+    var(--nebula-color-1) var(--stop-1),
+    transparent var(--stop-2),
+    var(--nebula-color-2) var(--stop-3),
+    transparent 100%
+  );
+  
+  /* Heavy blur creates massive, ultra-faint atmospheric gas clouds */
+  filter: blur(90px);
+  animation: expandAndDance 18s ease-in-out infinite alternate;
+
+  /* 4. Warn the browser/CSS precisely about every property being animated */
+  will-change: --grad-angle, --stop-1, --stop-2, --stop-3, --nebula-color-1, --nebula-color-2, transform;
+}
+
+/* 5. Ensure text elements stay on top */
+.translucent-card p {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.25rem;
+  line-height: 1.7;
+}
+
+/* 6. Keyframes dynamically varying the percentage gaps, angles, colors, and scales */
+@keyframes expandAndDance {
+  0% {
+    --grad-angle: 15deg;
+    --stop-1: 10%;
+    --stop-2: 45%;
+    --stop-3: 80%;
+    --nebula-color-1: rgba(43, 138, 165, 0.09);  /* #2B8AA5 Teal */
+    --nebula-color-2: rgba(126, 176, 200, 0.07); /* #7EB0C8 Ice Blue */
+    transform: translate(-15%, -10%) scale(1);
+  }
+  50% {
+    --grad-angle: 145deg;
+    --stop-1: 30%;
+    --stop-2: 60%;
+    --stop-3: 90%;
+    --nebula-color-1: rgba(197, 134, 158, 0.1);  /* #C5869E Dusty Mauve */
+    --nebula-color-2: rgba(46, 149, 143, 0.08);  /* #2E958F Teal Green */
+    transform: translate(10%, 15%) scale(1.15);
+  }
+  100% {
+    --grad-angle: 290deg;
+    --stop-1: 5%;
+    --stop-2: 55%;
+    --stop-3: 75%;
+    --nebula-color-1: rgba(160, 191, 171, 0.08); /* #A0BFAB Light Sage */
+    --nebula-color-2: rgba(34, 72, 31, 0.06);   /* #22481F Deep Dark Green */
+    transform: translate(-5%, -20%) scale(0.9);
+  }
+}

@@ -278,3 +278,11 @@ body.sidebar-open #dropdownContent { transform: translateX(0); }
     #content { margin-left: var(--sidebar-width-large); margin-right: 0; }
     body.sidebar-open { overflow: auto; } /* Ensure scroll is back */
 }
+
+.colorDivAccent {
+    width: 100%;
+    height: 25px;
+    position: relative;
+    z-index: -1;
+    margin-top: -10px;
+}

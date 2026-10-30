@@ -285,4 +285,5 @@ body.sidebar-open #dropdownContent { transform: translateX(0); }
     position: relative;
     z-index: -1;
     margin-top: -10px;
+    background-color: blue;
 }

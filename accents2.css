@@ -103,6 +103,8 @@
   z-index: 1;
   margin-bottom: 1.25rem;
   line-height: 1.7;
+  -webkit-text-stroke: 6px black;
+  paint-order: stroke fill; 
 }
 
 /* 6. Independent animations creating complex, shifting organic clouds */

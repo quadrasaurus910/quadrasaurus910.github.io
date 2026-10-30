@@ -1,0 +1,149 @@
+/* 1. Register custom properties for smooth animation interpolation */
+@property --wisp-angle-1 {
+  syntax: '<angle>';
+  initial-value: 20deg;
+  inherits: false;
+}
+
+@property --wisp-angle-2 {
+  syntax: '<angle>';
+  initial-value: 200deg;
+  inherits: false;
+}
+
+@property --nebula-1 {
+  syntax: '<color>';
+  initial-value: rgba(1, 175, 242, 0.22); /* #01AFF2 Bright Cyan */
+  inherits: false;
+}
+
+@property --nebula-2 {
+  syntax: '<color>';
+  initial-value: rgba(137, 71, 41, 0.25);  /* #894729 Infrared Dust Red */
+  inherits: false;
+}
+
+@property --nebula-3 {
+  syntax: '<color>';
+  initial-value: rgba(197, 134, 158, 0.2); /* #C5869E Dusty Mauve */
+  inherits: false;
+}
+
+@property --nebula-4 {
+  syntax: '<color>';
+  initial-value: rgba(43, 138, 165, 0.2);  /* #2B8AA5 Infrared Teal */
+  inherits: false;
+}
+
+/* 2. Container with NO static background, NO border, and NO drop-shadow */
+.translucent-card {
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 3rem;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+/* 3. First Nebula Wisp Layer (Bright Cyans & Deep Dust Tones) */
+.translucent-card::before {
+  content: '';
+  position: absolute;
+  inset: -120%;
+  z-index: 0;
+  pointer-events: none;
+  
+  background: conic-gradient(
+    from var(--wisp-angle-1),
+    transparent 0deg,
+    var(--nebula-1) 70deg,
+    transparent 140deg,
+    var(--nebula-2) 220deg,
+    transparent 300deg,
+    var(--nebula-1) 360deg
+  );
+  
+  filter: blur(70px);
+  mix-blend-mode: screen;
+  animation: driftWispOne 20s ease-in-out infinite alternate;
+  will-change: --wisp-angle-1, --nebula-1, --nebula-2, transform;
+}
+
+/* 4. Second Nebula Wisp Layer (Teals, Mauves, and Warm Peach Highlights) */
+.translucent-card::after {
+  content: '';
+  position: absolute;
+  inset: -120%;
+  z-index: 0;
+  pointer-events: none;
+  
+  background: radial-gradient(
+    circle at 60% 40%,
+    var(--nebula-3) 0%,
+    var(--nebula-4) 40%,
+    transparent 75%
+  ),
+  linear-gradient(
+    var(--wisp-angle-2),
+    rgba(240, 181, 140, 0.18) 10%, /* #F0B58C Warm Peach */
+    transparent 50%,
+    rgba(32, 200, 222, 0.18) 90%  /* #20C8DE Vivid Teal */
+  );
+  
+  filter: blur(85px);
+  mix-blend-mode: color-dodge;
+  animation: driftWispTwo 15s ease-in-out infinite alternate;
+  will-change: --wisp-angle-2, --nebula-3, --nebula-4, transform;
+}
+
+/* 5. Keep paragraph elements safely layered on top */
+.translucent-card p {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.25rem;
+  line-height: 1.7;
+}
+
+/* 6. Independent animations creating complex, shifting organic clouds */
+@keyframes driftWispOne {
+  0% {
+    --wisp-angle-1: 10deg;
+    --nebula-1: rgba(1, 175, 242, 0.25);   /* #01AFF2 */
+    --nebula-2: rgba(137, 71, 41, 0.28);   /* #894729 */
+    transform: translate(-10%, -15%) rotate(0deg) scale(1);
+  }
+  50% {
+    --wisp-angle-1: 180deg;
+    --nebula-1: rgba(32, 200, 222, 0.22);  /* #20C8DE */
+    --nebula-2: rgba(123, 52, 5, 0.25);    /* #7B3405 */
+    transform: translate(15%, 10%) rotate(90deg) scale(1.2);
+  }
+  100% {
+    --wisp-angle-1: 340deg;
+    --nebula-1: rgba(1, 136, 220, 0.26);   /* #0188DC */
+    --nebula-2: rgba(137, 71, 41, 0.2);    /* #894729 */
+    transform: translate(-5%, 15%) rotate(180deg) scale(0.95);
+  }
+}
+
+@keyframes driftWispTwo {
+  0% {
+    --wisp-angle-2: 90deg;
+    --nebula-3: rgba(197, 134, 158, 0.22); /* #C5869E */
+    --nebula-4: rgba(43, 138, 165, 0.22);  /* #2B8AA5 */
+    transform: translate(10%, 10%) rotate(0deg) scale(0.9);
+  }
+  50% {
+    --wisp-angle-2: 220deg;
+    --nebula-3: rgba(214, 124, 117, 0.2);  /* #D67C75 */
+    --nebula-4: rgba(46, 149, 143, 0.25);  /* #2E958F */
+    transform: translate(-12%, -8%) rotate(-60deg) scale(1.15);
+  }
+  100% {
+    --wisp-angle-2: 310deg;
+    --nebula-3: rgba(240, 181, 140, 0.2);  /* #F0B58C */
+    --nebula-4: rgba(34, 72, 31, 0.22);    /* #22481F */
+    transform: translate(8%, -15%) rotate(120deg) scale(1.05);
+  }
+}

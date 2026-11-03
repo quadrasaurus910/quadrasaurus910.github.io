@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Architect - Anchored Self-Assembly & Outlier Lattices</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #030508;
+            color: #94a3b8;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            overflow: hidden;
+        }
+        canvas { display: block; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between p-6">
+
+    <!-- Header HUD -->
+    <header class="flex justify-between items-center z-10 bg-slate-950/90 border border-slate-800/80 px-6 py-4 rounded-xl shadow-2xl backdrop-blur">
+        <div>
+            <h1 class="text-xl font-bold tracking-wider text-cyan-400">GRADIENT ARCHITECT // ANCHORED ORGANISM</h1>
+            <p class="text-xs text-slate-400">Subsystem: Self-Assembly Genesis & Outlier Re-alignment</p>
+        </div>
+        <div class="flex gap-6 text-xs text-slate-300">
+            <div><span class="text-slate-500">Anchored Structures:</span> <span id="stat-nodes" class="text-emerald-400">12</span></div>
+            <div><span class="text-slate-500">Assembly Phase:</span> <span id="stat-phase" class="text-amber-400">Active Growth</span></div>
+            <div><span class="text-slate-500">Outlier Drift:</span> <span id="stat-outlier" class="text-pink-400">Engaged</span></div>
+        </div>
+    </header>
+
+    <!-- Canvas Viewport -->
+    <main class="absolute inset-0 z-0 flex items-center justify-center">
+        <canvas id="architectCanvas" class="w-full h-full"></canvas>
+    </main>
+
+    <!-- Footer HUD -->
+    <footer class="z-10 bg-slate-950/90 border border-slate-800/80 px-6 py-3 rounded-xl flex justify-between items-center text-xs text-slate-400 shadow-2xl backdrop-blur">
+        <p>Architectural Rules: <span class="text-cyan-400">Static Anchors</span> • <span class="text-amber-400">Randomized Property LUTs</span> • <span class="text-purple-400">Ghost Frames</span> • <span class="text-pink-400">Drift & Rejoin</span></p>
+        <p class="text-slate-500">Click canvas to trigger structural re-seed.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('architectCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Anchored Architectural Outcropping
+        class AnchoredStructure {
+            constructor(x, y) {
+                this.anchorX = x;
+                this.anchorY = y;
+                this.reset();
+            }
+
+            reset() {
+                this.maxSteps = 8 + Math.floor(Math.random() * 12);
+                this.currentSteps = 0; // Starts at 0 to show self-assembly genesis
+                this.assemblySpeed = 0.05 + Math.random() * 0.1; // Speed of step creation
+                
+                this.baseSize = 40 + Math.random() * 50;
+                this.growthDirection = Math.random() > 0.5 ? 1 : -1; // Growing downward or upward from anchor
+                
+                // Lifecycle phases: 'assembling', 'mature', 'senescing'
+                this.lifecycle = 'assembling';
+                this.lifeTimer = 0;
+                this.maxLife = 200 + Math.random() * 150;
+
+                // Randomized Property Gradient Rulebook (LUT Selector)
+                // 0: Hue Shift, 1: Saturation Gradient, 2: Lightness Gradient, 3: Ghost Frame Wireframe
+                this.gradientMode = Math.floor(Math.random() * 4);
+                this.fixedHue = Math.floor(Math.random() * 360);
+                this.baseSaturation = 50 + Math.random() * 40;
+                
+                // Outlier and Siding parameters
+                this.isOutlier = Math.random() > 0.65;
+                this.outlierFrequency = 0.01 + Math.random() * 0.02;
+                this.outlierAmplitude = 40 + Math.random() * 80;
+                this.driftOffset = 0;
+            }
+
+            update(time) {
+                this.lifeTimer++;
+
+                // 1. Self-Assembly Genesis Phase
+                if (this.lifecycle === 'assembling') {
+                    this.currentSteps += this.assemblySpeed;
+                    if (this.currentSteps >= this.maxSteps) {
+                        this.currentSteps = this.maxSteps;
+                        this.lifecycle = 'mature';
+                    }
+                } 
+                // 2. Senescence / Decay Phase before resetting
+                else if (this.lifecycle === 'mature' && this.lifeTimer > this.maxLife) {
+                    this.lifecycle = 'senescing';
+                } 
+                else if (this.lifecycle === 'senescing') {
+                    this.currentSteps -= this.assemblySpeed * 1.5;
+                    if (this.currentSteps <= 0) {
+                        this.currentSteps = 0;
+                        this.reset(); // Re-seed structure in place
+                    }
+                }
+
+                // 3. Outlier lateral drift (with re-alignment mechanics via sine harmonic)
+                if (this.isOutlier) {
+                    // When sine wave passes through zero, it aligns back with the anchor baseline
+                    this.driftOffset = Math.sin(time * this.outlierFrequency + this.anchorX) * this.outlierAmplitude;
+                } else {
+                    this.driftOffset = 0; // Stays locked on structural grid
+                }
+            }
+
+            draw(time) {
+                if (this.currentSteps <= 0) return;
+
+                ctx.save();
+                ctx.translate(this.anchorX + this.driftOffset, this.anchorY);
+
+                const visibleSteps = Math.floor(this.currentSteps);
+                const partialStep = this.currentSteps - visibleSteps;
+
+                for (let s = 0; s <= visibleSteps; s++) {
+                    const stepProgress = s / this.maxSteps;
+                    
+                    // Size scaling per step (fractal growth or tapering)
+                    const size = this.baseSize + (s * 14 * this.growthDirection);
+                    if (size <= 5) continue;
+
+                    // Property Gradient calculations based on randomized rulebook
+                    let hue = this.fixedHue;
+                    let saturation = this.baseSaturation;
+                    let lightness = 35 + (stepProgress * 30);
+                    let alpha = 0.85;
+                    let isGhost = false;
+
+                    switch(this.gradientMode) {
+                        case 0: // Hue Shift Gradient
+                            hue = (this.fixedHue + (s * 25)) % 360;
+                            saturation = 80;
+                            break;
+                        case 1: // Saturation Gradient (Fixed Hue, fading vibrancy)
+                            saturation = Math.max(10, 100 - (s * 10));
+                            lightness = 50;
+                            break;
+                        case 2: // Lightness Gradient (Deep bedrock to bright apex)
+                            lightness = 15 + (stepProgress * 65);
+                            saturation = 70;
+                            break;
+                        case 3: // Ghost Frame Wireframe (Unmaterialized Blueprint)
+                            isGhost = true;
+                            alpha = 0.25;
+                            lightness = 60;
+                            break;
+                    }
+
+                    // Apply senescence alpha decay if fading out
+                    if (this.lifecycle === 'senescing') {
+                        alpha *= (this.currentSteps / this.maxSteps);
+                    }
+
+                    // Render Step geometry (Rigid square panes with outcroppings)
+                    ctx.save();
+                    // Stack steps along the vertical axis with slight directional offset
+                    const yPos = (s * 22 * this.growthDirection);
+                    ctx.translate(0, yPos);
+
+                    ctx.beginPath();
+                    const half = size / 2;
+                    ctx.rect(-half, -half, size, size);
+
+                    if (!isGhost && s % 2 === 0) {
+                        // Pane fill
+                        ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.12})`;
+                        ctx.fill();
+                    }
+
+                    // Structural Outline
+                    if (isGhost) {
+                        // Dashed ghost frame lines representing unmaterialized architecture
+                        ctx.setLineDash([4, 4]);
+                        ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.5})`;
+                        ctx.lineWidth = 1;
+                    } else {
+                        ctx.setLineDash([]);
+                        ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                        ctx.lineWidth = 1.5;
+                    }
+                    ctx.stroke();
+
+                    // Internal crystalline cross-bracing
+                    if (!isGhost && s % 3 === 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(-half * 0.6, 0); ctx.lineTo(half * 0.6, 0);
+                        ctx.strokeStyle = `hsla(${hue}, ${saturation}%, 80%, ${alpha * 0.4})`;
+                        ctx.lineWidth = 0.75;
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                }
+
+                // Draw static anchor node marker at the root
+                ctx.beginPath();
+                ctx.arc(0, 0, 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.isOutlier ? '#f43f5e' : '#06b6d4';
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        // Initialize a grid/cluster of static anchor structures
+        const structures = [];
+        function initStructures() {
+            structures.length = 0;
+            const cols = Math.max(4, Math.floor(window.innerWidth / 180));
+            const rows = 3;
+            const cellW = window.innerWidth / cols;
+            const cellH = window.innerHeight / (rows + 1);
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = (c + 0.5) * cellW + (Math.random() * 40 - 20);
+                    const y = (r + 0.8) * cellH + (Math.random() * 30 - 15);
+                    structures.push(new AnchoredStructure(x, y));
+                }
+            }
+        }
+
+        initStructures();
+
+        window.addEventListener('click', () => {
+            structures.forEach(s => s.reset());
+        });
+
+        let globalTime = 0;
+
+        function animate() {
+            globalTime += 0.03;
+
+            // Clear frame with deep architectural background trace
+            ctx.fillStyle = 'rgba(3, 5, 8, 0.35)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Update and render all anchored structures
+            structures.forEach(struct => {
+                struct.update(globalTime);
+                struct.draw(globalTime);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>

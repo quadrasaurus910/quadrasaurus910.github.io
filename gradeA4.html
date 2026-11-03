@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Architect - Sparse Organic Lattices</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #020408;
+            color: #94a3b8;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            overflow: hidden;
+        }
+        canvas { display: block; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between p-6">
+
+    <!-- Header HUD -->
+    <header class="flex justify-between items-center z-10 bg-slate-950/90 border border-slate-800/80 px-6 py-4 rounded-xl shadow-2xl backdrop-blur">
+        <div>
+            <h1 class="text-xl font-bold tracking-wider text-cyan-400">GRADIENT ARCHITECT // SPARSE ORGANISM</h1>
+            <p class="text-xs text-slate-400">Subsystem: Staggered Families & One-Way Fade Manifestation</p>
+        </div>
+        <div class="flex gap-6 text-xs text-slate-300">
+            <div><span class="text-slate-500">Active Formations:</span> <span id="stat-active" class="text-emerald-400">6</span></div>
+            <div><span class="text-slate-500">Lifecycle Mode:</span> <span id="stat-life" class="text-amber-400">Assemble -> Fade</span></div>
+        </div>
+    </header>
+
+    <!-- Canvas Viewport -->
+    <main class="absolute inset-0 z-0 flex items-center justify-center">
+        <canvas id="architectCanvas" class="w-full h-full"></canvas>
+    </main>
+
+    <!-- Footer HUD -->
+    <footer class="z-10 bg-slate-950/90 border border-slate-800/80 px-6 py-3 rounded-xl flex justify-between items-center text-xs text-slate-400 shadow-2xl backdrop-blur">
+        <p>Rules: <span class="text-cyan-400">No Root Markers</span> • <span class="text-amber-400">Variable Lengths (Short/Long)</span> • <span class="text-purple-400">Edge Overflow</span> • <span class="text-pink-400">Staggered Clusters</span></p>
+        <p class="text-slate-500">Click canvas to trigger spatial reorganization.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('architectCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class StructuralSequence {
+            constructor(x, y, sharedLUT, staggerDelay) {
+                this.x = x;
+                this.y = y;
+                this.sharedLUT = sharedLUT;
+                this.staggerDelay = staggerDelay; // Delay before assembly begins
+                this.delayTimer = 0;
+                this.reset();
+            }
+
+            reset() {
+                // Varying sequence lengths: some very short (3-6 frames), some long (10-18)
+                this.maxSteps = Math.random() > 0.4 
+                    ? (3 + Math.floor(Math.random() * 4)) 
+                    : (10 + Math.floor(Math.random() * 8));
+                
+                this.currentSteps = 0;
+                this.assemblySpeed = 0.08 + Math.random() * 0.12;
+                this.baseSize = 50 + Math.random() * 60;
+                this.growthDirection = Math.random() > 0.5 ? 1 : -1;
+                
+                // Lifecycle: 'delayed' -> 'assembling' -> 'holding' -> 'fading' -> 'dead'
+                this.state = 'delayed';
+                this.delayTimer = 0;
+                this.holdTimer = 0;
+                this.maxHold = 80 + Math.random() * 120;
+                this.globalAlpha = 1.0;
+
+                // Outlier drift pattern
+                this.isOutlier = Math.random() > 0.7;
+                this.driftFreq = 0.01 + Math.random() * 0.02;
+                this.driftAmp = 30 + Math.random() * 60;
+            }
+
+            update(time) {
+                if (this.state === 'delayed') {
+                    this.delayTimer++;
+                    if (this.delayTimer >= this.staggerDelay) {
+                        this.state = 'assembling';
+                    }
+                    return;
+                }
+
+                if (this.state === 'assembling') {
+                    this.currentSteps += this.assemblySpeed;
+                    if (this.currentSteps >= this.maxSteps) {
+                        this.currentSteps = this.maxSteps;
+                        this.state = 'holding';
+                    }
+                } else if (this.state === 'holding') {
+                    this.holdTimer++;
+                    if (this.holdTimer >= this.maxHold) {
+                        this.state = 'fading';
+                    }
+                } else if (this.state === 'fading') {
+                    this.globalAlpha -= 0.02; // Clean fade out without reversing steps
+                    if (this.globalAlpha <= 0) {
+                        this.state = 'dead';
+                    }
+                }
+            }
+
+            draw(time) {
+                if (this.state === 'delayed' || this.state === 'dead' || this.currentSteps <= 0) return;
+
+                ctx.save();
+                
+                // Apply outlier drift offset if enabled
+                let xPos = this.x;
+                if (this.isOutlier) {
+                    xPos += Math.sin(time * this.driftFreq + this.y) * this.driftAmp;
+                }
+
+                ctx.translate(xPos, this.y);
+
+                const visibleSteps = Math.floor(this.currentSteps);
+
+                for (let s = 0; s <= visibleSteps; s++) {
+                    const stepProgress = s / this.maxSteps;
+                    const size = this.baseSize + (s * 12 * this.growthDirection);
+                    if (size <= 5) continue;
+
+                    // Unpack shared familial LUT properties
+                    let hue = this.sharedLUT.fixedHue;
+                    let saturation = this.sharedLUT.baseSaturation;
+                    let lightness = 30 + (stepProgress * 40);
+                    let alpha = 0.85 * this.globalAlpha;
+                    let isGhost = this.sharedLUT.isGhost;
+
+                    switch(this.sharedLUT.mode) {
+                        case 0: // Hue shift gradient
+                            hue = (this.sharedLUT.fixedHue + (s * 22)) % 360;
+                            saturation = 80;
+                            break;
+                        case 1: // Saturation stepped gradient
+                            saturation = Math.max(15, 90 - (s * 12));
+                            break;
+                        case 2: // Lightness stepped gradient
+                            lightness = 20 + (stepProgress * 55);
+                            saturation = 65;
+                            break;
+                    }
+
+                    if (isGhost) {
+                        alpha *= 0.35;
+                    }
+
+                    ctx.save();
+                    const yOffset = (s * 20 * this.growthDirection);
+                    ctx.translate(0, yOffset);
+
+                    ctx.beginPath();
+                    const half = size / 2;
+                    ctx.rect(-half, -half, size, size);
+
+                    // Square pane fills
+                    if (!isGhost && s % 2 === 0) {
+                        ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.12})`;
+                        ctx.fill();
+                    }
+
+                    // Square Outlines
+                    if (isGhost) {
+                        ctx.setLineDash([4, 4]);
+                        ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.6})`;
+                        ctx.lineWidth = 1;
+                    } else {
+                        ctx.setLineDash([]);
+                        ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                        ctx.lineWidth = 1.25;
+                    }
+                    ctx.stroke();
+
+                    // Optional internal crosshair detail
+                    if (!isGhost && s % 3 === 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(-half * 0.5, 0); ctx.lineTo(half * 0.5, 0);
+                        ctx.strokeStyle = `hsla(${hue}, ${saturation}%, 80%, ${alpha * 0.3})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // Pool manager for sparse, staggered family formations
+        let sequences = [];
+
+        function spawnFamilyCluster() {
+            sequences = [];
+            // Keep total active structures sparse and variable (e.g., 5 to 9 formations)
+            const clusterCount = 5 + Math.floor(Math.random() * 4);
+
+            for (let i = 0; i < clusterCount; i++) {
+                // Allow positions to extend past edges so squares appear half off-screen
+                const x = Math.random() * (window.innerWidth + 100) - 50;
+                const y = Math.random() * (window.innerHeight + 100) - 50;
+
+                // Shared familial LUT rule
+                const sharedLUT = {
+                    fixedHue: Math.floor(Math.random() * 360),
+                    baseSaturation: 50 + Math.floor(Math.random() * 40),
+                    mode: Math.floor(Math.random() * 3),
+                    isGhost: Math.random() > 0.75
+                };
+
+                // If part of a shared row/cluster, group some with matching LUTs
+                if (i > 0 && Math.random() > 0.5) {
+                    sharedLUT.fixedHue = sequences[i - 1].sharedLUT.fixedHue;
+                    sharedLUT.mode = sequences[i - 1].sharedLUT.mode;
+                }
+
+                // Stagger delay for organic appearance
+                const staggerDelay = Math.floor(Math.random() * 60);
+
+                sequences.push(new StructuralSequence(x, y, sharedLUT, staggerDelay));
+            }
+        }
+
+        spawnFamilyCluster();
+
+        window.addEventListener('click', () => {
+            spawnFamilyCluster();
+        });
+
+        let globalTime = 0;
+
+        function animate() {
+            globalTime += 0.03;
+
+            // Clear frame with deep architectural background trace
+            ctx.fillStyle = 'rgba(2, 4, 8, 0.4)';
+            ctx.fillRect(0, 0, width, height);
+
+            let activeCount = 0;
+
+            // Update and render sequences
+            sequences.forEach(seq => {
+                seq.update(globalTime);
+                seq.draw(globalTime);
+                if (seq.state !== 'dead') {
+                    activeCount++;
+                }
+            });
+
+            // Automatically respawn a new sparse batch if most have faded out
+            if (activeCount <= 1 && Math.random() < 0.05) {
+                spawnFamilyCluster();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>

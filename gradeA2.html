@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Architect - Rigid Stepped Sequences & Bow Shock</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #05070c;
+            color: #94a3b8;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            overflow: hidden;
+        }
+        canvas { display: block; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between p-6">
+
+    <!-- Header HUD -->
+    <header class="flex justify-between items-center z-10 bg-slate-950/90 border border-slate-800/80 px-6 py-4 rounded-xl shadow-2xl backdrop-blur">
+        <div>
+            <h1 class="text-xl font-bold tracking-wider text-amber-400">GRADIENT ARCHITECT // TIERED RIGIDITY</h1>
+            <p class="text-xs text-slate-400">Subsystem: Bow-Shock Reentry & Senescing Step Trails</p>
+        </div>
+        <div class="flex gap-6 text-xs text-slate-300">
+            <div><span class="text-slate-500">Active Sequences:</span> <span id="stat-seq" class="text-cyan-400">4</span></div>
+            <div><span class="text-slate-500">LUT Mode:</span> <span id="stat-lut" class="text-pink-400">Divergent-Step</span></div>
+            <div><span class="text-slate-500">Plasma Shock:</span> <span id="stat-shock" class="text-emerald-400">Engaged</span></div>
+        </div>
+    </header>
+
+    <!-- Canvas Viewport -->
+    <main class="absolute inset-0 z-0 flex items-center justify-center">
+        <canvas id="architectCanvas" class="w-full h-full"></canvas>
+    </main>
+
+    <!-- Footer HUD -->
+    <footer class="z-10 bg-slate-950/90 border border-slate-800/80 px-6 py-3 rounded-xl flex justify-between items-center text-xs text-slate-400 shadow-2xl backdrop-blur">
+        <p>Mechanics: <span class="text-amber-400">Independent LUTs</span> • <span class="text-cyan-400">Glitch Step Drop</span> • <span class="text-pink-400">Senescing Trails</span> • <span class="text-purple-400">Bow-Shock Displacement</span></p>
+        <p class="text-slate-500">Click canvas to trigger seismic architectural shift.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('architectCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Architectural Sequence Manager
+        class StepSequenceColumn {
+            constructor(xPos) {
+                this.x = xPos;
+                this.reset();
+            }
+
+            reset() {
+                this.y = -400;
+                this.speed = 2.5 + Math.random() * 3.5;
+                this.stepCount = 12 + Math.floor(Math.random() * 8);
+                this.baseSize = 60 + Math.random() * 50;
+                
+                // Each sequence generates its own unique Property Lookup Table (LUT) rule set
+                this.lut = {
+                    hueStart: Math.floor(Math.random() * 360),
+                    hueDirection: Math.random() > 0.5 ? 1 : -1,
+                    hueRate: 15 + Math.random() * 25,
+                    scaleGrowth: Math.random() > 0.4 ? 'expand' : 'contract',
+                    opacityCurve: Math.random() > 0.5 ? 'fade-out' : 'pulse',
+                    glitchTier: Math.floor(Math.random() * 3), // 0: Clean, 1: Moderate jitter, 2: Heavy fracture
+                    hasPaneOutlines: Math.random() > 0.3
+                };
+                
+                // Trail buffer for senescing history
+                this.history = [];
+            }
+
+            update(shockX, shockY, shockRadius) {
+                this.y += this.speed;
+
+                // Push current head state into senescing history trail
+                this.history.unshift({ y: this.y, frameAge: 0 });
+                if (this.history.length > 25) {
+                    this.history.pop();
+                }
+
+                // Age the trails
+                this.history.forEach(item => item.frameAge++);
+
+                // Recycle if off screen
+                if (this.y > height + 500) {
+                    this.reset();
+                    this.x = Math.random() * width;
+                }
+            }
+
+            draw(shockX, shockY, shockRadius) {
+                // Draw senescing trail steps
+                this.history.forEach((trailNode, index) => {
+                    const ageRatio = trailNode.frameAge / 25;
+                    const trailAlpha = Math.max(0, (1 - ageRatio) * 0.35);
+                    this.renderSteps(trailNode.y, trailAlpha, true, shockX, shockY, shockRadius);
+                });
+
+                // Draw primary leading sequence
+                this.renderSteps(this.y, 0.9, false, shockX, shockY, shockRadius);
+            }
+
+            renderSteps(posY, alphaMultiplier, isTrail, shockX, shockY, shockRadius) {
+                ctx.save();
+                ctx.translate(this.x, posY);
+
+                for (let s = 0; s < this.stepCount; s++) {
+                    const stepProgress = s / this.stepCount;
+                    
+                    // 1. Property Gradients via custom LUT rules
+                    let currentSize = this.lut.scaleGrowth === 'expand' 
+                        ? this.baseSize + (s * 12) 
+                        : this.baseSize - (s * 3.5);
+                    currentSize = Math.max(10, currentSize);
+
+                    const hue = (this.lut.hueStart + (s * this.lut.hueRate * this.lut.hueDirection)) % 360;
+                    const lightness = isTrail ? 25 : (40 + stepProgress * 25);
+                    const alpha = this.lut.opacityCurve === 'fade-out' 
+                        ? (1 - stepProgress) * alphaMultiplier 
+                        : Math.abs(Math.sin(stepProgress * Math.PI)) * alphaMultiplier;
+
+                    // 2. Glitch & Directional Offsets
+                    let xOffset = 0;
+                    let yOffset = s * 18; // Stepped drop layout
+                    
+                    if (this.lut.glitchTier === 2 && Math.random() < 0.15) {
+                        xOffset += (Math.random() - 0.5) * 20; // Glitching down / sideways tear
+                    }
+
+                    // 3. Bow Shock Reentry Plasma Interaction
+                    // Calculate distance to the leading shock center
+                    const globalX = this.x + xOffset;
+                    const globalY = posY + yOffset;
+                    const distToShock = Math.hypot(globalX - shockX, globalY - shockY);
+
+                    if (distToShock < shockRadius) {
+                        const shockFactor = (1 - (distToShock / shockRadius));
+                        xOffset += (globalX - shockX) * shockFactor * 0.3; // Plasma push effect
+                        yOffset += (globalY - shockY) * shockFactor * 0.2;
+                    }
+
+                    ctx.save();
+                    ctx.translate(xOffset, yOffset);
+
+                    // 4. Structural Pane & Square Outlines
+                    ctx.beginPath();
+                    const half = currentSize / 2;
+                    ctx.rect(-half, -half, currentSize, currentSize);
+
+                    if (this.lut.hasPaneOutlines && s % 2 === 0) {
+                        // Pane fill with high-tech grid tint
+                        ctx.fillStyle = `hsla(${hue}, 75%, ${lightness}%, ${alpha * 0.15})`;
+                        ctx.fill();
+                    }
+
+                    // Sharp rigid square outline
+                    ctx.strokeStyle = `hsla(${hue}, 85%, ${lightness}%, ${alpha})`;
+                    ctx.lineWidth = isTrail ? 1 : (1.5 + (1 - stepProgress));
+                    ctx.stroke();
+
+                    // Inner crosshair structural detail for rigidity
+                    if (!isTrail && s % 3 === 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(-half * 0.5, 0); ctx.lineTo(half * 0.5, 0);
+                        ctx.moveTo(0, -half * 0.5); ctx.lineTo(0, half * 0.5);
+                        ctx.strokeStyle = `hsla(${hue}, 90%, 70%, ${alpha * 0.5})`;
+                        ctx.lineWidth = 0.75;
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                }
+                ctx.restore();
+            }
+        }
+
+        // Initialize multiple distinct step columns across screen width
+        const columns = [];
+        const columnCount = Math.max(5, Math.floor(window.innerWidth / 250));
+        for (let i = 0; i < columnCount; i++) {
+            columns.push(new StepSequenceColumn((i + 0.5) * (window.innerWidth / columnCount)));
+        }
+
+        // Bow shock runner position (follows mouse or cycles automatically)
+        let shockX = width / 2;
+        let shockY = height / 2;
+        let targetShockX = shockX;
+        let targetShockY = shockY;
+
+        window.addEventListener('mousemove', (e) => {
+            targetShockX = e.clientX;
+            targetShockY = e.clientY;
+        });
+
+        window.addEventListener('click', () => {
+            // Trigger seismic shift: reset columns with new random LUT configurations
+            columns.forEach(col => col.reset());
+        });
+
+        function animate() {
+            // Smoothly interpolate shock center
+            shockX += (targetShockX - shockX) * 0.08;
+            shockY += (targetShockY - shockY) * 0.08;
+
+            // Clear frame with persistent terminal background trace
+            ctx.fillStyle = 'rgba(5, 7, 12, 0.3)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Render Bow Shock Thermal Field Indicator (Reentry Plasma Aura)
+            const plasmaGrad = ctx.createRadialGradient(shockX, shockY, 10, shockX, shockY, 220);
+            plasmaGrad.addColorStop(0, 'rgba(244, 63, 94, 0.12)'); // Core heat
+            plasmaGrad.addColorStop(0.5, 'rgba(217, 70, 239, 0.04)'); // Mid wave
+            plasmaGrad.addColorStop(1, 'rgba(5, 7, 12, 0)'); // Falloff
+            ctx.fillStyle = plasmaGrad;
+            ctx.beginPath();
+            ctx.arc(shockX, shockY, 220, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Update and render all stepped architectural sequences
+            columns.forEach(col => {
+                col.update(shockX, shockY, 220);
+                col.draw(shockX, shockY, 220);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>

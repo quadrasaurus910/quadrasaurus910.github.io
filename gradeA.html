@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Architect - Recursive Lattice Manifestation</title>
+    <!-- Tailwind CSS for modern HUD styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between p-6">
+
+    <!-- Header HUD -->
+    <header class="flex justify-between items-center z-10 bg-slate-900/80 backdrop-blur border border-slate-800 px-6 py-4 rounded-xl shadow-2xl">
+        <div>
+            <h1 class="text-xl font-bold tracking-wider text-cyan-400">GRADIENT ARCHITECT // CORE KERNEL</h1>
+            <p class="text-xs text-slate-400">Manifestation: Recursive Escher-Lattice v1.0</p>
+        </div>
+        <div class="flex gap-6 text-xs text-slate-300">
+            <div><span class="text-slate-500">Steps:</span> <span id="stat-steps" class="text-emerald-400">24</span></div>
+            <div><span class="text-slate-500">Scale Factor ($\phi$):</span> <span id="stat-scale" class="text-amber-400">1.618</span></div>
+            <div><span class="text-slate-500">State:</span> <span id="stat-state" class="text-cyan-400">Active Morph</span></div>
+        </div>
+    </header>
+
+    <!-- Main Canvas Viewport -->
+    <main class="absolute inset-0 z-0 flex items-center justify-center">
+        <canvas id="architectCanvas" class="w-full h-full"></canvas>
+    </main>
+
+    <!-- Footer Controls / Info -->
+    <footer class="z-10 bg-slate-900/80 backdrop-blur border border-slate-800 px-6 py-3 rounded-xl flex justify-between items-center text-xs text-slate-400 shadow-2xl">
+        <p>Properties mapped: <span class="text-indigo-400">Hue Rotation</span> • <span class="text-pink-400">Alpha Opacity</span> • <span class="text-amber-400">Golden Ratio Scaling</span> • <span class="text-cyan-400">Directional Shear</span></p>
+        <p class="text-slate-500">Move mouse to alter architectural gravitational torque.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('architectCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetMouseX = 0;
+        let targetMouseY = 0;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            mouseX = width / 2;
+            mouseY = height / 2;
+            targetMouseX = mouseX;
+            targetMouseY = mouseY;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            targetMouseX = e.clientX;
+            targetMouseY = e.clientY;
+        });
+
+        // Architectural Parameters
+        const totalSteps = 32;
+        const phi = 1.61803398875; // Golden ratio for fractal stepping
+        let time = 0;
+
+        function draw() {
+            // Smooth mouse interpolation (easing)
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+
+            // Clear canvas with subtle motion trail
+            ctx.fillStyle = 'rgba(11, 15, 25, 0.25)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.save();
+            ctx.translate(width / 2, height / 2);
+
+            // Calculate directional offsets based on mouse position relative to center
+            const offsetX = (mouseX - width / 2) * 0.1;
+            const offsetY = (mouseY - height / 2) * 0.1;
+
+            time += 0.008;
+
+            // Render Escher-esque step sequence (recursive fractal layers)
+            for (let i = totalSteps; i >= 0; i--) {
+                const progress = i / totalSteps;
+                
+                // Multi-property gradient calculations
+                // 1. Scale factor decreasing fractally
+                const scale = Math.pow(1 / (phi * 0.92), i * 0.4) * (180 + Math.sin(time + i * 0.1) * 20);
+                
+                // 2. Rotational directional offset (Escher twist)
+                const angle = time * (i % 2 === 0 ? 0.5 : -0.3) + (i * 0.15);
+                
+                // 3. Chromatic transition (Hue shift from Deep Cyan to Warm Amber/Magenta)
+                const hue = (200 + i * 8 + time * 30) % 360;
+                const saturation = 85;
+                const lightness = 25 + (progress * 50); // Lighter toward the core/apex
+
+                // 4. Opacity alpha gradient (solid base to ghost-state center)
+                const alpha = Math.max(0.1, 1.0 - (i / totalSteps) * 0.85);
+
+                ctx.save();
+                
+                // Apply spatial translations and shear
+                ctx.translate(offsetX * (i * 0.05), offsetY * (i * 0.05));
+                ctx.rotate(angle);
+
+                // Draw structural frame (Step / Monolith block)
+                ctx.beginPath();
+                const size = scale;
+                
+                // Create a stepped isometric-like rectangle or super-ellipse polygon
+                ctx.rect(-size / 2, -size / 2, size, size);
+
+                // Apply multi-property styles
+                ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                ctx.lineWidth = 1.5 + (1 - progress) * 2;
+                ctx.stroke();
+
+                // Inner accent geometry for structural detail
+                if (i % 3 === 0) {
+                    ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.08})`;
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+
+            ctx.restore();
+            requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+    </script>
+</body>
+</html>

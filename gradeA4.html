@@ -128,6 +128,7 @@
                 ctx.translate(xPos, this.y);
 
                 const visibleSteps = Math.floor(this.currentSteps);
+                console.log(`Drawing sequence at (${xPos.toFixed(2)}, ${this.y.toFixed(2)}) with ${visibleSteps} steps.`);
 
                 for (let s = 0; s <= visibleSteps; s++) {
                     const stepProgress = s / this.maxSteps;

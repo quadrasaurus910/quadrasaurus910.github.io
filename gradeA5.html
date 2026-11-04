@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Architect - Species Profiler & Exporter</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #020408;
+            color: #94a3b8;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        canvas { display: block; }
+        /* Custom scrollbar for control panels */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col overflow-hidden">
+
+    <!-- Top Header HUD -->
+    <header class="flex justify-between items-center bg-slate-950/90 border-b border-slate-800/80 px-6 py-3 shrink-0 backdrop-blur z-20">
+        <div>
+            <h1 class="text-lg font-bold tracking-wider text-cyan-400">GRADIENT ARCHITECT // SPECIES PROFILER</h1>
+            <p class="text-xs text-slate-400">Active Profile: <span id="header-profile-name" class="text-amber-400 font-semibold">Helix-Monolith Alpha</span></p>
+        </div>
+        <div class="flex gap-6 text-xs text-slate-300">
+            <div><span class="text-slate-500">Steps:</span> <span id="stat-steps" class="text-emerald-400">12</span></div>
+            <div><span class="text-slate-500">Primary Target:</span> <span id="stat-target" class="text-pink-400">Hue Spectrum</span></div>
+            <div><span class="text-slate-500">Status:</span> <span class="text-cyan-400 animate-pulse">Live Profiling</span></div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Left Panel: Interactive Controls & Property Sliders -->
+        <aside class="w-96 bg-slate-950/80 border-r border-slate-800/80 p-5 flex flex-col gap-5 overflow-y-auto shrink-0 z-10">
+            <div>
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-3">1. Species & Topology</h2>
+                <div class="flex flex-col gap-3 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Profile Identifier</label>
+                        <input type="text" id="input-name" value="Helix-Monolith Alpha" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Step Count (<span id="val-steps">12</span>)</label>
+                            <input type="range" id="input-steps" min="3" max="24" value="12" class="w-full accent-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Base Size (<span id="val-size">80</span>)</label>
+                            <input type="range" id="input-size" min="30" max="150" value="80" class="w-full accent-cyan-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-800">
+
+            <div>
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-3">2. Gradient Target & Mapping</h2>
+                <div class="flex flex-col gap-3 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Primary Gradient Property</label>
+                        <select id="input-target" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="hue">Hue Rotation Spectrum</option>
+                            <option value="saturation">Saturation Decay</option>
+                            <option value="lightness">Lightness Ascend</option>
+                            <option value="opacity">Opacity Ghost Curve</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Base Hue (<span id="val-hue">200</span>°)</label>
+                            <input type="range" id="input-hue" min="0" max="360" value="200" class="w-full accent-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Hue Range (<span id="val-huerange">180</span>°)</label>
+                            <input type="range" id="input-huerange" min="0" max="360" value="180" class="w-full accent-cyan-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-800">
+
+            <div>
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-3">3. Step Opacity & Tone</h2>
+                <div class="flex flex-col gap-3 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Opacity Curve Mode</label>
+                        <select id="input-opacity-mode" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="linear">Linear Fade Out</option>
+                            <option value="solid">Uniform High Opacity</option>
+                            <option value="pulse">Center Core Highlight</option>
+                            <option value="ghost">Ghost Wireframe (Low Alpha)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">Global Alpha Cap (<span id="val-alpha">0.85</span>)</label>
+                        <input type="range" id="input-alpha" min="0.1" max="1.0" step="0.05" value="0.85" class="w-full accent-cyan-500">
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <input type="checkbox" id="input-panes" checked class="accent-cyan-500">
+                        <label class="text-slate-300">Render Structural Pane Fills</label>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-randomize" class="mt-auto bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 font-semibold py-2.5 rounded text-xs transition tracking-wider">
+                RANDOMIZE PROFILE SPECIES
+            </button>
+        </aside>
+
+        <!-- Center Canvas Preview -->
+        <main class="flex-1 relative bg-slate-950 flex items-center justify-center overflow-hidden">
+            <canvas id="profilerCanvas" class="w-full h-full"></canvas>
+            <!-- Watermark / HUD overlay inside canvas -->
+            <div class="absolute bottom-6 left-6 bg-slate-950/80 border border-slate-800 px-4 py-2 rounded-lg backdrop-blur text-xs text-slate-400 pointer-events-none">
+                <p>Preview Mode: <span class="text-amber-400">Isolated Species Inspection</span></p>
+            </div>
+        </main>
+
+        <!-- Right Panel: Code Snippet Exporter -->
+        <section class="w-96 bg-slate-950/80 border-l border-slate-800/80 p-5 flex flex-col gap-3 overflow-y-auto shrink-0 z-10">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400">4. Profile Code Exporter</h2>
+                <button id="btn-copy" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-1 rounded text-[10px] transition font-semibold">
+                    COPY JSON
+                </button>
+            </div>
+            <p class="text-[11px] text-slate-500">Live JSON configuration snippet representing this gradient species profile. Ready for injection into web apps, backend pipelines, or LED matrix controllers.</p>
+            
+            <div class="flex-1 bg-slate-900/90 border border-slate-800 rounded-lg p-3 overflow-hidden flex flex-col">
+                <pre id="code-output" class="text-[11px] text-emerald-400 font-mono overflow-auto flex-1 select-all"></pre>
+            </div>
+            <div id="copy-feedback" class="text-center text-[10px] text-emerald-400 opacity-0 transition-opacity">Profile copied to clipboard successfully!</div>
+        </section>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('profilerCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = canvas.parentElement.clientWidth;
+            height = canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Profile State Object
+        const profile = {
+            name: "Helix-Monolith Alpha",
+            steps: 12,
+            baseSize: 80,
+            target: "hue",
+            hue: 200,
+            hueRange: 180,
+            opacityMode: "linear",
+            globalAlpha: 0.85,
+            hasPanes: true
+        };
+
+        // DOM Elements
+        const elName = document.getElementById('input-name');
+        const elSteps = document.getElementById('input-steps');
+        const elSize = document.getElementById('input-size');
+        const elTarget = document.getElementById('input-target');
+        const elHue = document.getElementById('input-hue');
+        const elHueRange = document.getElementById('input-huerange');
+        const elOpacityMode = document.getElementById('input-opacity-mode');
+        const elAlpha = document.getElementById('input-alpha');
+        const elPanes = document.getElementById('input-panes');
+
+        // Value displays
+        const valSteps = document.getElementById('val-steps');
+        const valSize = document.getElementById('val-size');
+        const valHue = document.getElementById('val-hue');
+        const valHueRange = document.getElementById('val-huerange');
+        const valAlpha = document.getElementById('val-alpha');
+        const headerName = document.getElementById('header-profile-name');
+        const statSteps = document.getElementById('stat-steps');
+        const statTarget = document.getElementById('stat-target');
+        const codeOutput = document.getElementById('code-output');
+        const btnCopy = document.getElementById('btn-copy');
+        const copyFeedback = document.getElementById('copy-feedback');
+        const btnRandomize = document.getElementById('btn-randomize');
+
+        function updateProfileFromDOM() {
+            profile.name = elName.value;
+            profile.steps = parseInt(elSteps.value);
+            profile.baseSize = parseInt(elSize.value);
+            profile.target = elTarget.value;
+            profile.hue = parseInt(elHue.value);
+            profile.hueRange = parseInt(elHueRange.value);
+            profile.opacityMode = elOpacityMode.value;
+            profile.globalAlpha = parseFloat(elAlpha.value);
+            profile.hasPanes = elPanes.checked;
+
+            // Update UI text labels
+            valSteps.textContent = profile.steps;
+            valSize.textContent = profile.baseSize;
+            valHue.textContent = profile.hue;
+            valHueRange.textContent = profile.hueRange;
+            valAlpha.textContent = profile.globalAlpha;
+            headerName.textContent = profile.name;
+            statSteps.textContent = profile.steps;
+            statTarget.textContent = elTarget.options[elTarget.selectedIndex].text;
+
+            // Update Code Exporter snippet
+            codeOutput.textContent = JSON.stringify(profile, null, 2);
+        }
+
+        // Event Listeners for Controls
+        [elName, elSteps, elSize, elTarget, elHue, elHueRange, elOpacityMode, elAlpha, elPanes].forEach(el => {
+            el.addEventListener('input', updateProfileFromDOM);
+        });
+
+        btnRandomize.addEventListener('click', () => {
+            const names = ["Cubic Stalactite Beta", "Escher Lattice Gamma", "Quantum Prism Delta", "Vaporwave Monolith Omega", "Luminance Helix Theta"];
+            elName.value = names[Math.floor(Math.random() * names.length)];
+            elSteps.value = Math.floor(Math.random() * 16) + 6;
+            elSize.value = Math.floor(Math.random() * 70) + 50;
+            elHue.value = Math.floor(Math.random() * 360);
+            elHueRange.value = Math.floor(Math.random() * 300) + 60;
+            elAlpha.value = (Math.random() * 0.4 + 0.6).toFixed(2);
+            updateProfileFromDOM();
+        });
+
+        btnCopy.addEventListener('click', () => {
+            navigator.clipboard.writeText(codeOutput.textContent);
+            copyFeedback.style.opacity = '1';
+            setTimeout(() => { copyFeedback.style.opacity = '0'; }, 2000);
+        });
+
+        updateProfileFromDOM();
+
+        let time = 0;
+
+        function render() {
+            time += 0.02;
+
+            // Clear canvas
+            ctx.fillStyle = '#020408';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.save();
+            ctx.translate(width / 2, height / 2);
+
+            // Subtle rotation and breath animation for preview
+            const breath = Math.sin(time * 0.8) * 5;
+
+            for (let s = 0; s < profile.steps; s++) {
+                const stepProgress = s / profile.steps;
+                const size = profile.baseSize + (s * 10) + breath;
+                if (size <= 5) continue;
+
+                // Color and Opacity calculations across each step based on profile rules
+                let hue = profile.hue;
+                let saturation = 80;
+                let lightness = 35 + (stepProgress * 35);
+                let alpha = profile.globalAlpha;
+
+                // Property mapping logic
+                if (profile.target === 'hue') {
+                    hue = (profile.hue + (stepProgress * profile.hueRange)) % 360;
+                } else if (profile.target === 'saturation') {
+                    saturation = Math.max(10, 100 - (stepProgress * profile.hueRange / 3.6));
+                } else if (profile.target === 'lightness') {
+                    lightness = 15 + (stepProgress * 70);
+                } else if (profile.target === 'opacity') {
+                    alpha = Math.max(0.1, profile.globalAlpha * (1 - stepProgress));
+                }
+
+                // Opacity curve modifier
+                if (profile.opacityMode === 'linear') {
+                    alpha *= (1 - stepProgress * 0.5);
+                } else if (profile.opacityMode === 'pulse') {
+                    alpha *= Math.abs(Math.sin(stepProgress * Math.PI));
+                } else if (profile.opacityMode === 'ghost') {
+                    alpha *= 0.3;
+                }
+
+                ctx.save();
+                
+                // Slight angular isometric offset per step for Escher-like depth
+                const angle = s * 0.08 + Math.sin(time * 0.5) * 0.05;
+                ctx.rotate(angle);
+                
+                // Stack vertically
+                const yOffset = (s * 16) - (profile.steps * 8);
+                ctx.translate(0, yOffset);
+
+                ctx.beginPath();
+                const half = size / 2;
+                ctx.rect(-half, -half, size, size);
+
+                // Pane fills
+                if (profile.hasPanes && s % 2 === 0 && profile.opacityMode !== 'ghost') {
+                    ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.15})`;
+                    ctx.fill();
+                }
+
+                // Step Outline
+                if (profile.opacityMode === 'ghost') {
+                    ctx.setLineDash([4, 4]);
+                    ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.7})`;
+                    ctx.lineWidth = 1;
+                } else {
+                    ctx.setLineDash([]);
+                    ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                    ctx.lineWidth = 1.5 + (1 - stepProgress);
+                }
+                ctx.stroke();
+
+                // Structural cross brace
+                if (s % 3 === 0 && profile.opacityMode !== 'ghost') {
+                    ctx.beginPath();
+                    ctx.moveTo(-half * 0.5, 0); ctx.lineTo(half * 0.5, 0);
+                    ctx.strokeStyle = `hsla(${hue}, ${saturation}%, 80%, ${alpha * 0.4})`;
+                    ctx.lineWidth = 0.75;
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+
+            ctx.restore();
+            requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

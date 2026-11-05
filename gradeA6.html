@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Architect - Infinite Matrix Profiler</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #020408;
+            color: #94a3b8;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        canvas { display: block; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col overflow-hidden">
+
+    <!-- Top Header HUD -->
+    <header class="flex justify-between items-center bg-slate-950/90 border-b border-slate-800/80 px-6 py-3 shrink-0 backdrop-blur z-20">
+        <div>
+            <h1 class="text-lg font-bold tracking-wider text-cyan-400">GRADIENT ARCHITECT // INFINITE MATRIX</h1>
+            <p class="text-xs text-slate-400">Active Profile: <span id="header-profile-name" class="text-amber-400 font-semibold">Macro-Closeup Monolith</span></p>
+        </div>
+        <div class="flex items-center gap-6 text-xs text-slate-300">
+            <div><span class="text-slate-500">Mood:</span> <span id="stat-mood" class="text-pink-400">Floating Drift</span></div>
+            <div><span class="text-slate-500">Scale:</span> <span id="stat-scale" class="text-emerald-400">Macro-Endless</span></div>
+            <button id="btn-fullscreen" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded text-xs transition font-semibold">
+                FULLSCREEN
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Left Control Panel -->
+        <aside class="w-96 bg-slate-950/80 border-r border-slate-800/80 p-5 flex flex-col gap-5 overflow-y-auto shrink-0 z-10">
+            <div>
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-3">1. Architectural Mood</h2>
+                <div class="flex flex-col gap-2 text-xs">
+                    <label class="block text-slate-400 mb-1">Behavioral Matrix State</label>
+                    <select id="input-mood" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                        <option value="floating">Floating Drift (Organic Sway)</option>
+                        <option value="straight">Straight Monolith (Orthogonal Rigidity)</option>
+                        <option value="matrix">Geometric Matrix (Intertwined Lattice)</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="border-slate-800">
+
+            <div>
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-3">2. Macro Scale & Off-Screen Bleed</h2>
+                <div class="flex flex-col gap-3 text-xs">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Base Size (<span id="val-size">240</span>)</label>
+                            <input type="range" id="input-size" min="100" max="600" value="240" class="w-full accent-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Step Count (<span id="val-steps">18</span>)</label>
+                            <input type="range" id="input-steps" min="6" max="32" value="18" class="w-full accent-cyan-500">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <input type="checkbox" id="input-bg-intertwine" checked class="accent-cyan-500">
+                        <label class="text-slate-300">Enable Intertwining Background Weave</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-800">
+
+            <div>
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400 mb-3">3. Gradient & Opacity Properties</h2>
+                <div class="flex flex-col gap-3 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Primary Gradient Target</label>
+                        <select id="input-target" class="w-full bg-slate-900 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500">
+                            <option value="hue">Hue Spectrum Rotation</option>
+                            <option value="saturation">Saturation Fade</option>
+                            <option value="lightness">Lightness Ascend</option>
+                            <option value="opacity">Opacity Fade-Out</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Base Hue (<span id="val-hue">190</span>°)</label>
+                            <input type="range" id="input-hue" min="0" max="360" value="190" class="w-full accent-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Global Alpha (<span id="val-alpha">0.9</span>)</label>
+                            <input type="range" id="input-alpha" min="0.2" max="1.0" step="0.05" value="0.9" class="w-full accent-cyan-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-randomize" class="mt-auto bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 font-semibold py-2.5 rounded text-xs transition tracking-wider">
+                RANDOMIZE MATRIX SPECIES
+            </button>
+        </aside>
+
+        <!-- Center Canvas Viewport -->
+        <main class="flex-1 relative bg-slate-950 flex items-center justify-center overflow-hidden">
+            <canvas id="matrixCanvas" class="w-full h-full"></canvas>
+            <div class="absolute bottom-6 left-6 bg-slate-950/80 border border-slate-800 px-4 py-2 rounded-lg backdrop-blur text-xs text-slate-400 pointer-events-none">
+                <p>Perspective: <span class="text-cyan-400">Endless Off-Screen Bleed Active</span></p>
+            </div>
+        </main>
+
+        <!-- Right Panel: Code Exporter -->
+        <section class="w-96 bg-slate-950/80 border-l border-slate-800/80 p-5 flex flex-col gap-3 overflow-y-auto shrink-0 z-10">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xs font-bold tracking-widest uppercase text-slate-400">4. Profile Exporter</h2>
+                <button id="btn-copy" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-1 rounded text-[10px] transition font-semibold">
+                    COPY JSON
+                </button>
+            </div>
+            <p class="text-[11px] text-slate-500">Configuration snippet capturing the active macro scale, mood behavior, and intertwining matrix parameters.</p>
+            
+            <div class="flex-1 bg-slate-900/90 border border-slate-800 rounded-lg p-3 overflow-hidden flex flex-col">
+                <pre id="code-output" class="text-[11px] text-emerald-400 font-mono overflow-auto flex-1 select-all"></pre>
+            </div>
+            <div id="copy-feedback" class="text-center text-[10px] text-emerald-400 opacity-0 transition-opacity">Profile copied successfully!</div>
+        </section>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = canvas.parentElement.clientWidth;
+            height = canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Profile State
+        const profile = {
+            name: "Macro-Closeup Monolith",
+            mood: "floating",
+            baseSize: 240,
+            steps: 18,
+            bgIntertwine: true,
+            target: "hue",
+            hue: 190,
+            globalAlpha: 0.9
+        };
+
+        // DOM Bindings
+        const elMood = document.getElementById('input-mood');
+        const elSize = document.getElementById('input-size');
+        const elSteps = document.getElementById('input-steps');
+        const elBg = document.getElementById('input-bg-intertwine');
+        const elTarget = document.getElementById('input-target');
+        const elHue = document.getElementById('input-hue');
+        const elAlpha = document.getElementById('input-alpha');
+        
+        const valSize = document.getElementById('val-size');
+        const valSteps = document.getElementById('val-steps');
+        const valHue = document.getElementById('val-hue');
+        const valAlpha = document.getElementById('val-alpha');
+        const statMood = document.getElementById('stat-mood');
+        const headerName = document.getElementById('header-profile-name');
+        const codeOutput = document.getElementById('code-output');
+        const btnCopy = document.getElementById('btn-copy');
+        const copyFeedback = document.getElementById('copy-feedback');
+        const btnFullscreen = document.getElementById('btn-fullscreen');
+        const btnRandomize = document.getElementById('btn-randomize');
+
+        function updateState() {
+            profile.mood = elMood.value;
+            profile.baseSize = parseInt(elSize.value);
+            profile.steps = parseInt(elSteps.value);
+            profile.bgIntertwine = elBg.checked;
+            profile.target = elTarget.value;
+            profile.hue = parseInt(elHue.value);
+            profile.globalAlpha = parseFloat(elAlpha.value);
+
+            valSize.textContent = profile.baseSize;
+            valSteps.textContent = profile.steps;
+            valHue.textContent = profile.hue;
+            valAlpha.textContent = profile.globalAlpha;
+            statMood.textContent = elMood.options[elMood.selectedIndex].text;
+
+            codeOutput.textContent = JSON.stringify(profile, null, 2);
+        }
+
+        [elMood, elSize, elSteps, elBg, elTarget, elHue, elAlpha].forEach(el => {
+            el.addEventListener('input', updateState);
+        });
+
+        btnFullscreen.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        });
+
+        btnRandomize.addEventListener('click', () => {
+            const moods = ['floating', 'straight', 'matrix'];
+            elMood.value = moods[Math.floor(Math.random() * moods.length)];
+            elSize.value = Math.floor(Math.random() * 300) + 180;
+            elSteps.value = Math.floor(Math.random() * 14) + 12;
+            elHue.value = Math.floor(Math.random() * 360);
+            updateState();
+        });
+
+        btnCopy.addEventListener('click', () => {
+            navigator.clipboard.writeText(codeOutput.textContent);
+            copyFeedback.style.opacity = '1';
+            setTimeout(() => { copyFeedback.style.opacity = '0'; }, 2000);
+        });
+
+        updateState();
+
+        let time = 0;
+
+        function render() {
+            time += 0.015;
+
+            // Clear frame
+            ctx.fillStyle = '#020408';
+            ctx.fillRect(0, 0, width, height);
+
+            // 1. Intertwining Background Weave
+            if (profile.bgIntertwine) {
+                ctx.save();
+                ctx.strokeStyle = `hsla(${profile.hue}, 60%, 25%, 0.25)`;
+                ctx.lineWidth = 1;
+                const gridSpacing = 60;
+                
+                // Diagonal weaving background grid lines
+                for (let x = -height; x < width + height; x += gridSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + Math.sin(time + x * 0.01) * 20, 0);
+                    ctx.lineTo(x - height + Math.cos(time - x * 0.01) * 20, height);
+                    ctx.stroke();
+                }
+                for (let y = -width; y < height + width; y += gridSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y + Math.cos(time + y * 0.01) * 20);
+                    ctx.lineTo(width, y + width + Math.sin(time - y * 0.01) * 20);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+
+            // 2. Main Architectural Structure (Macro Close-Up & Off-Screen Bleed)
+            ctx.save();
+            ctx.translate(width / 2, height / 2);
+
+            let centerX = 0;
+            let centerY = 0;
+
+            if (profile.mood === 'floating') {
+                centerX += Math.sin(time * 0.8) * 45;
+                centerY += Math.cos(time * 0.6) * 35;
+            }
+
+            // Render based on Mood
+            const renderSequence = (offsetX, offsetY, scaleMultiplier) => {
+                ctx.save();
+                ctx.translate(offsetX, offsetY);
+
+                for (let s = 0; s < profile.steps; s++) {
+                    const progress = s / profile.steps;
+                    // Macro base size scaling up so edges push off-screen
+                    const size = (profile.baseSize + (s * 28)) * scaleMultiplier;
+
+                    let hue = profile.hue;
+                    let saturation = 85;
+                    let lightness = 30 + (progress * 40);
+                    let alpha = profile.globalAlpha;
+
+                    if (profile.target === 'hue') {
+                        hue = (profile.hue + (progress * 220)) % 360;
+                    } else if (profile.target === 'saturation') {
+                        saturation = Math.max(10, 100 - (progress * 90));
+                    } else if (profile.target === 'lightness') {
+                        lightness = 15 + (progress * 75);
+                    } else if (profile.target === 'opacity') {
+                        alpha = Math.max(0.1, profile.globalAlpha * (1 - progress));
+                    }
+
+                    ctx.save();
+                    
+                    let angle = 0;
+                    if (profile.mood === 'floating') {
+                        angle = Math.sin(time * 0.5 + s * 0.1) * 0.15 + (s * 0.03);
+                    } else if (profile.mood === 'matrix') {
+                        angle = s * 0.785; // 45-degree geometric twist
+                    }
+
+                    ctx.rotate(angle);
+                    const yDist = (s * 22) - (profile.steps * 11);
+                    ctx.translate(0, yDist);
+
+                    ctx.beginPath();
+                    const half = size / 2;
+                    ctx.rect(-half, -half, size, size);
+
+                    // Pane fill
+                    if (s % 2 === 0) {
+                        ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.12})`;
+                        ctx.fill();
+                    }
+
+                    // Outline extending off screen
+                    ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                    ctx.lineWidth = 2 + (1 - progress) * 2;
+                    ctx.stroke();
+
+                    // Structural cross brace
+                    if (s % 3 === 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(-half * 0.7, 0); ctx.lineTo(half * 0.7, 0);
+                        ctx.strokeStyle = `hsla(${hue}, ${saturation}%, 85%, ${alpha * 0.5})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                }
+                ctx.restore();
+            };
+
+            if (profile.mood === 'matrix') {
+                // Multi-node geometric matrix replication
+                renderSequence(-180, -100, 0.6);
+                renderSequence(180, 100, 0.6);
+                renderSequence(0, 0, 1.0);
+            } else {
+                renderSequence(centerX, centerY, 1.0);
+            }
+
+            ctx.restore();
+            requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>
